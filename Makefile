@@ -9,7 +9,10 @@ CLIENTDIR = ${SOURCEDIR}/client
 SERVERDIR = ${SOURCEDIR}/server
 COMMONDIR = ${SOURCEDIR}/common
 
-all: build
+all: createdir build
+
+createdir:
+	- mkdir -p build/{client,common,server}
 
 build: server client
 
@@ -25,7 +28,7 @@ server:
 client/%.o: ${CLIENTDIR}/%.c
 	- gcc -c -I${COMMONDIR} -I${CLIENTDIR} $(CFLAGS) -o $(BUILDDIR)/$@ $<
 
-client: client/player.o common/player.h 
+client: client/player.o
 	- gcc $(CFLAGS) $(addprefix $(BUILDDIR)/, $^) -o project
 
 alltests:
