@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include "player.h"
 
 typedef struct {
