@@ -15,4 +15,13 @@ typedef struct {
 } board_t;
 
 
+bool is_move_legal(struct move_t move);
+
+/// @returns a struct containing the neighbors list and the amount of neighbors
+struct neighbors_t neighbors(unsigned int cell);
+
+/// @returns the neighbor cell in the given direction, MAX_INT if it doesn't exist
+unsigned int neighbor(unsigned int cell, enum dir_t direction);
+
+
 #endif
