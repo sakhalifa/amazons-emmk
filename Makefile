@@ -25,7 +25,7 @@ common/%.o: ${COMMONDIR}/%.c
 server/%.o: ${SERVERDIR}/%.c
 	- gcc -c -I${COMMONDIR} -I${SERVERDIR} $(CFLAGS) -o $(BUILDDIR)/$@ $<
 
-server: server/server.o
+server: server/server.o server/player_handle.o
 
 client/%.o: ${CLIENTDIR}/%.c
 	- gcc -c -I${COMMONDIR} -I${CLIENTDIR} $(CFLAGS) -o $(BUILDDIR)/$@ $<
