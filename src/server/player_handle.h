@@ -1,3 +1,5 @@
+#ifndef PLAYER_HANDLE_H
+#define PLAYER_HANDLE_H
 #include <stddef.h>
 #include "player.h"
 
@@ -10,3 +12,5 @@ typedef struct {
 } player_handle_t;
 
 player_handle_t create_player_handle(char *filepath);
+
+#endif
