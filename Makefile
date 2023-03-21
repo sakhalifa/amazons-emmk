@@ -8,6 +8,7 @@ BUILDDIR = build
 CLIENTDIR = ${SOURCEDIR}/client
 SERVERDIR = ${SOURCEDIR}/server
 COMMONDIR = ${SOURCEDIR}/common
+TESTDIR = test
 INSTALLDIR = install
 
 all: createdir build
