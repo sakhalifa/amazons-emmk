@@ -17,7 +17,7 @@ createdir:
 build: server client
 
 common/%.o: ${COMMONDIR}/%.c
-	- gcc -c -I${COMMONDIR} -I${COMMONDIR} $(CFLAGS) -o $(BUILDDIR)/$@ $<
+	- gcc -c -I${COMMONDIR} $(CFLAGS) -o $(BUILDDIR)/$@ $<
 
 
 server/%.o: ${SERVERDIR}/%.c
