@@ -26,12 +26,14 @@ server/%.o: ${SERVERDIR}/%.c
 	- gcc -c -I${COMMONDIR} -I${SERVERDIR} $(CFLAGS) -o $(BUILDDIR)/$@ $<
 
 server: server/server.o server/player_handle.o
+	gcc $(CFLAGS) $(addprefix $(BUILDDIR)/, $^) $(LDFLAGS) -o ${INSTALLDIR}/server
 
 client/%.o: ${CLIENTDIR}/%.c
 	- gcc -c -I${COMMONDIR} -I${CLIENTDIR} $(CFLAGS) -o $(BUILDDIR)/$@ $<
 
-client: client/player.o
-	- gcc -shared $(addprefix $(BUILDDIR)/, $^) -o ${INSTALLDIR}/player1.so
+client: client/player1.o client/player2.o
+	- gcc -shared $(BUILDDIR)/client/player1.o -o ${INSTALLDIR}/player1.so
+	- gcc -shared $(BUILDDIR)/client/player2.o -o ${INSTALLDIR}/player2.so
 
 alltests:
 
