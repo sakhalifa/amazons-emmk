@@ -8,6 +8,7 @@ BUILDDIR = build
 CLIENTDIR = ${SOURCEDIR}/client
 SERVERDIR = ${SOURCEDIR}/server
 COMMONDIR = ${SOURCEDIR}/common
+INSTALLDIR = install
 
 all: createdir build
 
@@ -23,13 +24,13 @@ common/%.o: ${COMMONDIR}/%.c
 server/%.o: ${SERVERDIR}/%.c
 	- gcc -c -I${COMMONDIR} -I${SERVERDIR} $(CFLAGS) -o $(BUILDDIR)/$@ $<
 
-server:
+server: server/server.o
 
 client/%.o: ${CLIENTDIR}/%.c
 	- gcc -c -I${COMMONDIR} -I${CLIENTDIR} $(CFLAGS) -o $(BUILDDIR)/$@ $<
 
 client: client/player.o
-	- gcc $(CFLAGS) $(addprefix $(BUILDDIR)/, $^) -o project
+	- gcc -shared $(addprefix $(BUILDDIR)/, $^) -o ${INSTALLDIR}/player1.so
 
 alltests:
 
