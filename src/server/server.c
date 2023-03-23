@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <getopt.h>
+#include <dlfcn.h>
 #include "server.h"
 
 #define USAGE_STRING "Usage: %s [-t |] [-m |] <player1.so> <player2.so>\n"
@@ -59,5 +60,8 @@ server_settings_t get_args(int argc, char *const *argv)
 int main(int argc, char *const *argv)
 {
 	server_settings_t args = get_args(argc, argv);
+
+	for(int i =0; i<NUM_PLAYERS; i++)
+		dlclose(args.player_handles[i].dl_handle);
 	return 0;
 }

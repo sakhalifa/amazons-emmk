@@ -9,6 +9,7 @@ player_handle_t create_player_handle(char *filepath){
 		exit(1);
 	}
 	player_handle_t p = {
+		.dl_handle = player_handle,
 		.play = dlsym(player_handle, "play"),
 		.finalize = dlsym(player_handle, "finalize"),
 		.get_player_name = dlsym(player_handle, "get_player_name"),
