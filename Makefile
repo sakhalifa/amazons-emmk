@@ -19,21 +19,20 @@ createdir:
 build: server client
 
 common/%.o: ${COMMONDIR}/%.c
-	- gcc -c -I${COMMONDIR} $(CFLAGS) -o $(BUILDDIR)/$@ $<
-
+	gcc -c -I${COMMONDIR} $(CFLAGS) -o $(BUILDDIR)/$@ $<
 
 server/%.o: ${SERVERDIR}/%.c
-	- gcc -c -I${COMMONDIR} -I${SERVERDIR} $(CFLAGS) -o $(BUILDDIR)/$@ $<
+	gcc -c -I${COMMONDIR} -I${SERVERDIR} $(CFLAGS) -o $(BUILDDIR)/$@ $<
 
 server: server/server.o server/player_handle.o
 	gcc $(CFLAGS) $(addprefix $(BUILDDIR)/, $^) $(LDFLAGS) -o ${INSTALLDIR}/server
 
 client/%.o: ${CLIENTDIR}/%.c
-	- gcc -c -I${COMMONDIR} -I${CLIENTDIR} $(CFLAGS) -o $(BUILDDIR)/$@ $<
+	gcc -c -I${COMMONDIR} -I${CLIENTDIR} $(CFLAGS) -o $(BUILDDIR)/$@ $<
 
 client: client/player1.o client/player2.o
-	- gcc -shared $(BUILDDIR)/client/player1.o -o ${INSTALLDIR}/player1.so
-	- gcc -shared $(BUILDDIR)/client/player2.o -o ${INSTALLDIR}/player2.so
+	gcc -shared $(BUILDDIR)/client/player1.o -o ${INSTALLDIR}/player1.so
+	gcc -shared $(BUILDDIR)/client/player2.o -o ${INSTALLDIR}/player2.so
 
 alltests:
 

@@ -1,6 +1,5 @@
 #ifndef PLAYER_HANDLE_H
 #define PLAYER_HANDLE_H
-#include <stddef.h>
 #include "player.h"
 
 typedef struct {
