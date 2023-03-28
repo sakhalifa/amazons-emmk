@@ -75,8 +75,10 @@ unsigned int get_other_player_id(unsigned int player_id)
 	return player_id == 1 ? 0 : 1;
 }
 
-struct graph_t *init_square_graph(size_t width)
-{
+struct graph_t *init_square_graph(size_t width){
+	
+}
+
 
 unsigned int** init_queens(unsigned int num_queens, size_t width){
 	unsigned int** queens = (unsigned int **) malloc(num_queens * NUM_PLAYERS * sizeof(unsigned int));
@@ -142,3 +144,4 @@ int main(int argc, char *const *argv)
 		dlclose(args.player_handles[i].dl_handle);
 	return 0;
 }
+
