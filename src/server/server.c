@@ -84,14 +84,18 @@ struct graph_t *init_square_graph(size_t width)
 	gsl_spmatrix_uint *tmp = gsl_spmatrix_uint_alloc(graph->num_vertices, graph->num_vertices);
 	for (size_t pos = 0; pos < graph->num_vertices; ++pos)
 	{
-		if ((int)pos - 1 >= 0)
-			gsl_spmatrix_uint_set(tmp, pos, pos - 1, DIR_WEST);
-		if (pos + 1 < graph->num_vertices)
-			gsl_spmatrix_uint_set(tmp, pos, pos + 1, DIR_EAST);
-		if ((int)(pos - width) >= 0)
-			gsl_spmatrix_uint_set(tmp, pos, pos - width, DIR_NORTH);
-		if (pos + width < graph->num_vertices)
-			gsl_spmatrix_uint_set(tmp, pos, pos + width, DIR_SOUTH);
+		enum dir_t cur_dir = DIR_NW;
+		for (int dy = -1; dy <= 1; dy++)
+		{
+			for (int dx = -1; dx <= 1; dx++)
+			{
+				int new_pos = pos + dx + dy * width;
+				if ((size_t)new_pos == pos || new_pos < 0 || (size_t)new_pos >= graph->num_vertices)
+					continue;
+				gsl_spmatrix_uint_set(tmp, pos, (size_t)new_pos, cur_dir);
+				cur_dir = (cur_dir + 1) % NUM_DIRS;
+			}
+		}
 	}
 	graph->t = gsl_spmatrix_uint_compress(tmp, GSL_SPMATRIX_CSR);
 	gsl_spmatrix_uint_free(tmp);
@@ -147,15 +151,14 @@ void init_game_and_players(server_settings_t settings)
 
 	struct graph_t *graph = init_graph(settings.game_type, settings.game_width);
 	unsigned int num_queens = 4 * (settings.game_width / 10 + 1);
-	unsigned int** queens = init_queens(num_queens, settings.game_width);
+	unsigned int **queens = init_queens(num_queens, settings.game_width);
 
 	unsigned int starting_player_id = get_starting_player_id();
 	settings.player_handles[starting_player_id]
-		.initialize(starting_player_id, &graph, num_queens, queens);
+		.initialize(starting_player_id, graph, num_queens, queens);
 	unsigned int other_player_id = get_other_player_id(starting_player_id);
 	settings.player_handles[starting_player_id]
-		.initialize(other_player_id, &graph, num_queens, queens);
-
+		.initialize(other_player_id, graph, num_queens, queens);
 }
 
 int main(int argc, char *const *argv)
