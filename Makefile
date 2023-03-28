@@ -14,7 +14,7 @@ INSTALLDIR = install
 all: createdir build
 
 createdir:
-	- mkdir -p build/{client,common,server}
+	- mkdir -p build/{client,common,server,test}
 
 build: server client
 
@@ -34,7 +34,11 @@ client: client/player1.o client/player2.o
 	gcc -shared $(BUILDDIR)/client/player1.o -o ${INSTALLDIR}/player1.so
 	gcc -shared $(BUILDDIR)/client/player2.o -o ${INSTALLDIR}/player2.so
 
-alltests:
+test/%.o: ${TESTDIR}/%.c
+	gcc -c -I${COMMONDIR} -I${CLIENTDIR} -I${SERVERDIR} -I$(TESTDIR) $(CFLAGS) -o $(BUILDDIR)/$@ $<
+
+alltests: test/server.o
+	gcc $(CFLAGS) $(addprefix $(BUILDDIR)/, $^) $(LDFLAGS) -o ${INSTALLDIR}/test
 
 test: alltests
 
