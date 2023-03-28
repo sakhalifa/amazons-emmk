@@ -3,6 +3,7 @@
 
 #define NUM_PLAYERS 2
 
+#include "move.h"
 #include "graph.h"
 
 /* Access to player informations
@@ -14,7 +15,6 @@ char const* get_player_name();
 /* Player initialization
  * PARAM:
  * - player_id:    the id of the player, between 0 and NUM_PLAYERS-1
- * - num_vertices: the number of vertices of the graph
  * - graph:        a matrix of size (num_vertices*num_vertices) in CSR
  *                 format representing the edges of the graph, such that
  *                 graph[row*num_vertices+col] is the edge from row to col

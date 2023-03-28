@@ -9,9 +9,10 @@
 #include "dir.h"
 
 typedef struct {
-    struct graph_t graph;
+    struct graph_t* graph;
     unsigned int *queens[NUM_PLAYERS];
     unsigned int num_queens;
+    bool* arrows;
 } board_t;
 
 

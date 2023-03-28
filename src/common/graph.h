@@ -1,6 +1,7 @@
 #ifndef _AMAZON_GRAPH_H_
 #define _AMAZON_GRAPH_H_
 
+#include <stddef.h>
 #include <gsl/gsl_spmatrix.h>
 #include <gsl/gsl_spmatrix_uint.h>
 #include <gsl/gsl_spblas.h>
