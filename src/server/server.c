@@ -63,6 +63,32 @@ server_settings_t get_args(int argc, char *const *argv)
 }
 
 
+unsigned int** init_queens(unsigned int num_queens, size_t width){
+	unsigned int** queens = (unsigned int **) malloc(num_queens * NUM_PLAYERS * sizeof(unsigned int));
+	
+	int half = (width / 2) - (1 - width % 2);
+	int cur = half;
+	int end = width * width - 1;
+	int row = 0;
+	for (unsigned int i = 0; i < num_queens / 2; ++i){
+		if (cur >= 0){ // Place on top (or bottom) row
+			queens[0][i] = cur;
+			queens[0][i] = width - cur;
+			queens[1][i] = end - cur;
+			queens[1][i] = end - (width - cur);
+			cur -= 2;
+		} else { // Place on columns
+			queens[0][i] = row * width;
+			queens[0][i] = (row + 1) * width - 1;
+			queens[1][i] = end - row * width;
+			queens[1][i] = end - ((row + 1) * width - 1);
+			row += 2;
+		}
+	}
+	return queens;
+}
+
+
 unsigned int get_starting_player_id(){
 	srand(time(NULL));
 	return rand() % NUM_PLAYERS;
@@ -77,40 +103,14 @@ void init_game_and_players(server_settings_t settings){
 
 	struct graph_t graph;
 	unsigned int num_queens = 4 * (settings.game_width / 10 + 1);
-	unsigned int* queens[NUM_PLAYERS];
+	unsigned int** queens = init_queens(num_queens, settings.game_width);
 
 	unsigned int starting_player_id = get_starting_player_id();
 	settings.player_handles[starting_player_id]
-		.initialize(starting_player_id, graph, num_queens, queens);
-	unsigned int other_player_id = get_other_player_id()
+		.initialize(starting_player_id, &graph, num_queens, queens);
+	unsigned int other_player_id = get_other_player_id(starting_player_id);
 	settings.player_handles[starting_player_id]
-		.initialize(other_player_id, graph, num_queens, queens);
-
-}
-
-
-unsigned int get_starting_player_id(){
-	srand(time(NULL));
-	return rand() % NUM_PLAYERS;
-}
-
-unsigned int get_other_player_id(unsigned int player_id){
-	return player_id == 1 ? 0 : 1;
-}
-
-// TODO : define him better
-void init_game_and_players(server_settings_t settings){
-
-	struct graph_t graph;
-	unsigned int num_queens = 4 * (settings.game_width / 10 + 1);
-	unsigned int* queens[NUM_PLAYERS];
-
-	unsigned int starting_player_id = get_starting_player_id();
-	settings.player_handles[starting_player_id]
-		.initialize(starting_player_id, graph, num_queens, queens);
-	unsigned int other_player_id = get_other_player_id()
-	settings.player_handles[starting_player_id]
-		.initialize(other_player_id, graph, num_queens, queens);
+		.initialize(other_player_id, &graph, num_queens, queens);
 
 }
 
