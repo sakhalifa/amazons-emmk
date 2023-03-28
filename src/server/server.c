@@ -4,6 +4,7 @@
 #include <getopt.h>
 #include <dlfcn.h>
 #include "graph_ext.h"
+#include "dir.h"
 
 #include "server.h"
 
@@ -75,34 +76,25 @@ unsigned int get_other_player_id(unsigned int player_id)
 	return player_id == 1 ? 0 : 1;
 }
 
-struct graph_t *init_square_graph(size_t width){
-	
-}
-
-
-unsigned int** init_queens(unsigned int num_queens, size_t width){
-	unsigned int** queens = (unsigned int **) malloc(num_queens * NUM_PLAYERS * sizeof(unsigned int));
-	
-	int half = (width / 2) - (1 - width % 2);
-	int cur = half;
-	int end = width * width - 1;
-	int row = 0;
-	for (unsigned int i = 0; i < num_queens / 2; ++i){
-		if (cur >= 0){ // Place on top (or bottom) row
-			queens[0][i] = cur;
-			queens[0][i] = width - cur;
-			queens[1][i] = end - cur;
-			queens[1][i] = end - (width - cur);
-			cur -= 2;
-		} else { // Place on columns
-			queens[0][i] = row * width;
-			queens[0][i] = (row + 1) * width - 1;
-			queens[1][i] = end - row * width;
-			queens[1][i] = end - ((row + 1) * width - 1);
-			row += 2;
-		}
+struct graph_t *init_square_graph(size_t width)
+{
+	struct graph_t *graph = malloc(sizeof(struct graph_t));
+	graph->num_vertices = width * width;
+	gsl_spmatrix_uint *tmp = gsl_spmatrix_uint_alloc(graph->num_vertices, graph->num_vertices);
+	for (size_t pos = 0; pos < graph->num_vertices; ++pos)
+	{
+		if ((int)pos - 1 >= 0)
+			gsl_spmatrix_uint_set(tmp, pos, pos - 1, DIR_WEST);
+		if (pos + 1 < graph->num_vertices)
+			gsl_spmatrix_uint_set(tmp, pos, pos + 1, DIR_EAST);
+		if ((int)(pos - width) >= 0)
+			gsl_spmatrix_uint_set(tmp, pos, pos - width, DIR_NORTH);
+		if (pos + width < graph->num_vertices)
+			gsl_spmatrix_uint_set(tmp, pos, pos + width, DIR_SOUTH);
 	}
-	return queens;
+	graph->t = gsl_spmatrix_uint_compress(tmp, GSL_SPMATRIX_CSR);
+	gsl_spmatrix_uint_free(tmp);
+	return graph;
 }
 
 struct graph_t *init_graph(game_type_t game_type, size_t width)
