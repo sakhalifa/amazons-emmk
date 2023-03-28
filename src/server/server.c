@@ -22,6 +22,7 @@ server_settings_t get_args(int argc, char *const *argv)
 		.game_width = 10,
 	};
 	char opt;
+	int width;
 	while ((opt = getopt(argc, argv, "t:m:")) != -1)
 	{
 		switch (opt)
@@ -44,7 +45,7 @@ server_settings_t get_args(int argc, char *const *argv)
 			}
 			break;
 		case 'm':
-			int width = atoi(optarg);
+			width = atoi(optarg);
 			if (width < 5)
 			{
 				fprintf(stderr, "Width should be >=5");
