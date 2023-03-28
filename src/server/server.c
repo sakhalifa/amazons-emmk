@@ -84,39 +84,49 @@ struct graph_t *init_square_graph(size_t width)
 	gsl_spmatrix_uint *tmp = gsl_spmatrix_uint_alloc(graph->num_vertices, graph->num_vertices);
 	for (size_t pos = 0; pos < graph->num_vertices; ++pos)
 	{
-		if ((int)pos - 1 >= 0)
-			gsl_spmatrix_uint_set(tmp, pos, pos - 1, DIR_WEST);
-		if (pos + 1 < graph->num_vertices)
-			gsl_spmatrix_uint_set(tmp, pos, pos + 1, DIR_EAST);
-		if ((int)(pos - width) >= 0)
-			gsl_spmatrix_uint_set(tmp, pos, pos - width, DIR_NORTH);
-		if (pos + width < graph->num_vertices)
-			gsl_spmatrix_uint_set(tmp, pos, pos + width, DIR_SOUTH);
+		enum dir_t cur_dir = DIR_NW;
+		for (int dy = -1; dy <= 1; dy++)
+		{
+			for (int dx = -1; dx <= 1; dx++)
+			{
+				int new_pos = pos + dx + dy * width;
+				if ((size_t)new_pos == pos || new_pos < 0 || (size_t)new_pos >= graph->num_vertices)
+					continue;
+				gsl_spmatrix_uint_set(tmp, pos, (size_t)new_pos, cur_dir);
+				cur_dir = (cur_dir + 1) % NUM_DIRS;
+			}
+		}
 	}
 	graph->t = gsl_spmatrix_uint_compress(tmp, GSL_SPMATRIX_CSR);
 	gsl_spmatrix_uint_free(tmp);
 	return graph;
 }
 
-unsigned int** init_queens(unsigned int num_queens, size_t width){
-	unsigned int** queens = (unsigned int **) malloc(NUM_PLAYERS * sizeof(unsigned int *));
+unsigned int **init_queens(unsigned int num_queens, size_t width)
+{
+	unsigned int **queens = (unsigned int **)malloc(NUM_PLAYERS * sizeof(unsigned int *));
 
-	for (int i = 0; i < NUM_PLAYERS; ++i){
-		queens[i] = (unsigned int *) malloc(sizeof(unsigned int) * num_queens);
+	for (int i = 0; i < NUM_PLAYERS; ++i)
+	{
+		queens[i] = (unsigned int *)malloc(sizeof(unsigned int) * num_queens);
 	}
-	
+
 	int half = (width / 2) - (width % 2);
 	int cur = half;
 	int end = width * width - 1;
-	int row = 1;  // Start placing at row 1, to avoid contact with top row
-	for (unsigned int i = 0; i < num_queens; i += 2){
-		if (cur >= 1){ // Place on top (or bottom) row
+	int row = 1; // Start placing at row 1, to avoid contact with top row
+	for (unsigned int i = 0; i < num_queens; i += 2)
+	{
+		if (cur >= 1)
+		{ // Place on top (or bottom) row
 			queens[0][i] = cur;
 			queens[0][i + 1] = width - (cur + 1);
 			queens[1][i] = end - cur;
 			queens[1][i + 1] = end - (width - (cur + 1));
 			cur -= 2;
-		} else { // Place on columns
+		}
+		else
+		{ // Place on columns
 			queens[0][i] = row * width;
 			queens[0][i + 1] = (row + 1) * width - 1;
 			queens[1][i] = end - row * width;
@@ -147,7 +157,7 @@ void init_game_and_players(server_settings_t settings)
 
 	struct graph_t *graph = init_graph(settings.game_type, settings.game_width);
 	unsigned int num_queens = 4 * (settings.game_width / 10 + 1);
-	unsigned int** queens = init_queens(num_queens, settings.game_width);
+	unsigned int **queens = init_queens(num_queens, settings.game_width);
 
 	unsigned int starting_player_id = get_starting_player_id();
 	settings.player_handles[starting_player_id]
@@ -155,15 +165,16 @@ void init_game_and_players(server_settings_t settings)
 	unsigned int other_player_id = get_other_player_id(starting_player_id);
 	settings.player_handles[starting_player_id]
 		.initialize(other_player_id, graph, num_queens, queens);
-
 }
 
 int main(int argc, char *const *argv)
 {
 
 	unsigned int **queens = init_queens(4, 5);
-	for (int pid = 0; pid < NUM_PLAYERS; ++pid){
-		for (int i = 0; i < 4; ++i){
+	for (int pid = 0; pid < NUM_PLAYERS; ++pid)
+	{
+		for (int i = 0; i < 4; ++i)
+		{
 			printf("%d ", queens[pid][i]);
 		}
 		printf("\n");
@@ -175,4 +186,3 @@ int main(int argc, char *const *argv)
 		dlclose(args.player_handles[i].dl_handle);
 	return 0;
 }
-
