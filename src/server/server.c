@@ -75,16 +75,16 @@ unsigned int get_other_player_id(unsigned int player_id)
 	return player_id == 1 ? 0 : 1;
 }
 
-struct graph_t *init_square_graph()
+struct graph_t *init_square_graph(size_t width)
 {
 }
 
-struct graph_t *init_graph(game_type_t game_type)
+struct graph_t *init_graph(game_type_t game_type, size_t width)
 {
 	switch (game_type)
 	{
 	case SQUARE:
-		return init_square_graph();
+		return init_square_graph(width);
 		break;
 	default:
 		exit(1);
@@ -97,7 +97,7 @@ struct graph_t *init_graph(game_type_t game_type)
 void init_game_and_players(server_settings_t settings)
 {
 
-	struct graph_t *graph = init_graph(settings.game_type);
+	struct graph_t *graph = init_graph(settings.game_type, settings.game_width);
 	unsigned int num_queens = 4 * (settings.game_width / 10 + 1);
 	unsigned int *queens[NUM_PLAYERS];
 
