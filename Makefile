@@ -24,7 +24,7 @@ common/%.o: ${COMMONDIR}/%.c
 server/%.o: ${SERVERDIR}/%.c
 	gcc -c -I${COMMONDIR} -I${SERVERDIR} $(CFLAGS) -o $(BUILDDIR)/$@ $<
 
-server: server/server.o server/player_handle.o common/graph.o
+server: server/server.o server/player_handle.o common/graph.o server/server_init.o
 	gcc $(CFLAGS) $(addprefix $(BUILDDIR)/, $^) $(LDFLAGS) -o ${INSTALLDIR}/server
 
 client/%.o: ${CLIENTDIR}/%.c

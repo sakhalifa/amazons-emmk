@@ -6,6 +6,9 @@
 #include "graph_ext.h"
 #include "dir.h"
 
+#include "server.h"
+#include "player.h"
+
 unsigned int get_starting_player_id()
 {
 	srand(time(NULL));
@@ -44,7 +47,10 @@ struct graph_t *init_square_graph(size_t width)
 
 unsigned int **init_queens(unsigned int num_queens, size_t width)
 {
-	unsigned int (*queens)[num_queens] = (unsigned int (*)[num_queens])malloc(NUM_PLAYERS * num_queens * sizeof(unsigned int));
+    unsigned int **queens = (unsigned int **)malloc(NUM_PLAYERS * num_queens * sizeof(unsigned int *));
+    for (int player_id = 0; player_id < NUM_PLAYERS; ++player_id){
+        queens[player_id] = (unsigned int *) malloc(sizeof(unsigned int) * num_queens);
+    }
 
 	int half = (width / 2) - (width % 2);
 	int cur = half;
