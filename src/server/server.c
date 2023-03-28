@@ -4,6 +4,7 @@
 #include <getopt.h>
 #include <dlfcn.h>
 #include "graph_ext.h"
+#include "dir.h"
 
 #include "server.h"
 
@@ -77,6 +78,23 @@ unsigned int get_other_player_id(unsigned int player_id)
 
 struct graph_t *init_square_graph(size_t width)
 {
+	struct graph_t *graph = malloc(sizeof(struct graph_t));
+	graph->num_vertices = width * width;
+	gsl_spmatrix_uint *tmp = gsl_spmatrix_uint_alloc(graph->num_vertices, graph->num_vertices);
+	for (size_t pos = 0; pos < graph->num_vertices; ++pos)
+	{
+		if ((int)pos - 1 >= 0)
+			gsl_spmatrix_uint_set(tmp, pos, pos - 1, DIR_WEST);
+		if (pos + 1 < graph->num_vertices)
+			gsl_spmatrix_uint_set(tmp, pos, pos + 1, DIR_EAST);
+		if ((int)(pos - width) >= 0)
+			gsl_spmatrix_uint_set(tmp, pos, pos - width, DIR_NORTH);
+		if (pos + width < graph->num_vertices)
+			gsl_spmatrix_uint_set(tmp, pos, pos + width, DIR_SOUTH);
+	}
+	graph->t = gsl_spmatrix_uint_compress(tmp, GSL_SPMATRIX_CSR);
+	gsl_spmatrix_uint_free(tmp);
+	return graph;
 }
 
 struct graph_t *init_graph(game_type_t game_type, size_t width)
