@@ -98,6 +98,35 @@ struct graph_t *init_square_graph(size_t width)
 	return graph;
 }
 
+unsigned int** init_queens(unsigned int num_queens, size_t width){
+	unsigned int** queens = (unsigned int **) malloc(NUM_PLAYERS * sizeof(unsigned int *));
+
+	for (int i = 0; i < NUM_PLAYERS; ++i){
+		queens[i] = (unsigned int *) malloc(sizeof(unsigned int) * num_queens);
+	}
+	
+	int half = (width / 2) - (width % 2);
+	int cur = half;
+	int end = width * width - 1;
+	int row = 1;  // Start placing at row 1, to avoid contact with top row
+	for (unsigned int i = 0; i < num_queens; i += 2){
+		if (cur >= 1){ // Place on top (or bottom) row
+			queens[0][i] = cur;
+			queens[0][i + 1] = width - (cur + 1);
+			queens[1][i] = end - cur;
+			queens[1][i + 1] = end - (width - (cur + 1));
+			cur -= 2;
+		} else { // Place on columns
+			queens[0][i] = row * width;
+			queens[0][i + 1] = (row + 1) * width - 1;
+			queens[1][i] = end - row * width;
+			queens[1][i + 1] = end - ((row + 1) * width - 1);
+			row += 2;
+		}
+	}
+	return queens;
+}
+
 struct graph_t *init_graph(game_type_t game_type, size_t width)
 {
 	switch (game_type)
@@ -131,6 +160,15 @@ void init_game_and_players(server_settings_t settings)
 
 int main(int argc, char *const *argv)
 {
+
+	unsigned int **queens = init_queens(4, 5);
+	for (int pid = 0; pid < NUM_PLAYERS; ++pid){
+		for (int i = 0; i < 4; ++i){
+			printf("%d ", queens[pid][i]);
+		}
+		printf("\n");
+	}
+
 	server_settings_t args = get_args(argc, argv);
 
 	for (int i = 0; i < NUM_PLAYERS; i++)
