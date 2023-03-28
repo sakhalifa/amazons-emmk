@@ -104,12 +104,7 @@ struct graph_t *init_square_graph(size_t width)
 
 unsigned int **init_queens(unsigned int num_queens, size_t width)
 {
-	unsigned int **queens = (unsigned int **)malloc(NUM_PLAYERS * sizeof(unsigned int *));
-
-	for (int i = 0; i < NUM_PLAYERS; ++i)
-	{
-		queens[i] = (unsigned int *)malloc(sizeof(unsigned int) * num_queens);
-	}
+	unsigned int (*queens)[num_queens] = (unsigned int (*)[num_queens])malloc(NUM_PLAYERS * num_queens * sizeof(unsigned int));
 
 	int half = (width / 2) - (width % 2);
 	int cur = half;
