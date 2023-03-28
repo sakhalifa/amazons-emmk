@@ -11,14 +11,6 @@ typedef struct {
     board_t* board;
 } player_t;
 
-
-typedef struct {
-    struct graph_t* graph;
-    unsigned int* queens[NUM_PLAYERS];
-    unsigned int num_queens;
-    bool* arrows;
-} board_t;
-
 static player_t global_player;
 
 board_t* init_board(struct graph_t* graph, unsigned int num_queens, unsigned int* queens[NUM_PLAYERS]) {
