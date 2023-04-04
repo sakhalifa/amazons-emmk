@@ -12,11 +12,6 @@ INSTALLDIR = install
 
 all: build
 
-dummy:
-	@bash generateDependencies.sh
-
--include dummy
-
 build: server client
 
 server: server.o player_handle.o graph.o server_init.o
@@ -50,4 +45,5 @@ clean:
 
 .PHONY: client install test clean
 
--include Makefile.inc
+
+include Makefile.inc
