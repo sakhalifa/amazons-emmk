@@ -12,6 +12,11 @@ INSTALLDIR = install
 
 all: build
 
+dummy:
+	@bash generateDependencies.sh
+
+-include dummy
+
 build: server client
 
 server: server.o player_handle.o graph.o
@@ -33,12 +38,12 @@ install: server client
 
 clean:
 	@rm -f *~ src/*~
-	@rm *.o
-	@rm *.so
+	@rm -f *.o
+	@rm -f *.so
 	@rm -rf install/*
 	@find . -executable -type f -not -iname "*.*" -delete
 	
 
 .PHONY: client install test clean
 
-include dependencies.d
+-include Makefile.inc
