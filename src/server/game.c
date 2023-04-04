@@ -58,7 +58,7 @@ unsigned int **init_queens(unsigned int num_queens, size_t width)
         queens[player_id] = (unsigned int *) malloc(sizeof(unsigned int) * num_queens);
     }
 
-	int half = (width / 2) - (width % 2);
+	int half = ((width - 1) / 2) - 1;
 	int cur = half;
 	int end = width * width - 1;
 	int row = 1; // Start placing at row 1, to avoid contact with top row
