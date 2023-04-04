@@ -5,17 +5,17 @@
 #include "player.h"
 #include "position_set.h"
 
-bool is_on_board(board_t *board, unsigned int position)
+bool is_on_board(board_t *board, int position)
 {
     return position >= 0 &&
-           position < (board->graph->num_vertices * board->graph->num_vertices);
+           (unsigned int)position < (board->graph->num_vertices * board->graph->num_vertices);
 }
 
 bool is_cell_empty(board_t *board, unsigned int cell_position)
 {
-    for (int i = 0; i < NUM_PLAYERS; i++)
+    for (size_t i = 0; i < NUM_PLAYERS; i++)
     {
-        for (int j = 0; j < board->num_queens; j++)
+        for (size_t j = 0; j < board->num_queens; j++)
         {
             if (board->queens[i][j] == cell_position)
             {
@@ -27,7 +27,7 @@ bool is_cell_empty(board_t *board, unsigned int cell_position)
 }
 
 bool has_queen (unsigned int player_id, board_t *board, unsigned int queen_position) {
-    for (int i = 0; i < board->num_queens; ++i) {
+    for (size_t i = 0; i < board->num_queens; ++i) {
         if (board->queens[player_id][i] == queen_position) {
             return true;
         }
@@ -44,7 +44,8 @@ void add_possible_moves_aligned(board_t* board, position_set* possible_moves, un
         while (next_neighbor < board->graph->num_vertices) {
             enum dir_t direction_to_next_neighbor = gsl_spmatrix_uint_get(board->graph->t, neighbor, next_neighbor);
             if (direction_to_next_neighbor == direction_to_neighbor) {
-                add_position(next_neighbor, neighbor);
+                // add_position(next_neighbor, neighbor);
+                add_position(possible_moves, next_neighbor);
                 neighbor = next_neighbor;
                 found = true;
                 break;
@@ -71,7 +72,7 @@ board_t *init_board(struct graph_t *graph, unsigned int num_queens,
     board->num_queens = num_queens;
     board->queens = queens;
     board->arrows = (bool *)malloc(sizeof(bool) * graph->num_vertices);
-    for (int i = 0; i < graph->num_vertices; ++i)
+    for (size_t i = 0; i < graph->num_vertices; ++i)
     {
         board->arrows[i] = false;
     }

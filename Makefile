@@ -19,11 +19,13 @@ server: server.o player_handle.o graph.o game.o board.o position_set.o
 
 test: alltests
 
-player1.so: player1.o
-	gcc -shared $(CFLAGS) player1.o $(LDFLAGS) -o player1.so
+PLAYER_TARGETS=player.o board.o position_set.o 
 
-player2.so: player2.o
-	gcc -shared $(CFLAGS) player1.o $(LDFLAGS) -o player2.so
+player1.so: $(PLAYER_TARGETS)
+	gcc -shared $(CFLAGS) player.o $(LDFLAGS) -o player1.so
+
+player2.so: $(PLAYER_TARGETS)
+	gcc -shared $(CFLAGS) player.o $(LDFLAGS) -o player2.so
 
 client: player1.so player2.so
 

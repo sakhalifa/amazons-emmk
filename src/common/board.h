@@ -24,7 +24,7 @@ board_t *init_board(struct graph_t *graph, unsigned int num_queens,
 /// @param position the tested position
 /// @param board the board where the against which the position is tested
 /// @return true if the given position is indexing a valid position on the board
-bool is_on_board(board_t *board, unsigned int position);
+bool is_on_board(board_t *board, int position);
 
 bool is_cell_empty(board_t* board, unsigned int cell_position);
 
