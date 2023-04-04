@@ -12,14 +12,9 @@ INSTALLDIR = install
 
 all: build
 
-dummy:
-	@bash generateDependencies.sh
+build: server client alltests
 
--include dummy
-
-build: server client
-
-server: server.o player_handle.o graph.o
+server: server.o player_handle.o graph.o game.o board.o
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o server
 
 test: alltests
@@ -32,9 +27,13 @@ player2.so: player2.o
 
 client: player1.so player2.so
 
+alltests: test_server.o game.o player_handle.o graph.o board.o
+	gcc $(CFLAGS) $^ $(LDFLAGS) -o alltests
+
 install: server client
 	cp server install/
 	cp player*.so install/
+	cp alltests install/alltests
 
 clean:
 	@rm -f *~ src/*~
@@ -45,4 +44,5 @@ clean:
 
 .PHONY: client install test clean
 
--include Makefile.inc
+
+include Makefile.inc
