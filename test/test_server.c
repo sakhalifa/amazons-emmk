@@ -31,7 +31,7 @@ void structural_test_init_queens(){
     printf("OK\n");
 }
 
-int test(int argc, char **argv){
+int main(int argc, char **argv){
     printf("Starting Server Tests\n");
     structural_test_init_queens();
     exit(EXIT_SUCCESS); //use this to prevent obscure segfault
