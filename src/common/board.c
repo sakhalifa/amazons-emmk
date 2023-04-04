@@ -14,11 +14,17 @@ bool is_cell_empty(board_t *board, unsigned int cell_position) {
         return false;
       }
     }
-    if (board->arrows[cell_position] == true) {
-      return false;
-    }
   }
-  return true;
+  return !board->arrows[cell_position];
+}
+
+bool has_queen (unsigned int player_id, board_t *board, unsigned int queen_position) {
+    for (int i = 0; i < board->num_queens; ++i) {
+        if (board->queens[player_id][i] == queen_position) {
+            return true;
+        }
+    }
+    return false;
 }
 
 bool is_move_legal(board_t *board, struct move_t *move, unsigned int player_id) {
@@ -27,7 +33,7 @@ bool is_move_legal(board_t *board, struct move_t *move, unsigned int player_id) 
          is_on_board(board, move->arrow_dst) &&
          is_cell_empty(board, move->queen_dst) &&
          is_cell_empty(board, move->arrow_dst) &&
-         !board->arrows[move->arrow_dst];
+         has_queen(player_id, board, move->queen_src);
 }
 
 board_t *init_board(struct graph_t *graph, unsigned int num_queens,
