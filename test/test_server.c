@@ -6,16 +6,7 @@
 
 void structural_test_init_queens(){
     printf("%s\t", __func__);
-
-    unsigned int **queens = init_queens(4, 6);
-    assert(queens[0][0] == 1);
-    assert(queens[0][1] == 4);
-    assert(queens[0][2] == 6);
-    assert(queens[0][3] == 11);
-    assert(queens[1][0] == 34);
-    assert(queens[1][1] == 31);
-    assert(queens[1][2] == 29);
-    assert(queens[1][3] == 24);
+    unsigned int **queens;
 
     queens = init_queens(4, 5);
     assert(queens[0][0] == 1);
@@ -26,6 +17,19 @@ void structural_test_init_queens(){
     assert(queens[1][1] == 21);
     assert(queens[1][2] == 19);
     assert(queens[1][3] == 15);
+
+
+    queens = init_queens(4, 6);
+    assert(queens[0][0] == 1);
+    assert(queens[0][1] == 4);
+    assert(queens[0][2] == 6);
+    assert(queens[0][3] == 11);
+    assert(queens[1][0] == 34);
+    assert(queens[1][1] == 31);
+    assert(queens[1][2] == 29);
+    assert(queens[1][3] == 24);
+
+    
     printf("OK\n");
 }
 
