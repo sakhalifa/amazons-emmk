@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include <math.h>
 #include "graph.h"
-#include "player_custom.h"
+#include "player_ext.h"
 #include "board.h"
 
 typedef struct {
@@ -42,7 +42,7 @@ void add_position(position_set* set, unsigned int position) {
     set->count++;
 }
 
-add_possible_moves_aligned(position_set* possible_moves, unsigned int initial_position, unsigned int neighbor, enum dir_t direction_to_neighbor) {
+void add_possible_moves_aligned(position_set* possible_moves, unsigned int initial_position, unsigned int neighbor, enum dir_t direction_to_neighbor) {
     add_position(possible_moves, neighbor);
     bool found = true;
     while (found) {
