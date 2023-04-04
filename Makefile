@@ -14,7 +14,7 @@ all: build
 
 build: server client alltests
 
-server: server.o player_handle.o graph.o game.o board.o
+server: server.o player_handle.o graph.o game.o board.o position_set.o
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o server
 
 test: alltests
@@ -27,7 +27,7 @@ player2.so: player2.o
 
 client: player1.so player2.so
 
-alltests: test_server.o game.o player_handle.o graph.o board.o
+alltests: test_server.o game.o player_handle.o graph.o board.o position_set.o
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o alltests
 
 install: server client
