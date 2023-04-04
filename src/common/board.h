@@ -15,8 +15,7 @@ typedef struct {
     bool* arrows; // 1-d maping of the positions of the arrows
 } board_t;
 
-board_t* init_board(struct graph_t* graph, unsigned int num_queens, unsigned int* queens[NUM_PLAYERS]) {
-    board_t* board = (board_t*) malloc(sizeof(board_t));
+board_t* init_board(struct graph_t* graph, unsigned int num_queens, unsigned int* queens[NUM_PLAYERS]);
 
 /// @brief return true if the given position is indexing a valid position on the board
 /// @param position the tested position

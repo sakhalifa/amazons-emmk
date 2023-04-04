@@ -2,14 +2,16 @@
 #define _SERVER_INIT_H_
 
 #include "server.h"
+#include "board.h"
 
 typedef struct {
 	unsigned int current_player;
-    board_t board;
+    board_t *board;
 } game_t;
 
 
 game_t init_game_and_players(server_settings_t settings);
-unsigned int update_player(game_t *game)
+void update_player(game_t *game);
+unsigned int get_other_player_id(unsigned int player_id);
 
 #endif

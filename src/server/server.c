@@ -70,10 +70,27 @@ server_settings_t get_args(int argc, char *const *argv)
 
 int main(int argc, char *const *argv)
 {
+	srand(time(NULL));
 	server_settings_t args = get_args(argc, argv);
 	game_t game = init_game_and_players(args);
 
-	struct move_t move = { -1, -1, -1 };
+	struct move_t current_move = { -1, -1, -1 };
+	bool game_not_over = true;
+	while (game_not_over){
+		
+		current_move = args.player_handles[game.current_player].play(current_move);
+		
+		if (! is_move_legal(game.board, current_move)){
+			game_not_over = false;
+		}
+
+		// Play the move on the board
+
+		update_player(&game);
+	}
+
+	unsigned int winner = game.current_player;
+	printf("%s won!\n", args.player_handles[winner].get_player_name());
 
 	for (int i = 0; i < NUM_PLAYERS; i++)
 		dlclose(args.player_handles[i].dl_handle);
