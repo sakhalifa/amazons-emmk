@@ -43,7 +43,7 @@ void add_position(position_set* set, unsigned int position) {
 }
 // wip
 position_set* possible_moves(unsigned int queen_position) {
-    size_t max_different_moves = sqrt(global_player.board->graph->num_vertices) * 4 - 4;
+    size_t max_different_moves = (sqrt(global_player.board->graph->num_vertices) * 4 - 4);
     position_set* moves = init_position_set(max_different_moves);
     for (size_t i = 0; i < global_player.board->graph->num_vertices; ++i) {
         enum dir_t movement_dir = gsl_spmatrix_uint_get(global_player.board->graph->t, queen_position, i);
@@ -55,7 +55,9 @@ position_set* possible_moves(unsigned int queen_position) {
 //wip
 struct move_t play(struct move_t previous_move) {
     if (previous_move.queen_src != UINT_MAX) {
-        
+        //update board
     }
-
+    unsigned int random_queen_position = global_player.board->queens[rand() % global_player.board->num_queens];
+    position_set* queen_possible_moves = possible_moves(random_queen_position);
+    //return queen_possible_moves->positions
 }
