@@ -36,4 +36,6 @@ struct neighbors_t neighbors(unsigned int cell);
 /// exist
 unsigned int neighbor(unsigned int cell, enum dir_t direction);
 
+void apply_move(board_t *board, struct move_t *move, unsigned int player_id);
+
 #endif
