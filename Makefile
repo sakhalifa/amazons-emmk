@@ -24,7 +24,7 @@ common/%.o: ${COMMONDIR}/%.c
 server/%.o: ${SERVERDIR}/%.c
 	gcc -c -I${COMMONDIR} -I${SERVERDIR} $(CFLAGS) -o $(BUILDDIR)/$@ $<
 
-server: server/server.o server/player_handle.o
+server: server/server.o server/player_handle.o common/graph.o server/server_init.o
 	gcc $(CFLAGS) $(addprefix $(BUILDDIR)/, $^) $(LDFLAGS) -o ${INSTALLDIR}/server
 
 client/%.o: ${CLIENTDIR}/%.c
@@ -37,8 +37,8 @@ client: client/player1.o client/player2.o
 test/%.o: ${TESTDIR}/%.c
 	gcc -c -I${COMMONDIR} -I${CLIENTDIR} -I${SERVERDIR} -I$(TESTDIR) $(CFLAGS) -o $(BUILDDIR)/$@ $<
 
-alltests: test/server.o
-	gcc $(CFLAGS) $(addprefix $(BUILDDIR)/, $^) $(LDFLAGS) -o ${INSTALLDIR}/test
+alltests: test/server.o server/server.o server/player_handle.o common/graph.o
+	gcc -etest $(CFLAGS) $(addprefix $(BUILDDIR)/, $^) $(LDFLAGS) -o ${INSTALLDIR}/test
 
 test: alltests
 
