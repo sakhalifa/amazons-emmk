@@ -59,5 +59,5 @@ struct move_t play(struct move_t previous_move) {
     }
     unsigned int random_queen_position = global_player.board->queens[rand() % global_player.board->num_queens];
     position_set* queen_possible_moves = possible_moves(random_queen_position);
-    //return queen_possible_moves->positions
+    queen_possible_moves->positions[rand() % queen_possible_moves->count];
 }
