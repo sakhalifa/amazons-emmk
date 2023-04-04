@@ -72,7 +72,6 @@ position_set* possible_moves(unsigned int queen_position) {
     return moves;
     }
 }
-//wip
 struct move_t play(struct move_t previous_move) {
     if (previous_move.queen_src != UINT_MAX) {
         apply_move(global_player.board, &previous_move, global_player.player_id);
