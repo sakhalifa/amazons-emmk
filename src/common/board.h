@@ -25,7 +25,7 @@ board_t *init_board(struct graph_t *graph, unsigned int num_queens,
 /// @return true if the given position is indexing a valid position on the board
 bool is_on_board(board_t *board, unsigned int position);
 
-bool is_cell_empty(board_t* board, unsigned int queen, unsigned int arrow);
+bool is_cell_empty(board_t* board, unsigned int cell_position)
 
 bool is_move_legal(board_t *board, struct move_t *move);
 
