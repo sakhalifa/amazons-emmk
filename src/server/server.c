@@ -81,7 +81,7 @@ int main(int argc, char *const *argv)
 
 		current_move = args.player_handles[game->current_player].play(current_move);
 
-		if (!is_move_legal(game->board, &current_move))
+		if (!is_move_legal(game->board, &current_move, game->current_player))
 		{
 			game_not_over = false;
 			update_player(game);
@@ -90,7 +90,7 @@ int main(int argc, char *const *argv)
 
 		// Play the move on the board
 		apply_move(game->board, &current_move, game->current_player);
-
+		print_board(game->board);
 		update_player(game);
 	}
 

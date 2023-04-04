@@ -41,6 +41,8 @@ void apply_move(board_t *board, struct move_t *move, unsigned int player_id);
 
 void board_free(board_t *board);
 
+void print_board(board_t *board);
+
 /// @brief Add to the position_set "possible_moves" all the reachable positions from initial_position in the direction direction_to_neighbor.
 /// @param possible_moves the position_set where the possible moves found by this function are added
 /// @param initial_position the id of the position from where we try to find reachable positions in the given direction
