@@ -64,13 +64,11 @@ bool is_move_legal(board_t *board, struct move_t *move, unsigned int player_id) 
          has_queen(player_id, board, move->queen_src);
 }
 
-board_t *init_board(struct graph_t *graph, unsigned int num_queens,
-                    unsigned int *queens[NUM_PLAYERS])
+board_t *init_board(struct graph_t *graph, unsigned int num_queens)
 {
     board_t *board = (board_t *)malloc(sizeof(board_t));
     board->graph = graph;
     board->num_queens = num_queens;
-    board->queens = queens;
     board->arrows = (bool *)malloc(sizeof(bool) * graph->num_vertices);
     for (size_t i = 0; i < graph->num_vertices; ++i)
     {
@@ -101,7 +99,6 @@ void board_free(board_t *board)
     for (int i = 0; i < NUM_PLAYERS; i++)
         free(board->queens[i]);
     free(board->arrows);
-    free(board->queens);
     free(board);
 }
 

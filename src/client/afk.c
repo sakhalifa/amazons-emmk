@@ -9,7 +9,10 @@ void initialize(unsigned int player_id, struct graph_t *graph,
 {
     global_player.player_id = player_id;
     global_player.name = "afk";
-    global_player.board = init_board(graph, num_queens, queens);
+    global_player.board = init_board(graph, num_queens);
+    for(int i = 0; i<NUM_PLAYERS; i++){
+        global_player.board->queens[i] = queens[i];
+    }
 }
 
 char const *get_player_name()

@@ -12,7 +12,8 @@
 #include "board.h"
 
 /// @brief change the game's current player.
-void update_player(game_t *game){
+void update_player(game_t *game)
+{
 	game->current_player = get_other_player_id(game->current_player);
 }
 
@@ -23,7 +24,7 @@ unsigned int get_starting_player_id()
 
 unsigned int get_other_player_id(unsigned int player_id)
 {
-	return (player_id + 1) % 2;
+	return (player_id + 1) % NUM_PLAYERS;
 }
 
 struct graph_t *init_square_graph(size_t width)
@@ -51,12 +52,12 @@ struct graph_t *init_square_graph(size_t width)
 	return graph;
 }
 
-unsigned int **init_queens(unsigned int num_queens, size_t width)
+void init_queens(unsigned int **queens, unsigned int num_queens, size_t width)
 {
-    unsigned int **queens = (unsigned int **)malloc(NUM_PLAYERS * num_queens * sizeof(unsigned int *));
-    for (int player_id = 0; player_id < NUM_PLAYERS; ++player_id){
-        queens[player_id] = (unsigned int *) malloc(sizeof(unsigned int) * num_queens);
-    }
+	for (int player_id = 0; player_id < NUM_PLAYERS; ++player_id)
+	{
+		queens[player_id] = (unsigned int *)malloc(sizeof(unsigned int) * num_queens);
+	}
 
 	int half = ((width - 1) / 2) - 1;
 	int cur = half;
@@ -81,7 +82,6 @@ unsigned int **init_queens(unsigned int num_queens, size_t width)
 			row += 2;
 		}
 	}
-	return queens;
 }
 
 struct graph_t *init_graph(game_type_t game_type, size_t width)
@@ -98,7 +98,8 @@ struct graph_t *init_graph(game_type_t game_type, size_t width)
 	return NULL;
 }
 
-game_t *init_game(unsigned int current_player, board_t *board){
+game_t *init_game(unsigned int current_player, board_t *board)
+{
 	game_t *game = malloc(sizeof(game_t));
 	game->board = board;
 	game->current_player = current_player;
@@ -113,24 +114,26 @@ game_t *init_game_and_players(server_settings_t settings)
 	// Init board
 	struct graph_t *graph = init_graph(settings.game_type, settings.game_width);
 	unsigned int num_queens = 4 * (settings.game_width / 10 + 1);
-	unsigned int **queens = init_queens(num_queens, settings.game_width);
-
-	board_t *board = init_board(graph, num_queens, queens);
+	board_t *board = init_board(graph, num_queens);
+	init_queens(board->queens, num_queens, settings.game_width);
 
 	// Init players
 	unsigned int starting_player_id = get_starting_player_id();
-	settings.player_handles[starting_player_id]
-		.initialize(starting_player_id, copy_graph(graph), num_queens, init_queens(num_queens, settings.game_width));
-	
-	unsigned int other_player_id = get_other_player_id(starting_player_id);
-	settings.player_handles[other_player_id]
-		.initialize(other_player_id, copy_graph(graph), num_queens, init_queens(num_queens, settings.game_width));
+	unsigned int current_player_id = starting_player_id;
+	do
+	{
+		unsigned int *queens[NUM_PLAYERS];
+		init_queens(queens, num_queens, settings.game_width);
+		settings.player_handles[current_player_id]
+			.initialize(current_player_id, copy_graph(graph), num_queens, queens);
+		current_player_id = get_other_player_id(current_player_id);
+	} while (current_player_id != starting_player_id);
 
 	return init_game(starting_player_id, board);
-
 }
 
-void game_free(game_t *game){
+void game_free(game_t *game)
+{
 	board_free(game->board);
 	free(game);
 }
