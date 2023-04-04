@@ -8,7 +8,7 @@
 typedef struct
 {
     unsigned int player_id;
-    char name[64];
+    char *name;
     board_t *board;
 } player_t;
 

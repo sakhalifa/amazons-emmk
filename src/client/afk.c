@@ -8,7 +8,7 @@ void initialize(unsigned int player_id, struct graph_t *graph,
                 unsigned int num_queens, unsigned int *queens[NUM_PLAYERS])
 {
     global_player.player_id = player_id;
-    strcpy(global_player.name, "afk");
+    global_player.name = "afk";
     global_player.board = init_board(graph, num_queens, queens);
 }
 
@@ -28,4 +28,8 @@ struct move_t play(struct move_t previous_move)
 {
     struct move_t afk = {-1, -1, -1};
     return afk;
+}
+
+void finalize(){
+    board_free(global_player.board);
 }
