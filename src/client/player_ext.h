@@ -3,6 +3,14 @@
 
 #include "player.h"
 #include "position_set.h"
+#include "board.h"
+
+typedef struct
+{
+    unsigned int player_id;
+    char name[64];
+    board_t *board;
+} player_t;
 
 /// @brief return all the possibles moves of the given queen
 /// @param queen_position the position of the queen whose possibles moves are returned
