@@ -21,6 +21,8 @@ typedef struct {
 /// @return true if the given position is indexing a valid position on the board
 bool is_on_board(board_t board, unsigned int position);
 
+bool is_cell_empty(board_t board, unsigned int position);
+
 bool is_move_legal(board_t board, struct move_t move);
 
 /// @returns a struct containing the neighbors list and the amount of neighbors
