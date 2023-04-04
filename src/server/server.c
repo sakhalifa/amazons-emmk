@@ -74,13 +74,15 @@ int main(int argc, char *const *argv)
 	server_settings_t args = get_args(argc, argv);
 	game_t *game = init_game_and_players(args);
 
-	struct move_t current_move = { -1, -1, -1 };
+	struct move_t current_move = {-1, -1, -1};
 	bool game_not_over = true;
-	while (game_not_over){
-		
+	while (game_not_over)
+	{
+
 		current_move = args.player_handles[game->current_player].play(current_move);
-		
-		if (! is_move_legal(game->board, &current_move)){
+
+		if (!is_move_legal(game->board, &current_move))
+		{
 			game_not_over = false;
 			update_player(game);
 			break;
@@ -96,8 +98,10 @@ int main(int argc, char *const *argv)
 	printf("%s won!\n", args.player_handles[winner].get_player_name());
 	game_free(game);
 	for (int i = 0; i < NUM_PLAYERS; i++)
+	{
+		args.player_handles[i].finalize();
 		dlclose(args.player_handles[i].dl_handle);
+	}
 
 	return 0;
 }
-
