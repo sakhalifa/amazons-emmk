@@ -3,6 +3,7 @@
 #include "board.h"
 #include "move.h"
 #include "player.h"
+#include "position_set.h"
 
 bool is_on_board(board_t *board, unsigned int position)
 {
@@ -21,22 +22,45 @@ bool is_cell_empty(board_t *board, unsigned int cell_position)
                 return false;
             }
         }
-        if (board->arrows[cell_position] == true)
-        {
-            return false;
-        }
     }
-    return true;
+  return !board->arrows[cell_position];
 }
 
-bool is_move_legal(board_t *board, struct move_t *move, unsigned int player_id)
-{
-    return is_on_board(board, move->queen_src) &&
-           is_on_board(board, move->queen_dst) &&
-           is_on_board(board, move->arrow_dst) &&
-           is_cell_empty(board, move->queen_dst) &&
-           is_cell_empty(board, move->arrow_dst) &&
-           !board->arrows[move->arrow_dst];
+bool has_queen (unsigned int player_id, board_t *board, unsigned int queen_position) {
+    for (int i = 0; i < board->num_queens; ++i) {
+        if (board->queens[player_id][i] == queen_position) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void add_possible_moves_aligned(board_t* board, position_set* possible_moves, unsigned int initial_position, unsigned int neighbor, enum dir_t direction_to_neighbor) {
+    add_position(possible_moves, neighbor);
+    bool found = true;
+    while (found) {
+        found = false;
+        size_t next_neighbor = 0;
+        while (next_neighbor < board->graph->num_vertices) {
+            enum dir_t direction_to_next_neighbor = gsl_spmatrix_uint_get(board->graph->t, neighbor, next_neighbor);
+            if (direction_to_next_neighbor == direction_to_neighbor) {
+                add_position(next_neighbor, neighbor);
+                neighbor = next_neighbor;
+                found = true;
+                break;
+            }
+            ++next_neighbor;
+        }
+    }
+}
+
+bool is_move_legal(board_t *board, struct move_t *move, unsigned int player_id) {
+  return is_on_board(board, move->queen_src) &&
+         is_on_board(board, move->queen_dst) &&
+         is_on_board(board, move->arrow_dst) &&
+         is_cell_empty(board, move->queen_dst) &&
+         is_cell_empty(board, move->arrow_dst) &&
+         has_queen(player_id, board, move->queen_src);
 }
 
 board_t *init_board(struct graph_t *graph, unsigned int num_queens,

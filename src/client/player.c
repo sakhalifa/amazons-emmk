@@ -5,6 +5,7 @@
 #include "graph.h"
 #include "player_ext.h"
 #include "board.h"
+#include "position_set.h"
 
 typedef struct {
     unsigned int player_id;
@@ -13,11 +14,6 @@ typedef struct {
 } player_t;
 
 static player_t global_player;
-
-typedef struct {
-    unsigned int* positions;
-    size_t count;
-} position_set;
 
 void initialize(unsigned int player_id, struct graph_t* graph,
                 unsigned int num_queens, unsigned int* queens[NUM_PLAYERS]) {
@@ -30,44 +26,13 @@ char const* get_player_name() {
     return global_player.name;
 }
 
-position_set* init_position_set(size_t capacity) {
-    position_set* to_return = (position_set*) malloc(sizeof(position_set));
-    to_return->positions = (unsigned int*) malloc(sizeof(unsigned int) * capacity);
-    to_return->count = 0;
-    return to_return;
-}
-
-void add_position(position_set* set, unsigned int position) {
-    set->positions[set->count] = position;
-    set->count++;
-}
-
-void add_possible_moves_aligned(position_set* possible_moves, unsigned int initial_position, unsigned int neighbor, enum dir_t direction_to_neighbor) {
-    add_position(possible_moves, neighbor);
-    bool found = true;
-    while (found) {
-        found = false;
-        size_t next_neighbor = 0;
-        while (next_neighbor < global_player.board->graph->num_vertices) {
-            enum dir_t direction_to_next_neighbor = gsl_spmatrix_uint_get(global_player.board->graph->t, neighbor, next_neighbor);
-            if (direction_to_next_neighbor == direction_to_neighbor) {
-                add_position(next_neighbor, neighbor);
-                neighbor = next_neighbor;
-                found = true;
-                break;
-            }
-            ++next_neighbor;
-        }
-    }
-}
-
 position_set* possible_moves(unsigned int queen_position) {
     size_t max_different_moves = (sqrt(global_player.board->graph->num_vertices) * 4 - 4);
     position_set* moves = init_position_set(max_different_moves);
     for (size_t i = 0; i < global_player.board->graph->num_vertices; ++i) {
         enum dir_t direction_to_i = gsl_spmatrix_uint_get(global_player.board->graph->t, queen_position, i);
         if (direction_to_i > 0) {
-            add_possible_moves_aligned(moves, queen_position, i, direction_to_i);
+            add_possible_moves_aligned(global_player.board, queen_position, i, direction_to_i);
         }
     return moves;
     }

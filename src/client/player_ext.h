@@ -21,10 +21,4 @@ void add_position(position_set* set, unsigned int position);
 /// @return all the possibles moves of the given queen
 position_set* possible_moves(unsigned int queen_position);
 
-/// @brief Add to the position_set "possible_moves" all the reachable positions from initial_position in the direction direction_to_neighbor.
-/// @param possible_moves the position_set where the possible moves found by this function are added
-/// @param initial_position the id of the position from where we try to find reachable positions in the given direction
-/// @param neighbor the id of the first reachable neighbor reached in the given direction
-void add_possible_moves_aligned(position_set* possible_moves, unsigned int initial_position, unsigned int neighbor, enum dir_t direction_to_neighbor);
-
 #endif // _PLAYER_CUSTOM_H_
