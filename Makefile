@@ -1,5 +1,5 @@
 GSL_PATH ?= /net/ens/renault/save/gsl-2.6/install
-CFLAGS = -std=c99 -Wall -Wextra -fPIC -g3 -I$(GSL_PATH)/include
+CFLAGS = -std=c99 -Wall -Wextra -fPIC -g3 -I$(GSL_PATH)/include --coverage
 LDFLAGS = -lm -lgsl -lgslcblas -ldl \
 	-L$(GSL_PATH)/lib -L$(GSL_PATH)/lib64 \
 	-Wl,--rpath=${GSL_PATH}/lib
@@ -38,8 +38,7 @@ install: server client
 
 clean:
 	@rm -f *~ src/*~
-	@rm -f *.o
-	@rm -f *.so
+	@rm -f *.{o,so,gcno}
 	@rm -rf install/*
 	@find . -executable -type f -not -iname "*.*" -delete
 	

@@ -5,4 +5,4 @@
 build/
 *.so
 *.o
-Makefile.inc
+*.gcno
