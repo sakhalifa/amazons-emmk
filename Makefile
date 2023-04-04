@@ -14,7 +14,7 @@ all: build
 
 build: server client
 
-server: server.o player_handle.o graph.o server_init.o
+server: server.o player_handle.o graph.o game.o board.o
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o server
 
 test: alltests
