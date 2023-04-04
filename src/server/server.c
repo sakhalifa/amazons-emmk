@@ -8,7 +8,7 @@
 #include "move.h"
 
 #include "server.h"
-#include "server_init.h"
+#include "game.h"
 
 #define USAGE_STRING "Usage: %s [-t |] [-m |] <player1.so> <player2.so>\n"
 

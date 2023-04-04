@@ -7,7 +7,7 @@
 #include "server.h"
 #include "player.h"
 
-#include "server_init.h"
+#include "game.h"
 
 #include "board.h"
 

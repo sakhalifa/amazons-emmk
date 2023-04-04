@@ -1,5 +1,5 @@
-#ifndef _SERVER_INIT_H_
-#define _SERVER_INIT_H_
+#ifndef _GAME_H_
+#define _GAME_H_
 
 #include "server.h"
 #include "board.h"
