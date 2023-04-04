@@ -85,6 +85,7 @@ int main(int argc, char *const *argv)
 		}
 
 		// Play the move on the board
+		apply_move(game.board, &current_move, game.current_player);
 
 		update_player(&game);
 	}
