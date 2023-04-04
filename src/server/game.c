@@ -120,11 +120,11 @@ game_t *init_game_and_players(server_settings_t settings)
 	// Init players
 	unsigned int starting_player_id = get_starting_player_id();
 	settings.player_handles[starting_player_id]
-		.initialize(starting_player_id, graph, num_queens, queens);
+		.initialize(starting_player_id, copy_graph(graph), num_queens, queens);
 	
 	unsigned int other_player_id = get_other_player_id(starting_player_id);
 	settings.player_handles[starting_player_id]
-		.initialize(other_player_id, graph, num_queens, queens);
+		.initialize(other_player_id, copy_graph(graph), num_queens, queens);
 
 	return init_game(starting_player_id, board);
 
