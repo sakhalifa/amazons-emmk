@@ -6,8 +6,17 @@
 #include "graph_ext.h"
 #include "dir.h"
 
+#include "server_init.h"
+
 #include "server.h"
 #include "player.h"
+
+/// @brief change the game's current player and return it.
+/// @returns the player that needs to play.
+unsigned int update_player(game_t *game){
+	game->current_player = get_other_player_id(game->current_player);
+	return game->current_player;
+}
 
 unsigned int get_starting_player_id()
 {
@@ -92,18 +101,29 @@ struct graph_t *init_graph(game_type_t game_type, size_t width)
 	return NULL;
 }
 
-// TODO : define him better
-void init_game_and_players(server_settings_t settings)
+game_t init_game_and_players(server_settings_t settings)
 {
+
+	game_t game;
+
+	// Init board
 
 	struct graph_t *graph = init_graph(settings.game_type, settings.game_width);
 	unsigned int num_queens = 4 * (settings.game_width / 10 + 1);
 	unsigned int **queens = init_queens(num_queens, settings.game_width);
 
+
+	// Init players
 	unsigned int starting_player_id = get_starting_player_id();
 	settings.player_handles[starting_player_id]
 		.initialize(starting_player_id, graph, num_queens, queens);
+	
 	unsigned int other_player_id = get_other_player_id(starting_player_id);
 	settings.player_handles[starting_player_id]
 		.initialize(other_player_id, graph, num_queens, queens);
+
+	game.current_player = starting_player_id;
+
+	return game;
+
 }

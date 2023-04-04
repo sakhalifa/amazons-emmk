@@ -5,6 +5,7 @@
 #include <dlfcn.h>
 #include "graph_ext.h"
 #include "dir.h"
+#include "move.h"
 
 #include "server.h"
 #include "server_init.h"
@@ -70,6 +71,9 @@ server_settings_t get_args(int argc, char *const *argv)
 int main(int argc, char *const *argv)
 {
 	server_settings_t args = get_args(argc, argv);
+	game_t game = init_game_and_players(args);
+
+	struct move_t move = { -1, -1, -1 };
 
 	for (int i = 0; i < NUM_PLAYERS; i++)
 		dlclose(args.player_handles[i].dl_handle);
