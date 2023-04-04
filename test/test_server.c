@@ -4,6 +4,13 @@
 
 #include "game.h"
 
+void queen_free(unsigned int** queens){
+    for(int i = 0; i<NUM_PLAYERS; i++){
+        free(queens[i]);
+    }
+    free(queens);
+}
+
 void structural_test_init_queens(){
     printf("%s\t", __func__);
     unsigned int **queens;
@@ -17,8 +24,8 @@ void structural_test_init_queens(){
     assert(queens[1][1] == 21);
     assert(queens[1][2] == 19);
     assert(queens[1][3] == 15);
-
-
+    queen_free(queens);
+    
     queens = init_queens(4, 6);
     assert(queens[0][0] == 1);
     assert(queens[0][1] == 4);
@@ -28,7 +35,7 @@ void structural_test_init_queens(){
     assert(queens[1][1] == 31);
     assert(queens[1][2] == 29);
     assert(queens[1][3] == 24);
-
+    queen_free(queens);
     
     printf("OK\n");
 }
