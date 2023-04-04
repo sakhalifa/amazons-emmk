@@ -27,7 +27,7 @@ player2.so: player2.o
 
 client: player1.so player2.so
 
-alltests: test_server.o server.o player_handle.o graph.o
+alltests: test_server.o server.o server_init.o player_handle.o graph.o
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o alltests
 
 install: server client
