@@ -19,18 +19,6 @@ typedef struct {
     size_t count;
 } position_set;
 
-board_t* init_board(struct graph_t* graph, unsigned int num_queens, unsigned int* queens[NUM_PLAYERS]) {
-    board_t* board = (board_t*) malloc(sizeof(board_t));
-    board->graph = graph;
-    board->num_queens = num_queens;
-    board->queens = queens;
-    board->arrows = (bool*) malloc(sizeof(bool) * graph->num_vertices);
-    for (int i = 0; i < graph->num_vertices; ++i) {
-        board->arrows[i] = false;
-    }
-    return board;
-}
-
 void initialize(unsigned int player_id, struct graph_t* graph,
                 unsigned int num_queens, unsigned int* queens[NUM_PLAYERS]) {
     global_player.player_id = player_id;
@@ -42,9 +30,9 @@ char const* get_player_name() {
     return global_player.name;
 }
 
-position_set* init_position_set() {
+position_set* init_position_set(size_t capacity) {
     position_set* to_return = (position_set*) malloc(sizeof(position_set));
-    to_return->positions = (unsigned int*) malloc(sizeof(unsigned int) * sqrt(global_player.board->graph->num_vertices) * 4 - 4);
+    to_return->positions = (unsigned int*) malloc(sizeof(unsigned int) * );
     to_return->count = 0;
     return to_return;
 }
@@ -55,7 +43,8 @@ void add_position(position_set* set, unsigned int position) {
 }
 // wip
 position_set* possible_moves(unsigned int queen_position) {
-    position_set* moves = init_position_set();
+    size_t max_different_moves = sqrt(global_player.board->graph->num_vertices) * 4 - 4;
+    position_set* moves = init_position_set(max_different_moves);
     for (size_t i = 0; i < global_player.board->graph->num_vertices; ++i) {
         enum dir_t movement_dir = gsl_spmatrix_uint_get(global_player.board->graph->t, queen_position, i);
         if (movement_dir > 0) {
