@@ -28,12 +28,12 @@ player2.so: player2.o
 client: player1.so player2.so
 
 alltests: test_server.o server.o player_handle.o graph.o
-	gcc $(CFLAGS) $^ $(LDFLAGS) -o test
+	gcc $(CFLAGS) $^ $(LDFLAGS) -o alltests
 
 install: server client
 	cp server install/
 	cp player*.so install/
-	cp test install/test
+	cp alltests install/alltests
 
 clean:
 	@rm -f *~ src/*~
