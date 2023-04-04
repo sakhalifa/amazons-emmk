@@ -23,7 +23,7 @@ unsigned int get_starting_player_id()
 
 unsigned int get_other_player_id(unsigned int player_id)
 {
-	return player_id == 1 ? 0 : 1;
+	return (player_id + 1) % 2;
 }
 
 struct graph_t *init_square_graph(size_t width)

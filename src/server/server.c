@@ -21,7 +21,7 @@ server_settings_t get_args(int argc, char *const *argv)
 {
 	server_settings_t settings = {
 		.game_type = SQUARE,
-		.game_width = 10,
+		.game_width = 5,
 	};
 	char opt;
 	int width;
@@ -74,13 +74,14 @@ int main(int argc, char *const *argv)
 	server_settings_t args = get_args(argc, argv);
 	game_t *game = init_game_and_players(args);
 
-	struct move_t current_move = {-1, -1, -1};
+	struct move_t current_move = {0, 0, 0};
 	bool game_not_over = true;
 	while (game_not_over)
 	{
 
+		print_board(game->board);
+		
 		current_move = args.player_handles[game->current_player].play(current_move);
-
 		if (!is_move_legal(game->board, &current_move, game->current_player))
 		{
 			game_not_over = false;
@@ -90,7 +91,6 @@ int main(int argc, char *const *argv)
 
 		// Play the move on the board
 		apply_move(game->board, &current_move, game->current_player);
-		print_board(game->board);
 		update_player(game);
 	}
 

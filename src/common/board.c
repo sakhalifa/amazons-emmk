@@ -116,7 +116,7 @@ void print_board(board_t *board)
             {
                 printf("a");
             }
-            else if (!is_cell_empty(board, i))
+            else if (!is_cell_empty(board, i * width + j))
             {
                 printf("q");
             }
@@ -125,5 +125,6 @@ void print_board(board_t *board)
                 printf(" ");
             }
         }
+        printf("\n");
     }
 }
