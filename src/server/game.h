@@ -13,5 +13,6 @@ typedef struct {
 game_t init_game_and_players(server_settings_t settings);
 void update_player(game_t *game);
 unsigned int get_other_player_id(unsigned int player_id);
+unsigned int **init_queens(unsigned int num_queens, size_t width);
 
 #endif

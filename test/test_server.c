@@ -4,8 +4,6 @@
 
 #include "game.h"
 
-
-
 void structural_test_init_queens(){
     printf("%s\t", __func__);
 
