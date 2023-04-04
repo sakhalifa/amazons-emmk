@@ -7,6 +7,7 @@
 #include "graph_ext.h"
 #include "move.h"
 #include "player.h"
+#include "position_set.h"
 
 typedef struct {
   struct graph_t *graph;
