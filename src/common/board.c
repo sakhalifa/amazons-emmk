@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <math.h>
 #include "board.h"
 #include "move.h"
 #include "player.h"
@@ -62,4 +64,16 @@ void board_free(board_t *board){
     free(board->arrows);
     free(board->queens);
     free(board);
+}
+
+
+void print_board(board_t *board){
+    unsigned int width = sqrt(board->graph->num_vertices);
+    for (unsigned int i = 0; i < width; ++i){
+        if (board->arrows[i]){
+            printf("a");
+        } else if ()
+
+    }
+
 }
