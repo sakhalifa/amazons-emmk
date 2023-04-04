@@ -21,9 +21,11 @@ board_t* init_board(struct graph_t* graph, unsigned int num_queens, unsigned int
 /// @param position the tested position
 /// @param board the board where the against which the position is tested
 /// @return true if the given position is indexing a valid position on the board
-bool is_on_board(board_t board, unsigned int position);
+bool is_on_board(board_t *board, unsigned int position);
 
-bool is_move_legal(board_t board, struct move_t move);
+bool is_cell_empty(board_t board, unsigned int position);
+
+bool is_move_legal(board_t *board, struct move_t* move);
 
 /// @returns a struct containing the neighbors list and the amount of neighbors
 struct neighbors_t neighbors(unsigned int cell);
