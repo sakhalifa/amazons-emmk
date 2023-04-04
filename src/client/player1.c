@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "move.h"
-#include "player_custom.h"
+#include "player_ext.h"
 
 /* Access to player informations
  * RETURNS:

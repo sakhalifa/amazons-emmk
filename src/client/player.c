@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include <math.h>
 #include "graph.h"
-#include "player_custom.h"
+#include "player_ext.h"
 #include "board.h"
 
 typedef struct {
@@ -41,39 +41,41 @@ void add_position(position_set* set, unsigned int position) {
     set->positions[set->count] = position;
     set->count++;
 }
-//wip
-add_possible_moves_aligned(position_set* possible_moves, unsigned int initial_position, unsigned int first_neighbor, enum dir_t movement_dir_i) {
-    add_position(possible_moves, first_neighbor);
-    bool continue_searching_aligned_positions = true;
-    size_t from_pos = first_neighbor;
-    size_t to_pos = 0;
-    while (continue_searching_aligned_positions && to_pos < global_player.board->graph->num_vertices) {
-        enum dir_t movement_dir_j = gsl_spmatrix_uint_get(global_player.board->graph->t, from_pos, to_pos);
-        if (movement_dir_j == movement_dir_i) {
 
+void add_possible_moves_aligned(position_set* possible_moves, unsigned int initial_position, unsigned int neighbor, enum dir_t direction_to_neighbor) {
+    add_position(possible_moves, neighbor);
+    bool found = true;
+    while (found) {
+        found = false;
+        size_t next_neighbor = 0;
+        while (next_neighbor < global_player.board->graph->num_vertices) {
+            enum dir_t direction_to_next_neighbor = gsl_spmatrix_uint_get(global_player.board->graph->t, neighbor, next_neighbor);
+            if (direction_to_next_neighbor == direction_to_neighbor) {
+                add_position(next_neighbor, neighbor);
+                neighbor = next_neighbor;
+                found = true;
+                break;
+            }
+            ++next_neighbor;
         }
-
-        ++to_pos;
     }
 }
 
-// wip
 position_set* possible_moves(unsigned int queen_position) {
     size_t max_different_moves = (sqrt(global_player.board->graph->num_vertices) * 4 - 4);
     position_set* moves = init_position_set(max_different_moves);
     for (size_t i = 0; i < global_player.board->graph->num_vertices; ++i) {
-        enum dir_t movement_dir_i = gsl_spmatrix_uint_get(global_player.board->graph->t, queen_position, i);
-        if (movement_dir_i > 0) {
-            
-            
+        enum dir_t direction_to_i = gsl_spmatrix_uint_get(global_player.board->graph->t, queen_position, i);
+        if (direction_to_i > 0) {
+            add_possible_moves_aligned(moves, queen_position, i, direction_to_i);
         }
-    }
     return moves;
+    }
 }
 //wip
 struct move_t play(struct move_t previous_move) {
     if (previous_move.queen_src != UINT_MAX) {
-        //update board
+        apply_move(global_player.board, &previous_move, global_player.player_id);
     }
     struct move_t played_move;
     played_move.queen_src = global_player.board->queens[rand() % global_player.board->num_queens];

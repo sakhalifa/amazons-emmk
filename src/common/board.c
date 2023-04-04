@@ -54,3 +54,12 @@ void apply_move(board_t *board, struct move_t *move, unsigned int player_id){
     }
 
 }
+
+void board_free(board_t *board){
+    graph_free(board->graph);
+    for(int i=0; i<NUM_PLAYERS; i++)
+        free(board->queens[i]);
+    free(board->arrows);
+    free(board->queens);
+    free(board);
+}

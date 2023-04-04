@@ -98,19 +98,24 @@ struct graph_t *init_graph(game_type_t game_type, size_t width)
 	return NULL;
 }
 
+game_t *init_game(unsigned int current_player, board_t *board){
+	game_t *game = malloc(sizeof(game_t));
+	game->board = board;
+	game->current_player = current_player;
+
+	return game;
+}
+
 /// @brief Init the game, the board, the graph, the queens and calls initialize functions of players
 /// @returns A game structure representing the current game.
-game_t init_game_and_players(server_settings_t settings)
+game_t *init_game_and_players(server_settings_t settings)
 {
-
-	game_t game;
-
 	// Init board
 	struct graph_t *graph = init_graph(settings.game_type, settings.game_width);
 	unsigned int num_queens = 4 * (settings.game_width / 10 + 1);
 	unsigned int **queens = init_queens(num_queens, settings.game_width);
 
-	game.board = init_board(graph, num_queens, queens);
+	board_t *board = init_board(graph, num_queens, queens);
 
 	// Init players
 	unsigned int starting_player_id = get_starting_player_id();
@@ -121,8 +126,11 @@ game_t init_game_and_players(server_settings_t settings)
 	settings.player_handles[starting_player_id]
 		.initialize(other_player_id, graph, num_queens, queens);
 
-	game.current_player = starting_player_id;
+	return init_game(starting_player_id, board);
 
-	return game;
+}
 
+void game_free(game_t *game){
+	board_free(game->board);
+	free(game);
 }
