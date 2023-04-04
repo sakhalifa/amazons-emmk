@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "server_init.h"
+#include "game.h"
 
 
 
