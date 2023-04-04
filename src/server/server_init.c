@@ -98,6 +98,8 @@ struct graph_t *init_graph(game_type_t game_type, size_t width)
 	return NULL;
 }
 
+/// @brief Init the game, the board, the graph, the queens and calls initialize functions of players
+/// @returns A game structure representing the current game.
 game_t init_game_and_players(server_settings_t settings)
 {
 
