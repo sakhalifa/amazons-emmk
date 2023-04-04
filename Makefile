@@ -37,7 +37,7 @@ install: server client
 
 clean:
 	@rm -f *~ src/*~
-	@rm -f *.{o,so,gcno}
+	@rm -f *.{o,so,gcno,gcda}
 	@rm -rf install/*
 	@find . -executable -type f -not -iname "*.*" -delete
 	

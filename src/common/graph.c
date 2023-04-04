@@ -10,3 +10,8 @@ struct graph_t *copy_graph(struct graph_t *source){
 	gsl_spmatrix_uint_memcpy(cpy->t, source->t);
 	return cpy;
 }
+
+void graph_free(struct graph_t* graph){
+	gsl_spmatrix_uint_free(graph->t);
+	free(graph);
+}

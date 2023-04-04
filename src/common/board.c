@@ -37,6 +37,11 @@ board_t* init_board(struct graph_t* graph, unsigned int num_queens, unsigned int
     return board;
 }
 
+unsigned int neighbor(unsigned int cell, enum dir_t direction);
+
+struct neighbors_t neighbors(unsigned int cell);
+
+
 /// @brief Apply the given move to the given board.
 /// Adds the arrow and move the queen. It doesn't check if the move is valid
 void apply_move(board_t *board, struct move_t *move, unsigned int player_id){
@@ -50,4 +55,13 @@ void apply_move(board_t *board, struct move_t *move, unsigned int player_id){
         
     }
 
+}
+
+void board_free(board_t *board){
+    graph_free(board->graph);
+    for(int i=0; i<NUM_PLAYERS; i++)
+        free(board->queens[i]);
+    free(board->arrows);
+    free(board->queens);
+    free(board);
 }
