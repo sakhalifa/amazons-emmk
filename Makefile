@@ -19,7 +19,7 @@ dummy:
 
 build: server client
 
-server: server.o player_handle.o graph.o
+server: server.o player_handle.o graph.o server_init.o
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o server
 
 test: alltests
@@ -32,9 +32,13 @@ player2.so: player2.o
 
 client: player1.so player2.so
 
+alltests: test_server.o server.o player_handle.o graph.o
+	gcc $(CFLAGS) $^ $(LDFLAGS) -o test
+
 install: server client
 	cp server install/
 	cp player*.so install/
+	cp test install/test
 
 clean:
 	@rm -f *~ src/*~
