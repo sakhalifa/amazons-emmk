@@ -3,7 +3,9 @@
 
 #include "player.h"
 
-struct position_set;
+struct position_set_s;
+
+typedef struct position_set_s position_set;
 
 /// @brief return an empty position_set (position_count set on 0)
 /// @return a position_set with position_count set on 0

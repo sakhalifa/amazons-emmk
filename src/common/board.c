@@ -36,3 +36,18 @@ board_t* init_board(struct graph_t* graph, unsigned int num_queens, unsigned int
     }
     return board;
 }
+
+/// @brief Apply the given move to the given board.
+/// Adds the arrow and move the queen. It doesn't check if the move is valid
+void apply_move(board_t *board, struct move_t *move, unsigned int player_id){
+    board->arrows[move->arrow_dst] = true;
+    // Find queens src
+    for (unsigned int queen_id = 0; queen_id < board->num_queens; ++queen_id){
+        if (board->queens[player_id][queen_id] == move->queen_src){
+            board->queens[player_id][queen_id] = move->queen_dst;
+            break;
+        }
+        
+    }
+
+}

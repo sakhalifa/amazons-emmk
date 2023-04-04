@@ -1,50 +1,48 @@
 GSL_PATH ?= /net/ens/renault/save/gsl-2.6/install
-CFLAGS = -std=c99 -Wall -Wextra -fPIC -g3 -I$(GSL_PATH)/include
+CFLAGS = -std=c99 -Wall -Wextra -fPIC -g3 -I$(GSL_PATH)/include --coverage
 LDFLAGS = -lm -lgsl -lgslcblas -ldl \
 	-L$(GSL_PATH)/lib -L$(GSL_PATH)/lib64 \
 	-Wl,--rpath=${GSL_PATH}/lib
 SOURCEDIR = src
-BUILDDIR = build
 CLIENTDIR = ${SOURCEDIR}/client
 SERVERDIR = ${SOURCEDIR}/server
 COMMONDIR = ${SOURCEDIR}/common
 TESTDIR = test
 INSTALLDIR = install
 
-all: createdir build
+all: build
 
-createdir:
-	- mkdir -p build/{client,common,server,test}
+build: server client alltests
 
-build: server client
-
-common/%.o: ${COMMONDIR}/%.c
-	gcc -c -I${COMMONDIR} $(CFLAGS) -o $(BUILDDIR)/$@ $<
-
-server/%.o: ${SERVERDIR}/%.c
-	gcc -c -I${COMMONDIR} -I${SERVERDIR} $(CFLAGS) -o $(BUILDDIR)/$@ $<
-
-server: server/server.o server/player_handle.o common/graph.o server/server_init.o
-	gcc $(CFLAGS) $(addprefix $(BUILDDIR)/, $^) $(LDFLAGS) -o ${INSTALLDIR}/server
-
-client/%.o: ${CLIENTDIR}/%.c
-	gcc -c -I${COMMONDIR} -I${CLIENTDIR} $(CFLAGS) -o $(BUILDDIR)/$@ $<
-
-client: client/player1.o client/player2.o
-	gcc -shared $(BUILDDIR)/client/player1.o -o ${INSTALLDIR}/player1.so
-	gcc -shared $(BUILDDIR)/client/player2.o -o ${INSTALLDIR}/player2.so
-
-test/%.o: ${TESTDIR}/%.c
-	gcc -c -I${COMMONDIR} -I${CLIENTDIR} -I${SERVERDIR} -I$(TESTDIR) $(CFLAGS) -o $(BUILDDIR)/$@ $<
-
-alltests: test/server.o server/server.o server/player_handle.o common/graph.o
-	gcc -etest $(CFLAGS) $(addprefix $(BUILDDIR)/, $^) $(LDFLAGS) -o ${INSTALLDIR}/test
+server: server.o player_handle.o graph.o game.o board.o
+	gcc $(CFLAGS) $^ $(LDFLAGS) -o server
 
 test: alltests
 
-install: server client test
+player1.so: player1.o
+	gcc -shared $(CFLAGS) player1.o $(LDFLAGS) -o player1.so
+
+player2.so: player2.o
+	gcc -shared $(CFLAGS) player1.o $(LDFLAGS) -o player2.so
+
+client: player1.so player2.so
+
+alltests: test_server.o game.o player_handle.o graph.o board.o
+	gcc $(CFLAGS) $^ $(LDFLAGS) -o alltests
+
+install: server client
+	cp server install/
+	cp player*.so install/
+	cp alltests install/alltests
 
 clean:
 	@rm -f *~ src/*~
+	@rm -f *.{o,so,gcno}
+	@rm -rf install/*
+	@find . -executable -type f -not -iname "*.*" -delete
+	
 
 .PHONY: client install test clean
+
+
+include Makefile.inc
