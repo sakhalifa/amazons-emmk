@@ -10,14 +10,15 @@ COMMONDIR = ${SOURCEDIR}/common
 TESTDIR = test
 INSTALLDIR = install
 
-libfloatfann.a:
-	cd fann && cmake . && make floatfann_static && mv² src/libfloatfann.a ../
 
 
 all: build
 
 build: server client alltests
 
+libfloatfann.a:
+	cd fann && cmake . && make floatfann_static && mv src/libfloatfann.a ../
+	
 server: server.o player_handle.o graph.o game.o board.o position_set.o
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o server
 
