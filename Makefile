@@ -17,9 +17,9 @@ all: build
 
 build: server client alltests
 
-libfloatfann.a:
+libfann.a:
 	git submodule update --init
-	cd fann && cmake . && make floatfann_static && mv src/libfloatfann.a ../
+	cd fann && cmake . && make fann_static && mv src/libfann.a ../
 
 server: server.o player_handle.o graph.o game.o board.o position_set.o
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o server
@@ -38,6 +38,9 @@ client: player1.so player2.so
 
 alltests: test_server.o game.o player_handle.o graph.o board.o position_set.o
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o alltests
+
+exemple: libfann.a exemple.o
+	gcc -fopenmp $(CFLAGS) exemple.o -L. -lfann $(LDFLAGS)  -o exemple
 
 install: server client
 	cp server install/
