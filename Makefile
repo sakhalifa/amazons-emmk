@@ -18,7 +18,7 @@ build: server client alltests
 
 libfloatfann.a:
 	cd fann && cmake . && make floatfann_static && mv src/libfloatfann.a ../
-	
+
 server: server.o player_handle.o graph.o game.o board.o position_set.o
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o server
 
@@ -47,6 +47,7 @@ clean:
 	@rm -f *.{o,so,gcno,gcda}
 	@rm -rf install/*
 	@find . -executable -type f -not -iname "*.*" -delete
+	@cd fann && make clean
 	
 
 .PHONY: client install test clean
