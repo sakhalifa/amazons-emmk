@@ -7,6 +7,7 @@ SOURCEDIR = src
 CLIENTDIR = ${SOURCEDIR}/client
 SERVERDIR = ${SOURCEDIR}/server
 COMMONDIR = ${SOURCEDIR}/common
+FANNDIR = fann
 TESTDIR = test
 INSTALLDIR = install
 
@@ -17,6 +18,7 @@ all: build
 build: server client alltests
 
 libfloatfann.a:
+	git submodule update --init
 	cd fann && cmake . && make floatfann_static && mv src/libfloatfann.a ../
 
 server: server.o player_handle.o graph.o game.o board.o position_set.o
@@ -26,10 +28,10 @@ test: alltests
 
 PLAYER_TARGETS=board.o position_set.o graph.o
 
-player1.so: $(PLAYER_TARGETS)
+player1.so: afk.o $(PLAYER_TARGETS)
 	gcc -shared $(CFLAGS) $^ $(LDFLAGS) -o player1.so
 
-player2.so: $(PLAYER_TARGETS)
+player2.so: player_fann.o $(PLAYER_TARGETS)
 	gcc -shared $(CFLAGS) $^ $(LDFLAGS) -o player2.so
 
 client: player1.so player2.so
@@ -44,7 +46,7 @@ install: server client
 
 clean:
 	@rm -f *~ src/*~
-	@rm -f *.{o,so,gcno,gcda}
+	@rm -f *.{o,so,gcno,gcda,a}
 	@rm -rf install/*
 	@find . -executable -type f -not -iname "*.*" -delete
 	@cd fann && make clean
