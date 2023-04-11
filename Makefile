@@ -32,6 +32,10 @@ client: player1.so player2.so
 alltests: test_server.o game.o player_handle.o graph.o board.o position_set.o
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o alltests
 
+coverage: alltests
+	./alltests
+	gcov -o . test/test_server.c
+
 install: server client
 	cp server install/
 	cp player*.so install/
@@ -39,7 +43,7 @@ install: server client
 
 clean:
 	@rm -f *~ src/*~
-	@rm -f *.{o,so,gcno,gcda}
+	@rm -f *.{o,so,gcno,gcda,gcov}
 	@rm -rf install/*
 	@find . -executable -type f -not -iname "*.*" -delete
 	
