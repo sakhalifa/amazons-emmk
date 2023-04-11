@@ -35,8 +35,8 @@ bool has_queen (unsigned int player_id, board_t *board, unsigned int queen_posit
     return false;
 }
 
-void add_possible_moves_aligned(board_t* board, position_set* possible_moves, unsigned int initial_position, unsigned int neighbor, enum dir_t direction_to_neighbor) {
-    add_position(possible_moves, neighbor);
+void add_reachable_positions_aligned(board_t* board, position_set* reachable_positions, unsigned int initial_position, unsigned int neighbor, enum dir_t direction_to_neighbor) {
+    add_position(reachable_positions, neighbor);
     bool found = true;
     while (found) {
         found = false;
@@ -45,7 +45,7 @@ void add_possible_moves_aligned(board_t* board, position_set* possible_moves, un
             enum dir_t direction_to_next_neighbor = gsl_spmatrix_uint_get(board->graph->t, neighbor, next_neighbor);
             if (direction_to_next_neighbor == direction_to_neighbor) {
                 // add_position(next_neighbor, neighbor);
-                add_position(possible_moves, next_neighbor);
+                add_position(reachable_positions, next_neighbor);
                 neighbor = next_neighbor;
                 found = true;
                 break;

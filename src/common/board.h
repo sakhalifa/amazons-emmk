@@ -42,10 +42,10 @@ void board_free(board_t *board);
 
 void print_board(board_t *board);
 
-/// @brief Add to the position_set "possible_moves" all the reachable positions from initial_position in the direction direction_to_neighbor.
-/// @param possible_moves the position_set where the possible moves found by this function are added
+/// @brief Add to the position_set "reachable_positions" all the reachable positions from initial_position in the direction direction_to_neighbor.
+/// @param reachable_positions the position_set where the possible moves found by this function are added
 /// @param initial_position the id of the position from where we try to find reachable positions in the given direction
 /// @param neighbor the id of the first reachable neighbor reached in the given direction
-void add_possible_moves_aligned(board_t* board, position_set* possible_moves, unsigned int initial_position, unsigned int neighbor, enum dir_t direction_to_neighbor);
+void add_reachable_positions_aligned(board_t* board, position_set* reachable_positions, unsigned int initial_position, unsigned int neighbor, enum dir_t direction_to_neighbor);
 
 #endif

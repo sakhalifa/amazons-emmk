@@ -74,7 +74,7 @@ int main(int argc, char *const *argv)
 	server_settings_t args = get_args(argc, argv);
 	game_t *game = init_game_and_players(args);
 
-	struct move_t current_move = {0, 0, 0};
+	struct move_t current_move = {-1, -1, -1};
 	bool game_not_over = true;
 	while (game_not_over)
 	{
