@@ -4,8 +4,9 @@
 
 #include "test_server.h"
 
-int main(int argc, char **argv){
+int main(){
     printf("Starting Server Tests\n");
     structural_test_init_queens();
+    running_test_init_game_and_player();
     return EXIT_SUCCESS;
 }
