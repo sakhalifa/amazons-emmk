@@ -35,13 +35,13 @@ bool has_queen (unsigned int player_id, board_t *board, unsigned int queen_posit
     return false;
 }
 
-void add_reachable_positions_aligned(board_t* board, position_set* reachable_positions, unsigned int initial_position, unsigned int neighbor, enum dir_t direction_to_neighbor) {
+void add_reachable_positions_aligned(board_t* board, position_set* reachable_positions, unsigned int initial_position, unsigned int neighbor, enum dir_t direction_to_neighbor, size_t width) {
     add_position(reachable_positions, neighbor);
     bool found = true;
     while (found) {
         found = false;
         size_t next_neighbor = 0;
-        while (next_neighbor < board->graph->num_vertices) {
+        while (next_neighbor < width) {
             enum dir_t direction_to_next_neighbor = gsl_spmatrix_uint_get(board->graph->t, neighbor, next_neighbor);
             if (direction_to_next_neighbor == direction_to_neighbor) {
                 // add_position(next_neighbor, neighbor);

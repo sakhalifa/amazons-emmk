@@ -26,15 +26,15 @@ char const *get_player_name()
 
 position_set *reachable_positions(unsigned int queen_position)
 {  
-    //Max moves is 16w² and num_vertices = w² 
-    size_t max_different_moves = global_player.board->graph->num_vertices * 16;
+    size_t width = (size_t)sqrt(global_player.board->graph->num_vertices);
+    size_t max_different_moves = width*4 - 4;
     position_set *moves = init_position_set(max_different_moves);
     for (size_t i = 0; i < global_player.board->graph->num_vertices; ++i)
     {
         enum dir_t direction_to_i = gsl_spmatrix_uint_get(global_player.board->graph->t, queen_position, i);
         if (direction_to_i >= FIRST_DIR && direction_to_i <= LAST_DIR)
         {
-            add_reachable_positions_aligned(global_player.board, moves, queen_position, i, direction_to_i);
+            add_reachable_positions_aligned(global_player.board, moves, queen_position, i, direction_to_i, width);
         }
     }
     return moves;
