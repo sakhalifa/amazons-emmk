@@ -1,5 +1,6 @@
 #include "player_handle.h"
 #include "move.h"
+#include "graph_ext.h"
 #define UNUSED(x) (void)(x)
 
 
@@ -26,6 +27,10 @@ void mock_initialize(unsigned int width,
     UNUSED(graph);
     UNUSED(num_queens);
     UNUSED(queens);
+    graph_free(graph);
+    for(int i = 0; i<NUM_PLAYERS; i++){
+        free(queens[i]);
+    }
 }
 
 player_handle_t get_mock_player(){
