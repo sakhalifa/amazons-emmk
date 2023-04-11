@@ -4,6 +4,7 @@
 #include "move.h"
 #include "player.h"
 #include "position_set.h"
+#include "colors.h"
 
 bool is_on_board(board_t *board, int position)
 {
@@ -102,26 +103,55 @@ void board_free(board_t *board)
     free(board);
 }
 
+void print_letter_line(unsigned int size){
+    for (int i = 0; i < size; ++i){
+        if (i > 0) printf(" ");
+        printf("%c", 'A' + i);
+    }
+}
+
+void print_vertical_line(unsigned int size){
+    for (int i = 0; i < size; ++i){
+        printf("-");
+    }
+}
+
 void print_board(board_t *board)
 {
     unsigned int width = sqrt(board->graph->num_vertices);
+    printf("    ");
+    print_letter_line(width);
+    printf("\n");
+    printf("   /");
+    print_vertical_line(width * 2 - 1);
+    printf("\\\n");
     for (unsigned int i = 0; i < width; ++i)
     {
+        printf("%2d |", i + 1);
         for (unsigned int j = 0; j < width; ++j)
         {
-            if (board->arrows[i * width + j])
+            if (j > 0) printf(" ");
+            unsigned int position = i * width + j;
+            if (board->arrows[position])
             {
-                printf("a");
+                printf("➴");
             }
-            else if (!is_cell_empty(board, i * width + j))
+            else if (has_queen(0, board, position))
             {
-                printf("q");
+                printf(RED "♛" RESET);
+            }
+            else if (has_queen(1, board, position))
+            {   
+                printf(CYAN "♛" RESET);
             }
             else
             {
-                printf(" ");
+                printf("▢");
             }
         }
-        printf("\n");
+        printf("|\n");
     }
+    printf("   \\");
+    print_vertical_line(width * 2 - 1);
+    printf("/\n");
 }
