@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <math.h>
+#include <stdbool.h>
 #include "board.h"
 #include "move.h"
 #include "player.h"
@@ -55,26 +56,60 @@ void add_reachable_positions_aligned(board_t* board, position_set* reachable_pos
     }
 }
 
+enum dir_t get_move_direction(board_t *board, unsigned int src, unsigned int dst) {
+    unsigned int width = sqrt(board->graph->num_vertices);
+    if (dst > src) {
+        if (dst % width == src % width) {
+            return DIR_SOUTH;
+        } else if (dst % (width + 1) == src % (width + 1)) {
+            return DIR_SE;
+        } else if (dst % (width - 1) == src % (width - 1)) {
+            if (src % width == 0) {
+                return DIR_EAST;
+            } else {
+                return DIR_SW;
+            }
+        }
+    } else if (dst < src) {
+        if (dst % width == src % width) {
+            return DIR_NORTH;
+        } else if (dst % (width + 1) == src % (width + 1)) {
+            return DIR_NW;
+        } else if (dst % (width - 1) == src % (width - 1)) {
+            if (src % width == 0) {
+                return DIR_WEST;
+            } else {
+                return DIR_NE;
+            }
+        }
+    }
+    return NO_DIR;
+}
+
+bool is_reachable_aligned_move() {
+    return true;
+}
+
 bool is_move_legal(board_t *board, struct move_t *move, unsigned int player_id) {
-    //size_t width = (size_t)sqrt(board->graph->num_vertices);
-    //size_t max_reachable_positions_in_queen_dir = width - 1;
-    //position_set *reachable_positions_in_queen_dir = init_position_set(max_reachable_positions_in_queen_dir);
-    //enum dir_t move_direction = get_move_direction(move->queen_src, move->queen_dst); // TODO ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
-    //for (size_t i = 0; i < width; ++i)
-    //{
-    //    enum dir_t direction_to_i = gsl_spmatrix_uint_get(board->graph->t, move->queen_src, i);
-    //    if (move_direction == direction_to_i)
-    //    {
-    //        add_reachable_positions_aligned(board, reachable_positions_in_queen_dir, i, direction_to_i, width);
-    //    }
-    //}
+    size_t width = (size_t)sqrt(board->graph->num_vertices);
+    size_t max_reachable_positions_in_queen_dir = width - 1;
+    position_set *reachable_positions_in_queen_dir = init_position_set(max_reachable_positions_in_queen_dir);
+    enum dir_t move_direction = get_move_direction(board, move->queen_src, move->queen_dst); // TODO ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
+    for (size_t i = 0; i < width; ++i)
+    {
+        enum dir_t direction_to_i = gsl_spmatrix_uint_get(board->graph->t, move->queen_src, i);
+        if (move_direction == direction_to_i)
+        {
+            add_reachable_positions_aligned(board, reachable_positions_in_queen_dir, i, direction_to_i, width);
+        }
+    }
     return is_on_board(board, move->queen_src) &&
             is_on_board(board, move->queen_dst) &&
             is_on_board(board, move->arrow_dst) &&
             is_cell_empty(board, move->queen_dst) &&
             is_cell_empty(board, move->arrow_dst) &&
-            has_queen(player_id, board, move->queen_src);
-
+            has_queen(player_id, board, move->queen_src) &&
+            is_reachable_aligned_move(board, move->queen_src, move->queen_dst);
 }
 
 board_t *init_board(struct graph_t *graph, unsigned int num_queens)
