@@ -3,7 +3,7 @@
 #include <getopt.h>
 #include <dlfcn.h>
 #include "graph_ext.h"
-#include "dir.h"
+#include "dir_ext.h"
 #include "server.h"
 #include "player.h"
 
@@ -27,23 +27,29 @@ unsigned int get_other_player_id(unsigned int player_id)
 	return (player_id + 1) % NUM_PLAYERS;
 }
 
+void add_if_correct(size_t width, gsl_spmatrix_uint *mtrx, size_t x, size_t y, size_t dx, size_t dy){
+	if(dx == 0 && dy == 0)
+		return;
+	if(x + dx < 0 || x + dx >= width)
+		return;
+	if(y + dy < 0 || y + dy >= width)
+		return;
+	int i = x + y * width;
+	int j = (x+dx) + (y+dy)*width;
+	gsl_spmatrix_uint_set(mtrx, i, j, twoD_offset_to_dir(dx, dy));
+}
+
 struct graph_t *init_square_graph(size_t width)
 {
 	struct graph_t *graph = malloc(sizeof(struct graph_t));
 	graph->num_vertices = width * width;
 	gsl_spmatrix_uint *tmp = gsl_spmatrix_uint_alloc(graph->num_vertices, graph->num_vertices);
-	for (size_t pos = 0; pos < graph->num_vertices; ++pos)
-	{
-		enum dir_t cur_dir = DIR_NW;
-		for (int dy = -1; dy <= 1; dy++)
-		{
-			for (int dx = -1; dx <= 1; dx++)
-			{
-				int new_pos = pos + dx + dy * width;
-				if ((size_t)new_pos == pos || new_pos < 0 || (size_t)new_pos >= graph->num_vertices)
-					continue;
-				gsl_spmatrix_uint_set(tmp, pos, (size_t)new_pos, cur_dir);
-				cur_dir = (cur_dir + 1) % NUM_DIRS;
+	for(size_t i = 0; i<graph->num_vertices; i++){
+		size_t x = i % width;
+		size_t y = i / width;
+		for(int dx = -1; dx <= 1; dx++){
+			for(int dy = -1; dy <= 1; dy++){
+				add_if_correct(width, tmp, x, y, dx, dy);
 			}
 		}
 	}

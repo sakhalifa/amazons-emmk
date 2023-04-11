@@ -14,12 +14,12 @@ all: build
 
 build: server client alltests
 
-server: server.o player_handle.o graph.o game.o board.o position_set.o
+server: server.o dir.o player_handle.o graph.o game.o board.o position_set.o
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o server
 
 test: alltests
 
-PLAYER_TARGETS=player.o board.o position_set.o graph.o
+PLAYER_TARGETS=player.o dir.o board.o position_set.o graph.o
 
 player1.so: $(PLAYER_TARGETS)
 	gcc -shared $(CFLAGS) $^ $(LDFLAGS) -o player1.so
@@ -29,7 +29,7 @@ player2.so: $(PLAYER_TARGETS)
 
 client: player1.so player2.so
 
-alltests: test_server.o game.o player_handle.o graph.o board.o position_set.o
+alltests: test_server.o dir.o game.o player_handle.o graph.o board.o position_set.o
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o alltests
 
 install: server client
