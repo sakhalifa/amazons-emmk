@@ -42,7 +42,7 @@ coverage: alltests
 run: install
 	./install/server ./install/player*.so
 
-install: server client
+install: server client alltests
 	cp server install/
 	cp player*.so install/
 	cp alltests install/alltests
