@@ -29,17 +29,27 @@ player2.so: $(PLAYER_TARGETS)
 
 client: player1.so player2.so
 
-alltests: test_server.o dir.o game.o player_handle.o graph.o board.o position_set.o
+alltests: test_main.o test_server.o dir.o game.o \
+player_handle.o graph.o board.o position_set.o \
+mock_player.o player_handle.o
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o alltests
 
-install: server client
+coverage: alltests
+	./alltests
+	gcov -o . server/game.c
+
+
+run: install
+	./install/server ./install/player*.so
+
+install: server client alltests
 	cp server install/
 	cp player*.so install/
 	cp alltests install/alltests
 
 clean:
 	@rm -f *~ src/*~
-	@rm -f *.{o,so,gcno,gcda}
+	@rm -f *.{o,so,gcno,gcda,gcov}
 	@rm -rf install/*
 	@find . -executable -type f -not -iname "*.*" -delete
 	
