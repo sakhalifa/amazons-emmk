@@ -104,14 +104,14 @@ void board_free(board_t *board)
 }
 
 void print_letter_line(unsigned int size){
-    for (int i = 0; i < size; ++i){
+    for (unsigned int i = 0; i < size; ++i){
         if (i > 0) printf(" ");
         printf("%c", 'A' + i);
     }
 }
 
 void print_vertical_line(unsigned int size){
-    for (int i = 0; i < size; ++i){
+    for (unsigned int i = 0; i < size; ++i){
         printf("-");
     }
 }
