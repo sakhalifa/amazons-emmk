@@ -36,6 +36,10 @@ coverage: alltests
 	./alltests
 	gcov -o . test/test_server.c
 
+
+run: install
+	./install/server ./install/player*.so
+
 install: server client
 	cp server install/
 	cp player*.so install/
