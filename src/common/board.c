@@ -35,7 +35,7 @@ bool has_queen (unsigned int player_id, board_t *board, unsigned int queen_posit
     return false;
 }
 
-void add_reachable_positions_aligned(board_t* board, position_set* reachable_positions, unsigned int initial_position, unsigned int neighbor, enum dir_t direction_to_neighbor, size_t width) {
+void add_reachable_positions_aligned(board_t* board, position_set* reachable_positions, unsigned int neighbor, enum dir_t direction_to_neighbor, size_t width) {
     add_position(reachable_positions, neighbor);
     bool found = true;
     while (found) {
@@ -44,7 +44,6 @@ void add_reachable_positions_aligned(board_t* board, position_set* reachable_pos
         while (next_neighbor < width) {
             enum dir_t direction_to_next_neighbor = gsl_spmatrix_uint_get(board->graph->t, neighbor, next_neighbor);
             if (direction_to_next_neighbor == direction_to_neighbor) {
-                // add_position(next_neighbor, neighbor);
                 add_position(reachable_positions, next_neighbor);
                 neighbor = next_neighbor;
                 found = true;
@@ -56,12 +55,25 @@ void add_reachable_positions_aligned(board_t* board, position_set* reachable_pos
 }
 
 bool is_move_legal(board_t *board, struct move_t *move, unsigned int player_id) {
-  return is_on_board(board, move->queen_src) &&
-         is_on_board(board, move->queen_dst) &&
-         is_on_board(board, move->arrow_dst) &&
-         is_cell_empty(board, move->queen_dst) &&
-         is_cell_empty(board, move->arrow_dst) &&
-         has_queen(player_id, board, move->queen_src);
+    //size_t width = (size_t)sqrt(board->graph->num_vertices);
+    //size_t max_reachable_positions_in_queen_dir = width - 1;
+    //position_set *reachable_positions_in_queen_dir = init_position_set(max_reachable_positions_in_queen_dir);
+    //enum dir_t move_direction = get_move_direction(move->queen_src, move->queen_dst); // TODO ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
+    //for (size_t i = 0; i < width; ++i)
+    //{
+    //    enum dir_t direction_to_i = gsl_spmatrix_uint_get(board->graph->t, move->queen_src, i);
+    //    if (move_direction == direction_to_i)
+    //    {
+    //        add_reachable_positions_aligned(board, reachable_positions_in_queen_dir, i, direction_to_i, width);
+    //    }
+    //}
+    return is_on_board(board, move->queen_src) &&
+            is_on_board(board, move->queen_dst) &&
+            is_on_board(board, move->arrow_dst) &&
+            is_cell_empty(board, move->queen_dst) &&
+            is_cell_empty(board, move->arrow_dst) &&
+            has_queen(player_id, board, move->queen_src) &&
+
 }
 
 board_t *init_board(struct graph_t *graph, unsigned int num_queens)

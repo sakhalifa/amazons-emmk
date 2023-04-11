@@ -34,7 +34,7 @@ position_set *reachable_positions(unsigned int queen_position)
         enum dir_t direction_to_i = gsl_spmatrix_uint_get(global_player.board->graph->t, queen_position, i);
         if (direction_to_i >= FIRST_DIR && direction_to_i <= LAST_DIR)
         {
-            add_reachable_positions_aligned(global_player.board, moves, queen_position, i, direction_to_i, width);
+            add_reachable_positions_aligned(global_player.board, moves, i, direction_to_i, width);
         }
     }
     return moves;
