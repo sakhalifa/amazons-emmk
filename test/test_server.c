@@ -2,7 +2,11 @@
 #include <stdlib.h>
 #include <assert.h>
 
+#include "game_impl.h"
 #include "game.h"
+
+#include "player_handle.h"
+#include "mock_player.h"
 
 void queen_free(unsigned int** queens){
     for(int i = 0; i<NUM_PLAYERS; i++){
@@ -38,9 +42,17 @@ void structural_test_init_queens(){
     printf("OK\n");
 }
 
-int main(int argc, char **argv){
-    printf("Starting Server Tests\n");
-    structural_test_init_queens();
-    exit(EXIT_SUCCESS); //use this to prevent obscure segfault
+void running_test_init_game_and_player(){    
+	server_settings_t settings = {
+		.game_type = SQUARE,
+		.game_width = 5,
+	};
+    settings.player_handles[0] = get_mock_player();
+    settings.player_handles[1] = get_mock_player();
+
+    game_t *game = init_game_and_players(settings);
+    game_free(game);
 }
+
+
 
