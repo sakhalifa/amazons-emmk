@@ -41,7 +41,7 @@ test_server.o: test/test_server.c src/server/game_impl.h \
 	gcc -c -I${COMMONDIR} -I${CLIENTDIR} -I${SERVERDIR} $(CFLAGS) -o $@ $<
 mock_player.o: test/mock_player.c src/server/player_handle.h \
  src/common/player.h src/common/move.h src/common/graph.h \
- src/common/move.h
+ src/common/move.h src/common/graph_ext.h
 	gcc -c -I${COMMONDIR} -I${CLIENTDIR} -I${SERVERDIR} $(CFLAGS) -o $@ $<
 test_main.o: test/test_main.c test/test_server.h
 	gcc -c -I${COMMONDIR} -I${CLIENTDIR} -I${SERVERDIR} $(CFLAGS) -o $@ $<
