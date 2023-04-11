@@ -27,12 +27,12 @@ unsigned int get_other_player_id(unsigned int player_id)
 	return (player_id + 1) % NUM_PLAYERS;
 }
 
-void add_if_correct(size_t width, gsl_spmatrix_uint *mtrx, size_t x, size_t y, size_t dx, size_t dy){
+void add_if_correct(size_t width, gsl_spmatrix_uint *mtrx, size_t x, size_t y, int dx, int dy){
 	if(dx == 0 && dy == 0)
 		return;
-	if(x + dx < 0 || x + dx >= width)
+	if((int)(x + dx) < 0 || x + dx >= width)
 		return;
-	if(y + dy < 0 || y + dy >= width)
+	if((int)(y + dy) < 0 || y + dy >= width)
 		return;
 	int i = x + y * width;
 	int j = (x+dx) + (y+dy)*width;
@@ -47,8 +47,8 @@ struct graph_t *init_square_graph(size_t width)
 	for(size_t i = 0; i<graph->num_vertices; i++){
 		size_t x = i % width;
 		size_t y = i / width;
-		for(int dx = -1; dx <= 1; dx++){
-			for(int dy = -1; dy <= 1; dy++){
+		for(int dy = -1; dy <= 1; dy++){
+			for(int dx = -1; dx <= 1; dx++){
 				add_if_correct(width, tmp, x, y, dx, dy);
 			}
 		}

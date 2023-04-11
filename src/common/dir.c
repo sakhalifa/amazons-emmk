@@ -16,5 +16,5 @@ unsigned int twoD_offset_to_dir(unsigned int dx, unsigned int dy)
 {
 	dx += 1;
 	dy += 1;
-	return map[dx + (dy * 2)];
+	return map[dx + (dy * 3)];
 }
