@@ -73,7 +73,7 @@ bool is_move_legal(board_t *board, struct move_t *move, unsigned int player_id) 
             is_on_board(board, move->arrow_dst) &&
             is_cell_empty(board, move->queen_dst) &&
             is_cell_empty(board, move->arrow_dst) &&
-            has_queen(player_id, board, move->queen_src) &&
+            has_queen(player_id, board, move->queen_src);
 
 }
 
