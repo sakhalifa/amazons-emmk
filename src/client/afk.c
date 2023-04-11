@@ -22,7 +22,7 @@ char const *get_player_name()
 
 position_set *possible_moves(unsigned int queen_position)
 {
-    size_t max_different_moves = (sqrt(global_player.board->graph->num_vertices) * 4 - 4);
+    size_t max_different_moves = (global_player.board->graph->num_vertices * 4 - 4);
     position_set *moves = init_position_set(max_different_moves);
     return moves;
 }
