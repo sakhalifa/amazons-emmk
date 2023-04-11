@@ -94,6 +94,19 @@ void apply_move(board_t *board, struct move_t *move, unsigned int player_id)
     }
 }
 
+void cancel_move(board_t *board, struct move_t *move, unsigned int player_id){
+    board->arrows[move->arrow_dst] = false;
+    // Find queens dst
+    for (unsigned int queen_id = 0; queen_id < board->num_queens; ++queen_id)
+    {
+        if (board->queens[player_id][queen_id] == move->queen_dst)
+        {
+            board->queens[player_id][queen_id] = move->queen_src;
+            break;
+        }
+    }
+}
+
 void board_free(board_t *board)
 {
     graph_free(board->graph);
