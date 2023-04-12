@@ -36,8 +36,8 @@ bool has_queen (unsigned int player_id, board_t *board, unsigned int queen_posit
     }
     return false;
 }
-
-void add_reachable_positions_aligned(board_t* board, position_set* reachable_positions, unsigned int neighbor, enum dir_t direction_to_neighbor, size_t width) {
+// old, deprecated
+void add_reachable_positions_aligned_deprecated(board_t* board, position_set* reachable_positions, unsigned int neighbor, enum dir_t direction_to_neighbor, size_t width) {
     add_position(reachable_positions, neighbor);
     bool found = true;
     while (found) {
@@ -48,6 +48,7 @@ void add_reachable_positions_aligned(board_t* board, position_set* reachable_pos
             if (direction_to_next_neighbor == direction_to_neighbor) {
                 add_position(reachable_positions, next_neighbor);
                 neighbor = next_neighbor;
+                next_neighbor = 0;
                 found = true;
                 break;
             }
@@ -57,7 +58,7 @@ void add_reachable_positions_aligned(board_t* board, position_set* reachable_pos
 }
 
 // Only works for square grids
-enum dir_t get_move_direction(board_t *board, unsigned int src, unsigned int dst, unsigned int width) {
+enum dir_t get_move_direction(unsigned int src, unsigned int dst, unsigned int width) {
     if (dst > src) {
         if (dst < src + width - src % width ) {
             return DIR_EAST;
@@ -89,7 +90,8 @@ bool is_reachable_aligned_position(board_t *board, unsigned int src, unsigned in
     unsigned int width = sqrt(board->graph->num_vertices);
     int increment;
     size_t iterations;
-    switch(get_move_direction(board, src, dst, width)) {
+    enum dir_t move_direction = get_move_direction(src, dst, width);
+    switch(move_direction) {
         case DIR_EAST :
             increment = 1;
             iterations = width - src % width - 1;
@@ -126,9 +128,9 @@ bool is_reachable_aligned_position(board_t *board, unsigned int src, unsigned in
             return false;
     }
     unsigned int next_vertex = src;
-    for (int i = 0; i < iterations; ++i) {
+    for (size_t i = 0; i < iterations; ++i) {
         next_vertex = next_vertex + increment;
-        if (gsl_spmatrix_uint_get(board->graph->t, src, next_vertex) == NO_DIR) {
+        if (gsl_spmatrix_uint_get(board->graph->t, src, next_vertex) != move_direction) {
             return false;
         } else if (next_vertex == dst) {
             return true;

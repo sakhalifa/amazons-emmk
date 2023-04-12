@@ -15,6 +15,6 @@ typedef struct
 /// @brief return all the possibles moves of the given queen
 /// @param queen_position the position of the queen whose possibles moves are returned
 /// @return all the possibles moves of the given queen
-position_set* reachable_positions(unsigned int queen_position);
+position_set* reachable_positions_deprecated(unsigned int queen_position);
 
 #endif // _PLAYER_CUSTOM_H_

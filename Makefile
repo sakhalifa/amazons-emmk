@@ -12,7 +12,7 @@ INSTALLDIR = install
 
 all: build
 
-build: server client alltests
+build: server client
 
 server: server.o dir.o player_handle.o graph.o game.o board.o position_set.o
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o server
@@ -42,7 +42,7 @@ coverage: alltests
 run: install
 	./install/server ./install/player*.so
 
-install: server client alltests
+install: build test
 	cp server install/
 	cp player*.so install/
 	cp alltests install/alltests
