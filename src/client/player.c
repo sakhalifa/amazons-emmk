@@ -57,8 +57,10 @@ struct move_t play(struct move_t previous_move)
     played_move.queen_src = global_player.board->queens[global_player.player_id][rand() % global_player.board->num_queens];
     position_set *queen_possible_moves = reachable_positions_deprecated(played_move.queen_src);
     played_move.queen_dst = queen_possible_moves->positions[rand() % queen_possible_moves->count];
+    free_position_set(queen_possible_moves);
     position_set *arrow_possible_moves = reachable_positions_deprecated(played_move.queen_dst);
     played_move.arrow_dst = arrow_possible_moves->positions[rand() % arrow_possible_moves->count];
+    free_position_set(arrow_possible_moves);
     return played_move;
 }
 

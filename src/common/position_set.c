@@ -9,6 +9,12 @@ position_set* init_position_set(size_t capacity) {
     return to_return;
 }
 
+void free_position_set(position_set *position_set){
+    free(position_set->positions);
+    position_set->positions = NULL;
+    free(position_set);
+}
+
 void add_position(position_set* set, unsigned int position) {
     set->positions[set->count] = position;
     set->count++;
