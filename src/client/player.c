@@ -29,14 +29,16 @@ position_set *reachable_positions_deprecated(unsigned int queen_position)
     size_t width = (size_t)sqrt(global_player.board->graph->num_vertices);
     size_t max_different_moves = width*4 - 4;
     position_set *moves = init_position_set(max_different_moves);
-    for (size_t i = 0; i < width; ++i)
+    for (size_t i = 0; i < global_player.board->graph->num_vertices; ++i)
     {
-        enum dir_t direction_to_i = gsl_spmatrix_uint_get(global_player.board->graph->t, queen_position, i);
-        if (direction_to_i != NO_DIR)
+        enum dir_t direction_to_i = gsl_spmatrix_uint_get(global_player.board->graph->t, (size_t)queen_position, i);
+        if (direction_to_i != NO_DIR && is_cell_empty(global_player.board, i))
         {
+            //printf("in, q : %u, i : %u\n", queen_position, i); // for debug
             add_reachable_positions_aligned_deprecated(global_player.board, moves, i, direction_to_i, width);
         }
     }
+    // printf("end\n"); // for debug
     return moves;
 }
 

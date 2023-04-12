@@ -45,7 +45,7 @@ void add_reachable_positions_aligned_deprecated(board_t* board, position_set* re
         size_t next_neighbor = 0;
         while (next_neighbor < width) {
             enum dir_t direction_to_next_neighbor = gsl_spmatrix_uint_get(board->graph->t, neighbor, next_neighbor);
-            if (direction_to_next_neighbor == direction_to_neighbor) {
+            if (direction_to_next_neighbor == direction_to_neighbor && is_cell_empty(board, next_neighbor)) {
                 add_position(reachable_positions, next_neighbor);
                 neighbor = next_neighbor;
                 next_neighbor = 0;

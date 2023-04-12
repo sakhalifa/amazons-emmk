@@ -95,7 +95,7 @@ int main(int argc, char *const *argv)
 	}
 
 	unsigned int winner = game->current_player;
-	printf("%s won!\n", args.player_handles[winner].get_player_name());
+	printf("Player %u ('%s') won!\n", winner, args.player_handles[winner].get_player_name());
 	game_free(game);
 	for (int i = 0; i < NUM_PLAYERS; i++)
 	{
