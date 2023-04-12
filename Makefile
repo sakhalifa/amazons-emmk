@@ -49,7 +49,7 @@ install: build test
 
 clean:
 	@rm -f *~ src/*~
-	@rm -f *.{o,so,gcno,gcda,gcov}
+	@rm -fv *.o *.so *.gcno *.gcda *.gcov
 	@rm -rf install/*
 	@find . -executable -type f -not -iname "*.*" -delete
 	
