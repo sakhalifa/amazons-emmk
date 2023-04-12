@@ -1,7 +1,7 @@
 #include "player_handle.h"
 #include "move.h"
 #include "graph_ext.h"
-#define UNUSED(x) (void)(x)
+#define UNUSED(x) ((void)(x))
 
 
 struct move_t mock_play(struct move_t move){
