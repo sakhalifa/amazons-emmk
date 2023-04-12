@@ -2,11 +2,9 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "test_server.h"
+#include "test_game.h"
 
 int main(){
-    printf("Starting Server Tests\n");
-    structural_test_init_queens();
-    running_test_init_game_and_player();
+    run_game_tests();
     return EXIT_SUCCESS;
 }

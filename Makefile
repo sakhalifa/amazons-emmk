@@ -29,7 +29,7 @@ player2.so: $(PLAYER_TARGETS)
 
 client: player1.so player2.so
 
-alltests: test_main.o test_server.o dir.o game.o \
+alltests: test_main.o test_game.o dir.o game.o \
 player_handle.o graph.o board.o position_set.o \
 mock_player.o player_handle.o
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o alltests
