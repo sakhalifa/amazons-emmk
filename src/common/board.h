@@ -37,6 +37,7 @@ struct neighbors_t neighbors(unsigned int cell);
 unsigned int neighbor(unsigned int cell, enum dir_t direction);
 
 void apply_move(board_t *board, struct move_t *move, unsigned int player_id);
+void cancel_move(board_t *board, struct move_t *move, unsigned int player_id);
 
 void board_free(board_t *board);
 
