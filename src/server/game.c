@@ -106,7 +106,6 @@ struct graph_t *init_donut_graph(size_t width)
 {
 	struct graph_t *graph = malloc(sizeof(struct graph_t));
 	graph->num_vertices = width * width;
-	size_t sq_offset = (width / 3) - 2;
 	size_t sq_size = (width / 3) - 1;
 	int offset = (int)(width / 6) - 1;
 	offset = offset < 0 ? 0 : offset;
