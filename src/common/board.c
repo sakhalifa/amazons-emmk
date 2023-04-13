@@ -306,5 +306,5 @@ void print_board(board_t *board)
     }
     printf("   \\");
     print_vertical_line(width * 2 - 1);
-    printf("/\n");
+    printf("-/\n");
 }
