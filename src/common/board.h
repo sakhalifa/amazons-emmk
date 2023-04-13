@@ -29,13 +29,6 @@ bool is_cell_empty(board_t* board, unsigned int cell_position);
 
 bool is_move_legal(board_t *board, struct move_t *move, unsigned int player_id);
 
-/// @returns a struct containing the neighbors list and the amount of neighbors
-struct neighbors_t neighbors(unsigned int cell);
-
-/// @returns the neighbor cell in the given direction, MAX_INT if it doesn't
-/// exist
-unsigned int neighbor(unsigned int cell, enum dir_t direction);
-
 void apply_move(board_t *board, struct move_t *move, unsigned int player_id);
 void cancel_move(board_t *board, struct move_t *move, unsigned int player_id);
 
