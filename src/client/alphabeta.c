@@ -138,3 +138,13 @@ struct move_and_score alphabeta(board_t *board, int my_player_id, int depth)
 	struct move_t cur_move = {{-1, -1, -1}};
 	return alphabeta_recursive(board, cur_move, my_player_id, INT_MIN, INT_MAX, my_player_id, depth);
 }
+
+struct move_t play(struct move_t previous_move)
+{
+    if (previous_move.queen_src != UINT_MAX && previous_move.queen_dst != UINT_MAX)
+    {
+        apply_move(global_player.board, &previous_move, global_player.player_id);
+    }
+
+    return played_move;
+}
