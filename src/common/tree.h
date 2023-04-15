@@ -32,6 +32,8 @@ void *node_get_data(node_t *node);
 
 node_t *node_get_parent(node_t *node);
 
+array_list_t *node_get_children(node_t *node);
+
 /**
  * Gets a child with a certain value from a tree and returns it. If it is not found,
  * returns NULL.

@@ -35,6 +35,10 @@ node_t *node_get_parent(node_t *node){
     return node->parent;
 }
 
+array_list_t *node_get_children(node_t *node){
+    return node->children;
+}
+
 node_t *node_add_child(node_t *node, void *val)
 {
     node_t *n = tree_create(val, node->free_func);
