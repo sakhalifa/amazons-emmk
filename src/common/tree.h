@@ -8,12 +8,9 @@
  * A node structure.
  * Every child of a node must have the same free_func as its parent.
 */
-typedef struct node{
-    void *value;
-    void (*free_func)(void*);
-    struct node* parent;
-    array_list_t *children;
-} node_t;
+struct node;
+
+typedef struct node node_t;
 
 /**
  * Creates a tree with a root value and a function to free all of its elements and returns its root.
