@@ -27,6 +27,14 @@ node_t *tree_create(void *val, void (*free_func)(void *))
     return n;
 }
 
+void *node_get_value(node_t *node){
+    return node->value;
+}
+
+node_t *node_get_parent(node_t *node){
+    return node->parent;
+}
+
 node_t *node_add_child(node_t *node, void *val)
 {
     node_t *n = tree_create(val, node->free_func);
