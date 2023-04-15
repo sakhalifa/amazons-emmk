@@ -1,3 +1,8 @@
+async_mcts.o: src/client/async_mcts.c src/client/player_ext.h \
+ src/common/player.h src/common/move.h src/common/graph.h \
+ src/common/position_set.h src/common/board.h src/common/dir.h \
+ src/common/graph_ext.h src/common/player.h src/common/position_set.h
+	gcc -c -I${COMMONDIR} -I${CLIENTDIR} -I${SERVERDIR} $(CFLAGS) -o $@ $<
 player.o: src/client/player.c src/common/graph.h src/client/player_ext.h \
  src/common/player.h src/common/move.h src/common/graph.h \
  src/common/position_set.h src/common/board.h src/common/dir.h \
@@ -15,6 +20,14 @@ board.o: src/common/board.c src/common/board.h src/common/dir.h \
  src/common/player.h src/common/position_set.h src/common/colors.h
 	gcc -c -I${COMMONDIR} -I${CLIENTDIR} -I${SERVERDIR} $(CFLAGS) -o $@ $<
 dir.o: src/common/dir.c src/common/dir_ext.h src/common/dir.h
+	gcc -c -I${COMMONDIR} -I${CLIENTDIR} -I${SERVERDIR} $(CFLAGS) -o $@ $<
+util.o: src/common/util.c src/common/util.h
+	gcc -c -I${COMMONDIR} -I${CLIENTDIR} -I${SERVERDIR} $(CFLAGS) -o $@ $<
+tree.o: src/common/tree.c src/common/tree.h src/common/util.h \
+ src/common/array_list.h
+	gcc -c -I${COMMONDIR} -I${CLIENTDIR} -I${SERVERDIR} $(CFLAGS) -o $@ $<
+array_list.o: src/common/array_list.c src/common/array_list.h \
+ src/common/util.h
 	gcc -c -I${COMMONDIR} -I${CLIENTDIR} -I${SERVERDIR} $(CFLAGS) -o $@ $<
 graph.o: src/common/graph.c src/common/graph.h src/common/graph_ext.h
 	gcc -c -I${COMMONDIR} -I${CLIENTDIR} -I${SERVERDIR} $(CFLAGS) -o $@ $<

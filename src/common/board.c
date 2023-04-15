@@ -268,7 +268,7 @@ void print_board(board_t *board)
             bool isReachable = false;
             for (unsigned int i = 0; i < board->graph->t->size1; i++)
             {
-                for (unsigned int k = board->graph->t->p[i]; k < board->graph->t->p[i + 1]; k++)
+                for (unsigned int k = board->graph->t->p[i]; k < (unsigned int)board->graph->t->p[i + 1]; k++)
                 {
                     unsigned int j = board->graph->t->i[k];
                     if (i == position || j == position)
