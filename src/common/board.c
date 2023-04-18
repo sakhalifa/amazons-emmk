@@ -179,12 +179,13 @@ bool is_move_legal(board_t *board, struct move_t *move, unsigned int player_id)
            is_reachable_aligned_position(board, move->queen_src, move->queen_dst);
 }
 
-board_t *init_board(struct graph_t *graph, unsigned int num_queens)
+board_t *init_board(struct graph_t *graph, unsigned int num_queens, size_t width)
 {
     board_t *board = (board_t *)malloc(sizeof(board_t));
     board->graph = graph;
     board->num_queens = num_queens;
     board->arrows = (bool *)malloc(sizeof(bool) * graph->num_vertices);
+    board->width = width;
     for (size_t i = 0; i < graph->num_vertices; ++i)
     {
         board->arrows[i] = false;
@@ -307,4 +308,9 @@ void print_board(board_t *board)
     printf("   \\");
     print_vertical_line(width * 2 - 1);
     printf("/\n");
+}
+
+position_set *get_reachable_positions_generic(board_t *board, unsigned int position){
+    size_t max_different_moves = board->width*4 - 4;
+    position_set *set = init_position_set(max_different_moves);
 }
