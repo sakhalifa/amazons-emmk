@@ -175,8 +175,9 @@ struct move_t play(struct move_t previous_move)
 	{
 		apply_move(global_player.board, &previous_move, global_player.player_id);
 	}
-
-	return alphabeta(global_player.board, global_player.player_id, 1).move;
+	struct move_t move = alphabeta(global_player.board, global_player.player_id, 1).move;
+	apply_move(global_player.board, &move, global_player.player_id);
+	return move;
 }
 
 void finalize()
