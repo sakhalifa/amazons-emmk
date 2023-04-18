@@ -1,5 +1,5 @@
 GSL_PATH ?= /net/ens/renault/save/gsl-2.6/install
-CFLAGS = -std=c99 -Wall -Wextra -fPIC -g3 -I$(GSL_PATH)/include --coverage
+CFLAGS = -std=c99 -Wall -Wextra -Wno-unknown-pragmas -fPIC -g3 -I$(GSL_PATH)/include --coverage
 LDFLAGS = -lm -lgsl -lgslcblas -ldl \
 	-L$(GSL_PATH)/lib -L$(GSL_PATH)/lib64 \
 	-Wl,--rpath=${GSL_PATH}/lib
@@ -19,7 +19,7 @@ server: server.o dir.o player_handle.o graph.o game.o board.o position_set.o
 
 test: alltests
 
-PLAYER_TARGETS=player.o dir.o board.o position_set.o graph.o
+PLAYER_TARGETS=alphabeta.o dir.o board.o position_set.o graph.o
 
 player1.so: $(PLAYER_TARGETS)
 	gcc -shared $(CFLAGS) $^ $(LDFLAGS) -o player1.so

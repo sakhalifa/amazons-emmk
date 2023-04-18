@@ -14,9 +14,10 @@ typedef struct {
   unsigned int *queens[NUM_PLAYERS];
   unsigned int num_queens;
   bool *arrows; // 1-d maping of the positions of the arrows
+  size_t width;
 } board_t;
 
-board_t *init_board(struct graph_t *graph, unsigned int num_queens);
+board_t *init_board(struct graph_t *graph, unsigned int num_queens, size_t width);
 
 /// @brief return true if the given position is indexing a valid position on the
 /// board
@@ -29,12 +30,9 @@ bool is_cell_empty(board_t* board, unsigned int cell_position);
 
 bool is_move_legal(board_t *board, struct move_t *move, unsigned int player_id);
 
-/// @returns a struct containing the neighbors list and the amount of neighbors
-struct neighbors_t neighbors(unsigned int cell);
+void apply_queen_move(board_t *board, unsigned int player_id, unsigned int queen_src, unsigned int queen_dst);
 
-/// @returns the neighbor cell in the given direction, MAX_INT if it doesn't
-/// exist
-unsigned int neighbor(unsigned int cell, enum dir_t direction);
+void cancel_queen_move(board_t *board, unsigned int player_id, unsigned int queen_src, unsigned int queen_dst);
 
 void apply_move(board_t *board, struct move_t *move, unsigned int player_id);
 void cancel_move(board_t *board, struct move_t *move, unsigned int player_id);
@@ -47,5 +45,13 @@ void print_board(board_t *board);
 /// @param reachable_positions the position_set where the possible moves found by this function are added
 /// @param neighbor the id of the first reachable neighbor reached in the given direction
 void add_reachable_positions_aligned_deprecated(board_t* board, position_set* reachable_positions, unsigned int neighbor, enum dir_t direction_to_neighbor, size_t width);
+
+/// @brief Gets all the reachable position from a given position. This is quite unoptimized BUT it works for any graph.
+/// @param board The board 
+/// @param position The position we want to know all its reachable positions
+/// @return The set of all the reachable positions from the given position.
+position_set *get_reachable_positions_generic(board_t *board, unsigned int position);
+
+position_set *get_reachable_arrows_generic(board_t *board, int player_id, unsigned int queen_src, unsigned int queen_dst);
 
 #endif

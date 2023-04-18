@@ -85,6 +85,7 @@ int main(int argc, char *const *argv)
 		if (!is_move_legal(game->board, &current_move, game->current_player))
 		{
 			game_not_over = false;
+			is_move_legal(game->board, &current_move, game->current_player);
 			update_player(game);
 			break;
 		}

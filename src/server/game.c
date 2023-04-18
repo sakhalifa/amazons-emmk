@@ -106,7 +106,6 @@ struct graph_t *init_donut_graph(size_t width)
 {
 	struct graph_t *graph = malloc(sizeof(struct graph_t));
 	graph->num_vertices = width * width;
-	size_t sq_offset = (width / 3) - 2;
 	size_t sq_size = (width / 3) - 1;
 	int offset = (int)(width / 6) - 1;
 	offset = offset < 0 ? 0 : offset;
@@ -172,7 +171,7 @@ game_t *init_game_and_players(server_settings_t settings)
 	// Init board
 	struct graph_t *graph = init_graph(settings.game_type, settings.game_width);
 	unsigned int num_queens = 4 * (settings.game_width / 10 + 1);
-	board_t *board = init_board(graph, num_queens);
+	board_t *board = init_board(graph, num_queens, settings.game_width);
 	init_queens(board->queens, num_queens, settings.game_width);
 
 	// Init players
