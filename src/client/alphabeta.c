@@ -5,7 +5,7 @@
 
 static player_t global_player;
 
-static unsigned int divider = 10;
+static unsigned int divider = 0;
 
 static unsigned int turns = 0;
 
@@ -15,6 +15,7 @@ void initialize(unsigned int player_id, struct graph_t *graph,
 	global_player.player_id = player_id;
 	global_player.name = "alphabeta";
 	size_t width = (size_t)sqrt(graph->num_vertices);
+	divider = width;
 	global_player.board = init_board(graph, num_queens, width);
 	for (size_t i = 0; i < NUM_PLAYERS; i++)
 	{
