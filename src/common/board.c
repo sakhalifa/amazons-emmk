@@ -168,13 +168,22 @@ bool is_reachable_aligned_position(board_t *board, unsigned int src, unsigned in
     return false;
 }
 
-bool is_reachable_position(board_t *board, unsigned int src, unsigned int dst){
+bool is_reachable_position(board_t *board, unsigned int src, unsigned int dst)
+{
     position_set *set = get_reachable_positions_generic(board, src);
-    for(size_t i = 0; i<set->count; i++){
-        if(set->positions[i] == dst)
+    for (size_t i = 0; i < set->count; i++)
+    {
+        if (set->positions[i] == dst)
             return true;
     }
     return false;
+}
+
+bool is_reachable_arrow(board_t *board, struct move_t *move, unsigned int player_id){
+    apply_queen_move(board, player_id, move->queen_src, move->queen_dst);
+    bool reachable = is_reachable_position(board, move->queen_dst, move->arrow_dst);
+    cancel_queen_move(board, player_id, move->queen_src, move->queen_dst);
+    return reachable;
 }
 
 bool is_move_legal(board_t *board, struct move_t *move, unsigned int player_id)
@@ -182,11 +191,9 @@ bool is_move_legal(board_t *board, struct move_t *move, unsigned int player_id)
     return is_on_board(board, move->queen_src) &&
            is_on_board(board, move->queen_dst) &&
            is_on_board(board, move->arrow_dst) &&
-           is_cell_empty(board, move->queen_dst) &&
-           is_cell_empty(board, move->arrow_dst) &&
            has_queen(player_id, board, move->queen_src) &&
            is_reachable_position(board, move->queen_src, move->queen_dst) &&
-           is_reachable_position(board, move->queen_dst, move->arrow_dst);
+           is_reachable_arrow(board, move, player_id);
 }
 
 board_t *init_board(struct graph_t *graph, unsigned int num_queens, size_t width)
@@ -209,28 +216,14 @@ void apply_move(board_t *board, struct move_t *move, unsigned int player_id)
 {
     board->arrows[move->arrow_dst] = true;
     // Find queens src
-    for (unsigned int queen_id = 0; queen_id < board->num_queens; ++queen_id)
-    {
-        if (board->queens[player_id][queen_id] == move->queen_src)
-        {
-            board->queens[player_id][queen_id] = move->queen_dst;
-            break;
-        }
-    }
+    apply_queen_move(board, player_id, move->queen_src, move->queen_dst);
 }
 
 void cancel_move(board_t *board, struct move_t *move, unsigned int player_id)
 {
     board->arrows[move->arrow_dst] = false;
     // Find queens dst
-    for (unsigned int queen_id = 0; queen_id < board->num_queens; ++queen_id)
-    {
-        if (board->queens[player_id][queen_id] == move->queen_dst)
-        {
-            board->queens[player_id][queen_id] = move->queen_src;
-            break;
-        }
-    }
+    cancel_queen_move(board, player_id, move->queen_src, move->queen_dst);
 }
 
 void board_free(board_t *board)
@@ -348,4 +341,35 @@ position_set *get_reachable_positions_generic(board_t *board, unsigned int posit
         }
     }
     return set;
+}
+
+position_set *get_reachable_arrows_generic(board_t *board, int player_id, unsigned int queen_src, unsigned int queen_dst){
+    apply_queen_move(board, player_id, queen_src, queen_dst);
+    position_set *set = get_reachable_positions_generic(board, queen_dst);
+    cancel_queen_move(board, player_id, queen_src, queen_dst);
+    return set;
+}
+
+void apply_queen_move(board_t *board, unsigned int player_id, unsigned int queen_src, unsigned int queen_dst)
+{
+    for (unsigned int queen_id = 0; queen_id < board->num_queens; ++queen_id)
+    {
+        if (board->queens[player_id][queen_id] == queen_src)
+        {
+            board->queens[player_id][queen_id] = queen_dst;
+            break;
+        }
+    }
+}
+
+void cancel_queen_move(board_t *board, unsigned int player_id, unsigned int queen_src, unsigned int queen_dst)
+{
+    for (unsigned int queen_id = 0; queen_id < board->num_queens; ++queen_id)
+    {
+        if (board->queens[player_id][queen_id] == queen_dst)
+        {
+            board->queens[player_id][queen_id] = queen_src;
+            break;
+        }
+    }
 }

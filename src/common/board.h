@@ -30,6 +30,10 @@ bool is_cell_empty(board_t* board, unsigned int cell_position);
 
 bool is_move_legal(board_t *board, struct move_t *move, unsigned int player_id);
 
+void apply_queen_move(board_t *board, unsigned int player_id, unsigned int queen_src, unsigned int queen_dst);
+
+void cancel_queen_move(board_t *board, unsigned int player_id, unsigned int queen_src, unsigned int queen_dst);
+
 void apply_move(board_t *board, struct move_t *move, unsigned int player_id);
 void cancel_move(board_t *board, struct move_t *move, unsigned int player_id);
 
@@ -47,5 +51,7 @@ void add_reachable_positions_aligned_deprecated(board_t* board, position_set* re
 /// @param position The position we want to know all its reachable positions
 /// @return The set of all the reachable positions from the given position.
 position_set *get_reachable_positions_generic(board_t *board, unsigned int position);
+
+position_set *get_reachable_arrows_generic(board_t *board, int player_id, unsigned int queen_src, unsigned int queen_dst);
 
 #endif

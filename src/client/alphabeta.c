@@ -3,8 +3,11 @@
 #include "player_ext.h"
 #include <math.h>
 
-
 static player_t global_player;
+
+static unsigned int divider = 10;
+
+static unsigned int turns = 0;
 
 void initialize(unsigned int player_id, struct graph_t *graph,
 				unsigned int num_queens, unsigned int *queens[NUM_PLAYERS])
@@ -45,7 +48,7 @@ int get_score(board_t *board, int my_player_id)
 		free_position_set(pos);
 	}
 
-	return my_score - other_score;
+	return other_score - my_score;
 }
 
 int max(int a, int b)
@@ -79,7 +82,7 @@ struct move_and_score alphabeta_recursive(board_t *board, struct move_t cur_move
 			for (size_t j = 0; j < queen_pos->count; j++)
 			{
 				int queen_dst = queen_pos->positions[j];
-				position_set *arrow_pos = get_reachable_positions_generic(board, queen_dst);
+				position_set *arrow_pos = get_reachable_arrows_generic(board, cur_player_id, queen_src, queen_dst);
 				for (size_t k = 0; k < arrow_pos->count; k++)
 				{
 					int arrow_dst = arrow_pos->positions[k];
@@ -95,6 +98,7 @@ struct move_and_score alphabeta_recursive(board_t *board, struct move_t cur_move
 					if (value > beta)
 					{
 						break_for = true;
+						cancel_move(board, &move, cur_player_id);
 						break;
 					}
 					alpha = max(alpha, value);
@@ -123,11 +127,11 @@ struct move_and_score alphabeta_recursive(board_t *board, struct move_t cur_move
 		{
 			bool break_for = false;
 			int queen_src = board->queens[cur_player_id][i];
-			position_set *queen_pos = reachable_positions_deprecated(queen_src);
+			position_set *queen_pos = get_reachable_positions_generic(board, queen_src);
 			for (size_t j = 0; j < queen_pos->count; j++)
 			{
 				int queen_dst = queen_pos->positions[j];
-				position_set *arrow_pos = reachable_positions_deprecated(queen_dst);
+				position_set *arrow_pos = get_reachable_arrows_generic(board, cur_player_id, queen_src, queen_dst);
 				for (size_t k = 0; k < arrow_pos->count; k++)
 				{
 					int arrow_dst = arrow_pos->positions[k];
@@ -143,6 +147,7 @@ struct move_and_score alphabeta_recursive(board_t *board, struct move_t cur_move
 					if (value < alpha)
 					{
 						break_for = true;
+						cancel_move(board, &move, cur_player_id);
 						break;
 					}
 					beta = min(beta, value);
@@ -171,12 +176,16 @@ struct move_and_score alphabeta(board_t *board, int my_player_id, int depth)
 
 struct move_t play(struct move_t previous_move)
 {
-	if (previous_move.queen_src != UINT_MAX && previous_move.queen_dst != UINT_MAX)
+	if (previous_move.queen_src != UINT_MAX && previous_move.queen_dst != UINT_MAX && previous_move.arrow_dst != UINT_MAX)
 	{
-		apply_move(global_player.board, &previous_move, global_player.player_id);
+		apply_move(global_player.board, &previous_move, abs((int)global_player.player_id - 1) % NUM_PLAYERS);
 	}
-	struct move_t move = alphabeta(global_player.board, global_player.player_id, 1).move;
-	apply_move(global_player.board, &move, global_player.player_id);
+	struct move_t move = alphabeta(global_player.board, global_player.player_id, (turns / divider) + 1).move;
+	if (move.queen_src != UINT_MAX && move.queen_dst != UINT_MAX && move.arrow_dst != UINT_MAX)
+		apply_move(global_player.board, &move, global_player.player_id);
+	if(++turns == divider){
+		divider += 1;
+	}
 	return move;
 }
 
