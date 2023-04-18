@@ -174,12 +174,17 @@ bool is_reachable_position(board_t *board, unsigned int src, unsigned int dst)
     for (size_t i = 0; i < set->count; i++)
     {
         if (set->positions[i] == dst)
+        {
+            free_position_set(set);
             return true;
+        }
     }
+    free_position_set(set);
     return false;
 }
 
-bool is_reachable_arrow(board_t *board, struct move_t *move, unsigned int player_id){
+bool is_reachable_arrow(board_t *board, struct move_t *move, unsigned int player_id)
+{
     apply_queen_move(board, player_id, move->queen_src, move->queen_dst);
     bool reachable = is_reachable_position(board, move->queen_dst, move->arrow_dst);
     cancel_queen_move(board, player_id, move->queen_src, move->queen_dst);
@@ -343,7 +348,8 @@ position_set *get_reachable_positions_generic(board_t *board, unsigned int posit
     return set;
 }
 
-position_set *get_reachable_arrows_generic(board_t *board, int player_id, unsigned int queen_src, unsigned int queen_dst){
+position_set *get_reachable_arrows_generic(board_t *board, int player_id, unsigned int queen_src, unsigned int queen_dst)
+{
     apply_queen_move(board, player_id, queen_src, queen_dst);
     position_set *set = get_reachable_positions_generic(board, queen_dst);
     cancel_queen_move(board, player_id, queen_src, queen_dst);
