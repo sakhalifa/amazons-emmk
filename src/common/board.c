@@ -209,7 +209,8 @@ void apply_move(board_t *board, struct move_t *move, unsigned int player_id)
     }
 }
 
-void cancel_move(board_t *board, struct move_t *move, unsigned int player_id){
+void cancel_move(board_t *board, struct move_t *move, unsigned int player_id)
+{
     board->arrows[move->arrow_dst] = false;
     // Find queens dst
     for (unsigned int queen_id = 0; queen_id < board->num_queens; ++queen_id)
@@ -310,7 +311,31 @@ void print_board(board_t *board)
     printf("/\n");
 }
 
-position_set *get_reachable_positions_generic(board_t *board, unsigned int position){
-    size_t max_different_moves = board->width*4 - 4;
+unsigned int find_neighbor_in_direction(struct graph_t *graph, unsigned int position, enum dir_t direction)
+{
+    for (size_t i = 0; i < graph->num_vertices; i++)
+    {
+        if (gsl_spmatrix_uint_get(graph->t, position, i) == direction)
+        {
+            return i;
+        }
+    }
+
+    return UINT_MAX;
+}
+
+position_set *get_reachable_positions_generic(board_t *board, unsigned int position)
+{
+    size_t max_different_moves = board->width * 4 - 4;
     position_set *set = init_position_set(max_different_moves);
+    for (enum dir_t dir = FIRST_DIR; dir <= LAST_DIR; dir++)
+    {
+        unsigned int neighbor_pos = find_neighbor_in_direction(board->graph, position, dir);
+        while (neighbor_pos != UINT_MAX && is_on_board(board, neighbor_pos) && is_cell_empty(board, neighbor_pos))
+        {
+            add_position(set, neighbor_pos);
+            neighbor_pos = find_neighbor_in_direction(board->graph, neighbor_pos, dir);
+        }
+    }
+    return set;
 }

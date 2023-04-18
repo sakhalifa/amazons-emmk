@@ -1,6 +1,8 @@
 #include "move.h"
 #include "board.h"
 #include "player_ext.h"
+#include <math.h>
+
 
 static player_t global_player;
 
@@ -9,7 +11,8 @@ void initialize(unsigned int player_id, struct graph_t *graph,
 {
 	global_player.player_id = player_id;
 	global_player.name = "alphabeta";
-	global_player.board = init_board(graph, num_queens);
+	size_t width = (size_t)sqrt(graph->num_vertices);
+	global_player.board = init_board(graph, num_queens, width);
 	for (size_t i = 0; i < NUM_PLAYERS; i++)
 	{
 		global_player.board->queens[i] = queens[i];
@@ -34,10 +37,10 @@ int get_score(board_t *board, int my_player_id)
 	int other_player_id = (my_player_id + 1) % 2;
 	for (size_t i = 0; i < board->num_queens; i++)
 	{
-		position_set *pos = reachable_positions_deprecated(board->queens[my_player_id][i]);
+		position_set *pos = get_reachable_positions_generic(board, board->queens[my_player_id][i]);
 		my_score += pos->count;
 		free_position_set(pos);
-		pos = reachable_positions_deprecated(board->queens[other_player_id][i]);
+		pos = get_reachable_positions_generic(board, board->queens[other_player_id][i]);
 		other_score += pos->count;
 		free_position_set(pos);
 	}
@@ -72,11 +75,11 @@ struct move_and_score alphabeta_recursive(board_t *board, struct move_t cur_move
 		{
 			bool break_for = false;
 			int queen_src = board->queens[cur_player_id][i];
-			position_set *queen_pos = reachable_positions_deprecated(queen_src);
+			position_set *queen_pos = get_reachable_positions_generic(board, queen_src);
 			for (size_t j = 0; j < queen_pos->count; j++)
 			{
 				int queen_dst = queen_pos->positions[j];
-				position_set *arrow_pos = reachable_positions_deprecated(queen_dst);
+				position_set *arrow_pos = get_reachable_positions_generic(board, queen_dst);
 				for (size_t k = 0; k < arrow_pos->count; k++)
 				{
 					int arrow_dst = arrow_pos->positions[k];
