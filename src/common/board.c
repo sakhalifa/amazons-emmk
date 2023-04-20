@@ -379,3 +379,26 @@ void cancel_queen_move(board_t *board, unsigned int player_id, unsigned int quee
         }
     }
 }
+
+int get_winner(board_t *board)
+{
+    for (size_t i = 0; i < NUM_PLAYERS; i++)
+    {
+        bool lose = true;
+        for (size_t j = 0; j < board->num_queens; j++)
+        {
+            position_set *set = get_reachable_positions_generic(board, board->queens[i][j]);
+            size_t count = set->count;
+            free_position_set(set);
+            if (count > 0)
+            {
+                lose = false;
+                break;
+            }
+        }
+        if (lose)
+            return (i + 1) % NUM_PLAYERS;
+    }
+
+    return -1;
+}
