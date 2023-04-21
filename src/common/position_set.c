@@ -1,5 +1,6 @@
-#include "position_set.h"
+#include <stdio.h>
 
+#include "position_set.h"
 
 
 position_set* init_position_set(size_t capacity) {
@@ -18,4 +19,12 @@ void free_position_set(position_set *position_set){
 void add_position(position_set* set, unsigned int position) {
     set->positions[set->count] = position;
     set->count++;
+}
+
+void print_position_set(position_set* set) {
+    printf("[ ");
+    for (size_t i = 0; i < set->count; ++i) {
+        printf("%u ", set->positions[i]);
+    }
+    printf("]\n");
 }

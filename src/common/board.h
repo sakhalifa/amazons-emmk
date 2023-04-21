@@ -14,10 +14,9 @@ typedef struct {
   unsigned int *queens[NUM_PLAYERS];
   unsigned int num_queens;
   bool *arrows; // 1-d maping of the positions of the arrows
-  size_t width;
 } board_t;
 
-board_t *init_board(struct graph_t *graph, unsigned int num_queens, size_t width);
+board_t *init_board(struct graph_t *graph, unsigned int num_queens);
 
 /// @brief return true if the given position is indexing a valid position on the
 /// board
@@ -45,6 +44,8 @@ void print_board(board_t *board);
 /// @param reachable_positions the position_set where the possible moves found by this function are added
 /// @param neighbor the id of the first reachable neighbor reached in the given direction
 void add_reachable_positions_aligned_deprecated(board_t* board, position_set* reachable_positions, unsigned int neighbor, enum dir_t direction_to_neighbor, size_t width);
+
+void add_reachable_positions_aligned(board_t *board, position_set *reachable_positions, unsigned int neighbor, enum dir_t direction_to_neighbor);
 
 /// @brief Gets all the reachable position from a given position. This is quite unoptimized BUT it works for any graph.
 /// @param board The board 

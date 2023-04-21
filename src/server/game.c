@@ -171,7 +171,7 @@ game_t *init_game_and_players(server_settings_t settings)
 	// Init board
 	struct graph_t *graph = init_graph(settings.game_type, settings.game_width);
 	unsigned int num_queens = 4 * (settings.game_width / 10 + 1);
-	board_t *board = init_board(graph, num_queens, settings.game_width);
+	board_t *board = init_board(graph, num_queens);
 	init_queens(board->queens, num_queens, settings.game_width);
 
 	// Init players

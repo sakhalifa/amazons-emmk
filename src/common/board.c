@@ -48,7 +48,31 @@ void add_reachable_positions_aligned_deprecated(board_t *board, position_set *re
     {
         found = false;
         size_t next_neighbor = 0;
-        while (next_neighbor < width)
+        while (next_neighbor < width) //bug? width != num_vertices
+        {
+            enum dir_t direction_to_next_neighbor = gsl_spmatrix_uint_get(board->graph->t, neighbor, next_neighbor);
+            if (direction_to_next_neighbor == direction_to_neighbor && is_cell_empty(board, next_neighbor))
+            {
+                add_position(reachable_positions, next_neighbor);
+                neighbor = next_neighbor;
+                next_neighbor = 0;
+                found = true;
+                break;
+            }
+            ++next_neighbor;
+        }
+    }
+}
+
+void add_reachable_positions_aligned(board_t *board, position_set *reachable_positions, unsigned int neighbor, enum dir_t direction_to_neighbor)
+{
+    add_position(reachable_positions, neighbor);
+    bool found = true;
+    while (found)
+    {
+        found = false;
+        size_t next_neighbor = 0;
+        while (next_neighbor < board->graph->num_vertices)
         {
             enum dir_t direction_to_next_neighbor = gsl_spmatrix_uint_get(board->graph->t, neighbor, next_neighbor);
             if (direction_to_next_neighbor == direction_to_neighbor && is_cell_empty(board, next_neighbor))
@@ -201,13 +225,12 @@ bool is_move_legal(board_t *board, struct move_t *move, unsigned int player_id)
            is_reachable_arrow(board, move, player_id);
 }
 
-board_t *init_board(struct graph_t *graph, unsigned int num_queens, size_t width)
+board_t *init_board(struct graph_t *graph, unsigned int num_queens)
 {
     board_t *board = (board_t *)malloc(sizeof(board_t));
     board->graph = graph;
     board->num_queens = num_queens;
     board->arrows = (bool *)malloc(sizeof(bool) * graph->num_vertices);
-    board->width = width;
     for (size_t i = 0; i < graph->num_vertices; ++i)
     {
         board->arrows[i] = false;
@@ -328,13 +351,13 @@ unsigned int find_neighbor_in_direction(struct graph_t *graph, unsigned int posi
             return i;
         }
     }
-
     return UINT_MAX;
 }
 
 position_set *get_reachable_positions_generic(board_t *board, unsigned int position)
 {
-    size_t max_different_moves = board->width * 4 - 4;
+    size_t width = (size_t)sqrt(board->graph->num_vertices);
+    size_t max_different_moves = width * 4 - 4;
     position_set *set = init_position_set(max_different_moves);
     for (enum dir_t dir = FIRST_DIR; dir <= LAST_DIR; dir++)
     {
@@ -358,11 +381,11 @@ position_set *get_reachable_arrows_generic(board_t *board, int player_id, unsign
 
 void apply_queen_move(board_t *board, unsigned int player_id, unsigned int queen_src, unsigned int queen_dst)
 {
-    for (unsigned int queen_id = 0; queen_id < board->num_queens; ++queen_id)
+    for (unsigned int queen_index = 0; queen_index < board->num_queens; ++queen_index)
     {
-        if (board->queens[player_id][queen_id] == queen_src)
+        if (board->queens[player_id][queen_index] == queen_src)
         {
-            board->queens[player_id][queen_id] = queen_dst;
+            board->queens[player_id][queen_index] = queen_dst;
             break;
         }
     }
@@ -370,11 +393,11 @@ void apply_queen_move(board_t *board, unsigned int player_id, unsigned int queen
 
 void cancel_queen_move(board_t *board, unsigned int player_id, unsigned int queen_src, unsigned int queen_dst)
 {
-    for (unsigned int queen_id = 0; queen_id < board->num_queens; ++queen_id)
+    for (unsigned int queen_index = 0; queen_index < board->num_queens; ++queen_index)
     {
-        if (board->queens[player_id][queen_id] == queen_dst)
+        if (board->queens[player_id][queen_index] == queen_dst)
         {
-            board->queens[player_id][queen_id] = queen_src;
+            board->queens[player_id][queen_index] = queen_src;
             break;
         }
     }

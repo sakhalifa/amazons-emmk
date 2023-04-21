@@ -20,7 +20,7 @@ char const *get_player_name()
     return global_player.name;
 }
 
-position_set *reachable_positions(unsigned int queen_position)
+position_set *reachable_positions_square_opti(unsigned int queen_position)
 {
     size_t max_different_moves = (global_player.board->graph->num_vertices * 4 - 4);
     position_set *moves = init_position_set(max_different_moves);
