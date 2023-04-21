@@ -66,6 +66,8 @@ node_t *get_max_child(node_t *node)
 			max_child = child;
 		}
 	}
+
+	return max_child;
 }
 
 struct node_and_player selection(node_t *root)
@@ -133,6 +135,7 @@ unsigned int rollout(struct node_and_player to_simulate)
 		player_id = (player_id + 1) % NUM_PLAYERS;
 		cancel_move(global_player.board, (struct move_t *)array_list_get(move_stack, i), player_id);
 	}
+	array_list_free(move_stack);
 	return (unsigned int)winner;
 }
 
@@ -203,7 +206,9 @@ struct move_t play(struct move_t previous_move)
 	}
 
 	do_one_mcts_iteration();
-	struct node_and_player selected = selection(monte_carlo_tree);
+	node_t *selected = get_max_child(monte_carlo_tree);
+	struct move_t ret = ((struct node_data*)node_get_data(selected))->transition.move;
+	return ret;
 }
 
 void finalize()
