@@ -41,8 +41,8 @@ struct node_data *create_node_data(struct move_t move, unsigned int player_id)
 
 double UCT1(node_t *parent, node_t *successor)
 {
-	struct node_data *parent_data = (struct node_data *)node_get_data(parent);
-	struct node_data *successor_data = (struct node_data *)node_get_data(successor);
+	struct node_data *parent_data = (struct node_data *)node_get_value(parent);
+	struct node_data *successor_data = (struct node_data *)node_get_value(successor);
 
 	double exploitation_rate = successor_data->wins / successor_data->visits;
 
@@ -53,14 +53,14 @@ double UCT1(node_t *parent, node_t *successor)
 
 node_t *get_max_child(node_t *node)
 {
-	double max = DBL_MIN;
+	double max = -DBL_MAX;
 	node_t *max_child = NULL;
 	array_list_t *children = node_get_children(node);
 	for (size_t i = 0; i < array_list_length(children); i++)
 	{
 		node_t *child = (node_t *)array_list_get(children, i);
 		double uct_res = UCT1(node, child);
-		if (uct_res > max)
+		if (uct_res >= max)
 		{
 			max = uct_res;
 			max_child = child;
@@ -73,11 +73,11 @@ node_t *get_max_child(node_t *node)
 struct node_and_player selection(node_t *root)
 {
 	int player_id = global_player.player_id;
-	
+
 	for (array_list_t *children = node_get_children(root); get_winner(global_player.board) == -1 && array_list_length(children) > 0; children = node_get_children(root))
 	{
 		root = get_max_child(root);
-		struct move_t *move = &((struct node_data *)node_get_data(root))->transition.move;
+		struct move_t *move = &((struct node_data *)node_get_value(root))->transition.move;
 		apply_move(global_player.board, move, player_id);
 		player_id = (player_id + 1) % NUM_PLAYERS;
 	}
@@ -102,7 +102,9 @@ void expansion(struct node_and_player selection)
 				struct move_t move = {queen_src, queen_dst, arrow_dst};
 				node_add_child(selected_node, create_node_data(move, selection.player_id));
 			}
+			free_position_set(arrow_pos);
 		}
+		free_position_set(queen_pos);
 	}
 }
 
@@ -145,9 +147,14 @@ void backtrack(struct node_and_player simulated, unsigned int winner_id)
 	int result = winner_id == global_player.player_id ? 1 : -1;
 	while (cur != NULL)
 	{
-		struct node_data *data = (struct node_data *)node_get_data(cur);
+		struct node_data *data = (struct node_data *)node_get_value(cur);
 		data->visits++;
 		data->wins += result;
+		if (node_get_parent(cur) != NULL)
+		{
+			cancel_move(global_player.board, &data->transition.move, data->transition.player_id);
+		}
+		cur = node_get_parent(cur);
 	}
 }
 
@@ -204,10 +211,16 @@ struct move_t play(struct move_t previous_move)
 		tree_free(monte_carlo_tree);
 		monte_carlo_tree = corresponding_node;
 	}
-
-	do_one_mcts_iteration();
+	for (int i = 0; i < 100; i++)
+		do_one_mcts_iteration();
 	node_t *selected = get_max_child(monte_carlo_tree);
-	struct move_t ret = ((struct node_data*)node_get_data(selected))->transition.move;
+	if (selected == NULL)
+	{
+		struct move_t ret = {-1, -1, -1};
+		return ret;
+	}
+	struct move_t ret = ((struct node_data *)node_get_value(selected))->transition.move;
+	apply_move(global_player.board, &ret, global_player.player_id);
 	return ret;
 }
 
@@ -215,4 +228,9 @@ void finalize()
 {
 	board_free(global_player.board);
 	tree_free(monte_carlo_tree);
+}
+
+char const *get_player_name()
+{
+	return global_player.name;
 }
