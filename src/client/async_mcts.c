@@ -116,10 +116,18 @@ unsigned int rollout(struct node_and_player to_simulate)
 	int winner;
 	int player_id = to_simulate.player_id;
 	array_list_t *move_stack = array_list_init(0, free);
-	while ((winner = get_winner(global_player.board)) != -1)
+	while ((winner = get_winner(global_player.board)) == -1)
 	{
-		int queen_src = rand() % global_player.board->num_queens;
-		position_set *set = get_reachable_positions_generic(global_player.board, global_player.board->queens[player_id][queen_src]);
+		int queen_src_id = rand() % global_player.board->num_queens;
+		unsigned int queen_src = global_player.board->queens[player_id][queen_src_id];
+		position_set *set = get_reachable_positions_generic(global_player.board, queen_src);
+		while (set->count == 0)
+		{
+			free_position_set(set);
+			queen_src_id = (queen_src_id + 1) % global_player.board->num_queens;
+			queen_src = global_player.board->queens[player_id][queen_src_id];
+			set = get_reachable_positions_generic(global_player.board, queen_src);
+		}
 		int queen_dst = set->positions[rand() % set->count];
 		free_position_set(set);
 		set = get_reachable_arrows_generic(global_player.board, player_id, queen_src, queen_dst);
