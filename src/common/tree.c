@@ -12,7 +12,7 @@ struct node
 
 void vs_node_free(void *vn)
 {
-    node_free((node_t *)vn);
+    tree_free((node_t *)vn);
 }
 
 node_t *tree_create(void *val, void (*free_func)(void *))
@@ -58,6 +58,13 @@ bool node_has_child(node_t *node, void *val, int (*cmp_func)(void *, void *))
         }
     }
     return false;
+}
+
+node_t *node_get_child(node_t *node, void *val, int (*cmp_func)(void*, void*)){
+    int idx = array_list_get_index(node->children, val, cmp_func);
+    if(idx == -1)
+        return NULL;
+    return array_list_get(node->children, idx);
 }
 
 node_t *node_remove_child(node_t *node, void *val, int (*cmp_func)(void *, void *))
@@ -117,7 +124,7 @@ bool node_has_parent(node_t *node, void *val, int (*cmp_func)(void *, void *))
     return node_has_parent(node->parent, val, cmp_func);
 }
 
-void node_free(node_t *root)
+void tree_free(node_t *root)
 {
     if (root == NULL)
     {
@@ -145,4 +152,22 @@ void node_print(node_t *node, unsigned int indents, void (*print_value)(void *))
 void tree_print(node_t *root, void (*print_value)(void *))
 {
     node_print(root, 0, print_value);
+}
+
+void detach_node(node_t *node){
+    if(node->parent == NULL)
+        return;
+
+    node_t *parent = node->parent;
+    node->parent = NULL;
+    for(size_t i = 0; i<array_list_length(parent->children); i++){
+        // We can check on addresses because it's guaranteed parent contains the address of node.
+        if((node_t*)array_list_get(parent->children, i) == node){
+            array_list_remove(parent->children, i);
+            return;
+        }
+    }
+
+    fprintf(stderr, "FATAL ERROR! Could not find child in its parent!\n");
+    exit(1);
 }

@@ -34,11 +34,17 @@ node_t *node_get_parent(node_t *node);
 
 array_list_t *node_get_children(node_t *node);
 
+node_t *node_get_child(node_t *node, void *val, int (*cmp_func)(void*, void*));
+
 /**
  * Gets a child with a certain value from a tree and returns it. If it is not found,
  * returns NULL.
 */
 node_t *tree_get_node(const node_t *root, void* val, int (*cmp_func)(void*, void*));
+
+/// @brief Detaches a node from its containing tree, making it the root of a new tree.
+/// @param node the node to detach
+void detach_node(node_t *node);
 
 /**
  * Returns the root of the tree that contains the node
@@ -54,6 +60,7 @@ bool node_has_child(node_t *node, void* val, int (*cmp_func)(void*, void*));
 */
 bool node_has_parent(node_t *node, void* val, int (*cmp_func)(void*, void*));
 
+
 /**
  * Prints the tree
 */
@@ -62,6 +69,6 @@ void tree_print(node_t* root, void (*printValue)(void*));
 /**
  * Frees a whole tree.
 */
-void node_free(node_t* root);
+void tree_free(node_t* root);
 
 #endif
