@@ -22,10 +22,11 @@ server_settings_t get_args(int argc, char *const *argv)
 	server_settings_t settings = {
 		.game_type = SQUARE,
 		.game_width = 5,
+		.seed = time(NULL)
 	};
 	char opt;
 	int width;
-	while ((opt = getopt(argc, argv, "t:m:")) != -1)
+	while ((opt = getopt(argc, argv, "t:m:s:")) != -1)
 	{
 		switch (opt)
 		{
@@ -55,7 +56,11 @@ server_settings_t get_args(int argc, char *const *argv)
 			}
 			settings.game_width = width;
 			break;
+		case 's':
+			settings.seed = atoi(optarg);
+			break;
 		}
+		
 	}
 	if (argv[optind] == NULL || argv[optind + 1] == NULL)
 	{
@@ -72,6 +77,7 @@ int main(int argc, char *const *argv)
 {
 	srand(time(NULL));
 	server_settings_t args = get_args(argc, argv);
+	srand(args.seed);
 	game_t *game = init_game_and_players(args);
 
 	struct move_t current_move = {-1, -1, -1};

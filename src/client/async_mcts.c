@@ -90,17 +90,18 @@ void expansion(struct node_and_player selection)
 	node_t *selected_node = selection.node;
 	for (size_t i = 0; i < global_player.board->num_queens; i++)
 	{
-		unsigned int queen_src = global_player.board->queens[global_player.player_id][i];
+		unsigned int queen_src = global_player.board->queens[selection.player_id][i];
 		position_set *queen_pos = get_reachable_positions_generic(global_player.board, queen_src);
 		for (size_t j = 0; j < queen_pos->count; j++)
 		{
 			unsigned int queen_dst = queen_pos->positions[j];
-			position_set *arrow_pos = get_reachable_arrows_generic(global_player.board, global_player.player_id, queen_src, queen_dst);
+			position_set *arrow_pos = get_reachable_arrows_generic(global_player.board, selection.player_id, queen_src, queen_dst);
 			for (size_t k = 0; k < arrow_pos->count; k++)
 			{
 				int arrow_dst = arrow_pos->positions[k];
 				struct move_t move = {queen_src, queen_dst, arrow_dst};
 				node_add_child(selected_node, create_node_data(move, selection.player_id));
+				i++;
 			}
 			free_position_set(arrow_pos);
 		}
@@ -158,10 +159,6 @@ void backtrack(struct node_and_player simulated, unsigned int winner_id)
 		struct node_data *data = (struct node_data *)node_get_value(cur);
 		data->visits++;
 		data->wins += result;
-		if (node_get_parent(cur) != NULL)
-		{
-			cancel_move(global_player.board, &data->transition.move, data->transition.player_id);
-		}
 		cur = node_get_parent(cur);
 	}
 }
@@ -189,6 +186,15 @@ int cmp_node_data_move(struct move_t *move, struct node_data *data)
 	return 1;
 }
 
+void rollback_selection(node_t *selected_node){
+	while(selected_node != NULL){
+		struct node_data *data = (struct node_data*)node_get_value(selected_node);
+		if(node_get_parent(selected_node) != NULL)
+			cancel_move(global_player.board, &data->transition.move, data->transition.player_id);
+		selected_node = node_get_parent(selected_node);
+	}
+}
+
 void do_one_mcts_iteration()
 {
 	struct node_and_player selected_node = selection(monte_carlo_tree);
@@ -196,10 +202,16 @@ void do_one_mcts_iteration()
 	array_list_t *children = node_get_children(selected_node.node);
 	for (size_t i = 0; i < array_list_length(children); i++)
 	{
-		struct node_and_player to_simulate = {.node = array_list_get(children, i), .player_id = selected_node.player_id};
+		node_t *child = array_list_get(children, i);
+		struct node_data *data = (struct node_data*)node_get_value(child);
+		apply_move(global_player.board, &data->transition.move, data->transition.player_id);
+		struct node_and_player to_simulate = {.node = child, .player_id = (selected_node.player_id + 1) % NUM_PLAYERS};
 		unsigned int winner = rollout(to_simulate);
+		cancel_move(global_player.board, &data->transition.move, data->transition.player_id);
 		backtrack(to_simulate, winner);
 	}
+
+	rollback_selection(selected_node.node);
 }
 
 struct move_t play(struct move_t previous_move)
