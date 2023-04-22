@@ -75,10 +75,23 @@ struct move_t play(struct move_t previous_move)
     }
     struct move_t default_move = {UINT_MAX - 1, UINT_MAX - 1, UINT_MAX - 1};
     struct move_t played_move;
-    played_move.queen_src = global_player.board->queens[global_player.player_id][rand() % global_player.board->num_queens];
-    printf("%u\n", played_move.queen_src);
-    position_set *queen_possible_moves = reachable_positions(played_move.queen_src);
-    print_position_set(queen_possible_moves);
+
+    position_set* available_queens = init_position_set(global_player.board->num_queens);
+    for (size_t i = 0; i < global_player.board->num_queens; ++i) {
+        add_position(available_queens, global_player.board->queens[global_player.player_id][i]);
+    }
+
+    size_t chosen_queen_index;
+    position_set *queen_possible_moves;
+    do {
+        chosen_queen_index = rand() % available_queens->count;
+        queen_possible_moves = reachable_positions(available_queens->positions[chosen_queen_index]);
+        remove_position_at_index(available_queens, chosen_queen_index);
+    } while (queen_possible_moves->count == 0 && available_queens->count > 0);
+    
+    played_move.queen_src = global_player.board->queens[global_player.player_id][chosen_queen_index];
+    //printf("%u\n", played_move.queen_src);
+    //print_position_set(queen_possible_moves);
     if (queen_possible_moves->count == 0) {
         return default_move;
     }
@@ -86,9 +99,6 @@ struct move_t play(struct move_t previous_move)
     apply_queen_move(global_player.board, global_player.player_id, played_move.queen_src, played_move.queen_dst);
     free_position_set(queen_possible_moves);
     position_set *arrow_possible_moves = reachable_positions(played_move.queen_dst);
-    if (arrow_possible_moves->count == 0) {
-        return default_move;
-    }
     played_move.arrow_dst = arrow_possible_moves->positions[rand() % arrow_possible_moves->count];
     global_player.board->arrows[played_move.arrow_dst] = true;
     free_position_set(arrow_possible_moves);

@@ -12,5 +12,6 @@ position_set* init_position_set(size_t capacity);
 void add_position(position_set* set, unsigned int position);
 void free_position_set(position_set *position_set);
 void print_position_set(position_set* set);
+void remove_position_at_index(position_set* set, size_t position_index);
 
 #endif // _POSITION_SET_H_
