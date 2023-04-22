@@ -231,7 +231,7 @@ struct move_t play(struct move_t previous_move)
 		tree_free(monte_carlo_tree);
 		monte_carlo_tree = corresponding_node;
 	}
-	for(int i = 0; i<10; i++)
+	for(int i = 0; i<30; i++)
 		do_one_mcts_iteration();
 	node_t *selected = get_max_child(monte_carlo_tree);
 	if (selected == NULL)
