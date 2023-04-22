@@ -19,7 +19,7 @@ server: server.o dir.o player_handle.o graph.o game.o board.o position_set.o
 
 test: alltests
 
-PLAYER_TARGETS=player.o dir.o board.o position_set.o graph.o
+PLAYER_TARGETS=alphabeta.o dir.o board.o position_set.o graph.o
 
 player1.so: $(PLAYER_TARGETS)
 	gcc -shared $(CFLAGS) $^ $(LDFLAGS) -o player1.so
