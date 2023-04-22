@@ -98,8 +98,8 @@ struct move_t play(struct move_t previous_move)
     played_move.queen_src = available_queens->positions[chosen_queen_index];
     free_position_set(available_queens);
     
-    printf("%u\n", played_move.queen_src);
-    print_position_set(queen_possible_moves);
+    // printf("%u\n", played_move.queen_src);
+    // print_position_set(queen_possible_moves);
     played_move.queen_dst = queen_possible_moves->positions[rand() % queen_possible_moves->count];
     apply_queen_move(global_player.board, global_player.player_id, played_move.queen_src, played_move.queen_dst);
     free_position_set(queen_possible_moves);
