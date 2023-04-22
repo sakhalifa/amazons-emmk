@@ -75,7 +75,6 @@ server_settings_t get_args(int argc, char *const *argv)
 
 int main(int argc, char *const *argv)
 {
-	srand(time(NULL));
 	server_settings_t args = get_args(argc, argv);
 	srand(args.seed);
 	game_t *game = init_game_and_players(args);

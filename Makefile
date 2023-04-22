@@ -1,5 +1,5 @@
 GSL_PATH ?= /net/ens/renault/save/gsl-2.6/install
-CFLAGS = -std=c99 -Wall -Wextra -Wno-unknown-pragmas -fPIC -g3 -I$(GSL_PATH)/include --coverage
+CFLAGS = -std=c99 -Wall -Wextra -Wno-unknown-pragmas -fPIC -g3 -pg -I$(GSL_PATH)/include --coverage
 LDFLAGS = -lm -lgsl -lgslcblas -ldl \
 	-L$(GSL_PATH)/lib -L$(GSL_PATH)/lib64 \
 	-Wl,--rpath=${GSL_PATH}/lib
@@ -34,6 +34,9 @@ player_handle.o graph.o board.o position_set.o \
 mock_player.o player_handle.o
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o alltests
 
+profiling: $(PLAYER_TARGETS) dir.o player_handle.o graph.o game.o board.o position_set.o profiling.o
+	gcc $(CFLAGS) $^ $(LDFLAGS) -o profiler
+
 coverage: alltests
 	./alltests
 	gcov -o . server/game.c
@@ -48,9 +51,9 @@ install: build test
 	cp alltests install/alltests
 
 clean:
-	@rm -f *~ src/*~
-	@rm -fv *.o *.so *.gcno *.gcda *.gcov
-	@rm -rf install/*
+	@rm -vf *~ src/*~
+	@rm -fv *.o *.so *.gcno *.gcda *.gcov *.out
+	@rm -vrf install/*
 	@find . -executable -type f -not -iname "*.*" -delete
 	
 

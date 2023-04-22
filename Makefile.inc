@@ -52,6 +52,8 @@ game.o: src/server/game.c src/common/graph_ext.h src/common/graph.h \
 player_handle.o: src/server/player_handle.c src/server/player_handle.h \
  src/common/player.h src/common/move.h src/common/graph.h
 	gcc -c -I${COMMONDIR} -I${CLIENTDIR} -I${SERVERDIR} $(CFLAGS) -o $@ $<
+profiling.o: profiling.c
+	gcc -c -I${COMMONDIR} -I${CLIENTDIR} -I${SERVERDIR} $(CFLAGS) -o $@ $<
 test_game.o: test/test_game.c test/test_game.h test/game_impl.h \
  src/server/server.h src/server/player_handle.h src/common/player.h \
  src/common/move.h src/common/graph.h src/common/board.h src/common/dir.h \
