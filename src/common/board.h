@@ -59,6 +59,6 @@ position_set *get_reachable_arrows_generic(board_t *board, int player_id, unsign
 /// @param queen_position the position of the queen whose possibles moves are returned
 /// @param 
 /// @return all the possibles moves of the given queen
-position_set *reachable_positions(board_t *board, unsigned int queen_position)
+position_set *reachable_positions(board_t *board, unsigned int queen_position);
 
 #endif

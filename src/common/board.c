@@ -381,7 +381,8 @@ position_set *reachable_positions(board_t *board, unsigned int queen_position)
         if (direction_to_vertex != NO_DIR && is_cell_empty(board, vertex))
         {
             add_position(moves, vertex);
-            // equivalent to call of add_reachable_positions_aligned(board, moves, vertex, direction_to_vertex);
+            add_reachable_positions_aligned(board, moves, vertex, direction_to_vertex);
+            size_t current_vertex = vertex;
             bool found = true;
             while (found)
             {
@@ -389,11 +390,11 @@ position_set *reachable_positions(board_t *board, unsigned int queen_position)
                 size_t next_neighbor = 0;
                 while (next_neighbor < board->graph->num_vertices)
                 {
-                    enum dir_t direction_to_next_neighbor = gsl_spmatrix_uint_get(board->graph->t, vertex, next_neighbor);
+                    enum dir_t direction_to_next_neighbor = gsl_spmatrix_uint_get(board->graph->t, current_vertex, next_neighbor);
                     if (direction_to_next_neighbor == direction_to_vertex && is_cell_empty(board, next_neighbor))
                     {
-                        add_position(reachable_positions, next_neighbor);
-                        vertex = next_neighbor;
+                        add_position(moves, next_neighbor);
+                        current_vertex = next_neighbor;
                         next_neighbor = 0;
                         found = true;
                         break;
