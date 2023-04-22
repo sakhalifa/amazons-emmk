@@ -66,7 +66,6 @@ void add_reachable_positions_aligned_deprecated(board_t *board, position_set *re
 
 void add_reachable_positions_aligned(board_t *board, position_set *reachable_positions, unsigned int neighbor, enum dir_t direction_to_neighbor)
 {
-    add_position(reachable_positions, neighbor);
     bool found = true;
     while (found)
     {
@@ -354,10 +353,10 @@ unsigned int find_neighbor_in_direction(struct graph_t *graph, unsigned int posi
     return UINT_MAX;
 }
 
+// recursive calls and not as opti as reachable_positions.
 position_set *get_reachable_positions_generic(board_t *board, unsigned int position)
 {
-    size_t width = (size_t)sqrt(board->graph->num_vertices);
-    size_t max_different_moves = width * 4 - 4;
+    size_t max_different_moves = board->graph->num_vertices - 1;
     position_set *set = init_position_set(max_different_moves);
     for (enum dir_t dir = FIRST_DIR; dir <= LAST_DIR; dir++)
     {
@@ -370,6 +369,67 @@ position_set *get_reachable_positions_generic(board_t *board, unsigned int posit
     }
     return set;
 }
+
+// any board shape, no recursive call
+position_set *reachable_positions(board_t *board, unsigned int queen_position)
+{  
+    size_t max_different_moves = board->graph->num_vertices - 1;
+    position_set *moves = init_position_set(max_different_moves);
+    for (size_t vertex = 0; vertex < board->graph->num_vertices; ++vertex)
+    {
+        enum dir_t direction_to_vertex = gsl_spmatrix_uint_get(board->graph->t, (size_t)queen_position, vertex);
+        if (direction_to_vertex != NO_DIR && is_cell_empty(board, vertex))
+        {
+            add_position(moves, vertex);
+            // equivalent to call of add_reachable_positions_aligned(board, moves, vertex, direction_to_vertex);
+            bool found = true;
+            while (found)
+            {
+                found = false;
+                size_t next_neighbor = 0;
+                while (next_neighbor < board->graph->num_vertices)
+                {
+                    enum dir_t direction_to_next_neighbor = gsl_spmatrix_uint_get(board->graph->t, vertex, next_neighbor);
+                    if (direction_to_next_neighbor == direction_to_vertex && is_cell_empty(board, next_neighbor))
+                    {
+                        add_position(reachable_positions, next_neighbor);
+                        vertex = next_neighbor;
+                        next_neighbor = 0;
+                        found = true;
+                        break;
+                    }
+                    ++next_neighbor;
+                }
+            }
+        }
+    }
+    return moves;
+}
+
+//for square board shape, not opti
+//position_set *reachable_positions_deprecated(unsigned int queen_position)
+//{  
+//    size_t width = (size_t)sqrt(global_player.board->graph->num_vertices);
+//    size_t max_different_moves = width*4 - 4;
+//    position_set *moves = init_position_set(max_different_moves);
+//    for (size_t i = 0; i < global_player.board->graph->num_vertices; ++i)
+//    {
+//        enum dir_t direction_to_i = gsl_spmatrix_uint_get(global_player.board->graph->t, (size_t)queen_position, i);
+//        if (direction_to_i != NO_DIR && is_cell_empty(global_player.board, i))
+//        {
+//            //printf("in, q : %u, i : %u\n", queen_position, i); // for debug
+//            add_reachable_positions_aligned_deprecated(global_player.board, moves, i, direction_to_i, width);
+//        }
+//    }
+//    // printf("end\n"); // for debug
+//    return moves;
+//}
+
+// for square board (cardinal and diagonal directions), opti
+//position_set *reachable_positions_square_opti(unsigned int queen_position) {
+//    size_t width = (size_t)sqrt(global_player.board->graph->num_vertices);
+//    return NULL;
+//}
 
 position_set *get_reachable_arrows_generic(board_t *board, int player_id, unsigned int queen_src, unsigned int queen_dst)
 {
