@@ -231,7 +231,7 @@ struct move_t play(struct move_t previous_move)
 		tree_free(monte_carlo_tree);
 		monte_carlo_tree = corresponding_node;
 	}
-	for(int i = 0; i<30; i++)
+	for(int i = 0; i<100; i++)
 		do_one_mcts_iteration();
 	node_t *selected = get_max_child(monte_carlo_tree);
 	if (selected == NULL)
@@ -239,6 +239,9 @@ struct move_t play(struct move_t previous_move)
 		struct move_t ret = {-1, -1, -1};
 		return ret;
 	}
+	detach_node(selected);
+	tree_free(monte_carlo_tree);
+	monte_carlo_tree = selected;
 	struct move_t ret = ((struct node_data *)node_get_value(selected))->transition.move;
 	apply_move(global_player.board, &ret, global_player.player_id);
 	return ret;
