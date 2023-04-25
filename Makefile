@@ -10,6 +10,14 @@ COMMONDIR = ${SOURCEDIR}/common
 TESTDIR = test
 INSTALLDIR = install
 
+.SUFFIXES:
+
+%.o:
+	gcc -c -I${COMMONDIR} -I${CLIENTDIR} -I${SERVERDIR} $(CFLAGS) -o $@ $<
+
+%.so:
+	gcc -shared $(CFLAGS) $^ $(LDFLAGS) -o $@
+
 all: build
 
 build: server client
@@ -19,22 +27,20 @@ server: server.o dir.o player_handle.o graph.o game.o board.o position_set.o
 
 test: alltests
 
-PLAYER_TARGETS=player.o dir.o board.o position_set.o graph.o tree.o array_list.o util.o
+PLAYER_TARGETS=async_mcts.o dir.o board.o position_set.o graph.o tree.o array_list.o util.o
 
-player1.so: $(PLAYER_TARGETS)
-	gcc -shared $(CFLAGS) $^ $(LDFLAGS) -o player1.so
+alphabeta.so: player_ext.o alphabeta.o dir.o board.o position_set.o graph.o
 
-player2.so: $(PLAYER_TARGETS)
-	gcc -shared $(CFLAGS) $^ $(LDFLAGS) -o player2.so
+random.so: player_ext.o player.o dir.o board.o position_set.o graph.o
 
-client: player1.so player2.so
+client: mcts.so alphabeta.so random.so
 
 alltests: test_main.o test_game.o dir.o game.o \
 player_handle.o graph.o board.o position_set.o \
 mock_player.o player_handle.o
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o alltests
 
-profiling: $(PLAYER_TARGETS) dir.o player_handle.o graph.o game.o board.o position_set.o profiling.o
+profiling: alphabeta.o dir.o board.o position_set.o graph.o dir.o player_handle.o graph.o game.o board.o position_set.o profiling.o
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o profiler
 
 coverage: alltests
@@ -43,11 +49,11 @@ coverage: alltests
 
 
 run: install
-	./install/server ./install/player*.so
+	./install/server ./install/random.so ./install/alphabeta.so
 
 install: build test
 	cp server install/
-	cp player*.so install/
+	cp *.so install/
 	cp alltests install/alltests
 
 clean:
@@ -59,5 +65,5 @@ clean:
 
 .PHONY: client install test clean
 
-
 include Makefile.inc
+

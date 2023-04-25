@@ -3,18 +3,14 @@
 #include <stdbool.h>
 #include "player_ext.h"
 #include "position_set.h"
+#include "board.h"
 
 static player_t global_player;
 
 void initialize(unsigned int player_id, struct graph_t *graph,
                 unsigned int num_queens, unsigned int *queens[NUM_PLAYERS])
 {
-    global_player.player_id = player_id;
-    global_player.name = "bot";
-    global_player.board = init_board(graph, num_queens);
-    for(size_t i = 0; i < NUM_PLAYERS; i++){
-        global_player.board->queens[i] = queens[i];
-    }
+    generic_initialize(&global_player, player_id, graph, num_queens, queens, "bot");
 }
 
 char const *get_player_name()

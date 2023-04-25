@@ -11,15 +11,10 @@ static unsigned int turns = 0;
 void initialize(unsigned int player_id, struct graph_t *graph,
 				unsigned int num_queens, unsigned int *queens[NUM_PLAYERS])
 {
-	global_player.player_id = player_id;
-	global_player.name = "alphabeta";
+
+	generic_initialize(&global_player, player_id, graph, num_queens, queens, "alphabeta");
 	size_t width = (size_t)sqrt(graph->num_vertices);
-	divider = width;
-	global_player.board = init_board(graph, num_queens);
-	for (size_t i = 0; i < NUM_PLAYERS; i++)
-	{
-		global_player.board->queens[i] = queens[i];
-	}
+	divider = width + (width / 2);
 }
 
 char const *get_player_name()
@@ -138,7 +133,7 @@ struct move_and_score alphabeta_recursive(board_t *board, struct move_t cur_move
 					struct move_t move = {queen_src, queen_dst, arrow_dst};
 					// Transform current node to child node
 					apply_move(board, &move, cur_player_id);
-					int score = alphabeta_recursive(board, move, my_player_id, alpha, beta, (cur_player_id + 1) % 2, depth - 1).score;
+					int score = -alphabeta_recursive(board, move, my_player_id, alpha, beta, (cur_player_id + 1) % 2, depth - 1).score;
 					if (score < value)
 					{
 						value = score;
@@ -183,9 +178,7 @@ struct move_t play(struct move_t previous_move)
 	struct move_t move = alphabeta(global_player.board, global_player.player_id, (turns / divider) + 1).move;
 	if (move.queen_src != FIRST_MOVE_VAL && move.queen_dst != FIRST_MOVE_VAL && move.arrow_dst != FIRST_MOVE_VAL)
 		apply_move(global_player.board, &move, global_player.player_id);
-	if(++turns == divider){
-		divider += 1;
-	}
+	turns += 1;
 	return move;
 }
 

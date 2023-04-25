@@ -8,15 +8,26 @@
 #include "move_ext.h"
 #include "player.h"
 #include "position_set.h"
-
+#define EMPTY_CELL (NUM_PLAYERS + 1)
 typedef struct {
   struct graph_t *graph;
   unsigned int *queens[NUM_PLAYERS];
   unsigned int num_queens;
   bool *arrows; // 1-d maping of the positions of the arrows
+  /* 
+   * 1-d maping of the positions of the queens, to reduce time of is_cell_empty.
+   * EMPTY_CELL : No Queen on position
+   *  0 : Player 0 Queen on position
+   *  1 : Player 1 Queen on position
+  */
+  unsigned int *queens_on_board;
 } board_t;
 
 board_t *init_board(struct graph_t *graph, unsigned int num_queens);
+
+
+/// @brief Place the given queens on the board
+void place_queens_on_board(board_t *board, unsigned int* queens[NUM_PLAYERS], unsigned int num_queens);
 
 /// @brief return true if the given position is indexing a valid position on the
 /// board

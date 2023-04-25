@@ -101,6 +101,7 @@ int main(int argc, char *const *argv)
 
 	struct move_t current_move = {-1, -1, -1};
 	bool game_not_over = true;
+	size_t turns = 0;
 	while (game_not_over)
 	{
 
@@ -117,10 +118,11 @@ int main(int argc, char *const *argv)
 		// Play the move on the board
 		apply_move(game->board, &current_move, game->current_player);
 		update_player(game);
+		turns++;
 	}
 
 	unsigned int winner = game->current_player;
-	printf("Player %u ('%s') won!\n", winner, args.player_handles[winner].get_player_name());
+	printf("Player %u ('%s') won in %lu turns!\n", winner, args.player_handles[winner].get_player_name(), turns);
 	game_free(game);
 	for (int i = 0; i < NUM_PLAYERS; i++)
 	{
