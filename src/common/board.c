@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
 #include "board.h"
 #include "move.h"
 #include "player.h"
@@ -341,15 +343,45 @@ void print_board(board_t *board)
     printf("-/\n");
 }
 
+static bool is_cache_initialized = false;
+static unsigned int *neighbor_cache[NUM_DIRS];
+
+void initialize_neighbor_cache(size_t num_vertices)
+{
+    for (enum dir_t dir = FIRST_DIR; dir <= LAST_DIR; dir++)
+    {
+        neighbor_cache[dir - FIRST_DIR] = malloc(sizeof(unsigned int) * num_vertices);
+        for (size_t i = 0; i < num_vertices; i++)
+            neighbor_cache[dir - FIRST_DIR][i] = UINT_MAX - 1;
+    }
+}
+
+unsigned int find_neighbor_in_cache(unsigned int position, enum dir_t direction)
+{
+    return neighbor_cache[direction - FIRST_DIR][position];
+}
+
 unsigned int find_neighbor_in_direction(struct graph_t *graph, unsigned int position, enum dir_t direction)
 {
+    if (!is_cache_initialized)
+    {
+        initialize_neighbor_cache(graph->num_vertices);
+        is_cache_initialized = true;
+    }
+    unsigned int result = find_neighbor_in_cache(position, direction);
+    if (result != UINT_MAX - 1)
+    {
+        return result;
+    }
     for (size_t i = 0; i < graph->num_vertices; i++)
     {
         if (gsl_spmatrix_uint_get(graph->t, position, i) == direction)
         {
+            neighbor_cache[direction - FIRST_DIR][position] = i;
             return i;
         }
     }
+    neighbor_cache[direction - FIRST_DIR][position] = UINT_MAX;
     return UINT_MAX;
 }
 
@@ -462,4 +494,27 @@ void cancel_queen_move(board_t *board, unsigned int player_id, unsigned int quee
             break;
         }
     }
+}
+
+int get_winner(board_t *board)
+{
+    for (size_t i = 0; i < NUM_PLAYERS; i++)
+    {
+        bool lose = true;
+        for (size_t j = 0; j < board->num_queens; j++)
+        {
+            position_set *set = get_reachable_positions_generic(board, board->queens[i][j]);
+            size_t count = set->count;
+            free_position_set(set);
+            if (count > 0)
+            {
+                lose = false;
+                break;
+            }
+        }
+        if (lose)
+            return (i + 1) % NUM_PLAYERS;
+    }
+
+    return -1;
 }
