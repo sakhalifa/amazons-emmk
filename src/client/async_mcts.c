@@ -166,13 +166,7 @@ void backtrack(struct node_and_player simulated, unsigned int winner_id)
 void initialize(unsigned int player_id, struct graph_t *graph,
 				unsigned int num_queens, unsigned int *queens[NUM_PLAYERS])
 {
-	global_player.player_id = player_id;
-	global_player.name = "MCTS";
-	global_player.board = init_board(graph, num_queens);
-	for (size_t i = 0; i < NUM_PLAYERS; i++)
-	{
-		global_player.board->queens[i] = queens[i];
-	}
+	generic_initialize(&global_player, player_id, graph, num_queens, queens, "MCTS");
 
 	monte_carlo_tree = tree_create(create_node_data((struct move_t){-1, -1, -1}, -1), free);
 }
@@ -230,7 +224,7 @@ struct move_t play(struct move_t previous_move)
 		tree_free(monte_carlo_tree);
 		monte_carlo_tree = corresponding_node;
 	}
-	for(int i = 0; i<100; i++)
+	for(int i = 0; i<10; i++)
 		do_one_mcts_iteration();
 	node_t *selected = get_max_child(monte_carlo_tree);
 	if (selected == NULL)
