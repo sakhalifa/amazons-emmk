@@ -168,8 +168,7 @@ void initialize(unsigned int player_id, struct graph_t *graph,
 {
 	global_player.player_id = player_id;
 	global_player.name = "MCTS";
-	size_t width = (size_t)sqrt(graph->num_vertices);
-	global_player.board = init_board(graph, num_queens, width);
+	global_player.board = init_board(graph, num_queens);
 	for (size_t i = 0; i < NUM_PLAYERS; i++)
 	{
 		global_player.board->queens[i] = queens[i];
