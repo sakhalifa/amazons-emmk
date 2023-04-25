@@ -1,9 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
-#include "graph.h"
 #include "player_ext.h"
-#include "board.h"
 #include "position_set.h"
 
 static player_t global_player;
