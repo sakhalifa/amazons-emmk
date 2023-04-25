@@ -244,6 +244,8 @@ void finalize()
 {
 	board_free(global_player.board);
 	tree_free(monte_carlo_tree);
+	neighbors_cache_free();
+
 }
 
 char const *get_player_name()

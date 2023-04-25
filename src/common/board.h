@@ -29,6 +29,9 @@ board_t *init_board(struct graph_t *graph, unsigned int num_queens);
 /// @brief Place the given queens on the board
 void place_queens_on_board(board_t *board, unsigned int* queens[NUM_PLAYERS], unsigned int num_queens);
 
+/// @brief Frees the cache. THIS SHOULD NOT BE USED IF YOU STILL WANT TO USE METHODS. Or beware of the promised segfault
+void neighbors_cache_free();
+
 /// @brief return true if the given position is indexing a valid position on the
 /// board
 /// @param position the tested position
