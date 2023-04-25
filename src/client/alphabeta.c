@@ -58,7 +58,7 @@ int min(int a, int b)
 
 struct move_and_score alphabeta_recursive(board_t *board, struct move_t cur_move, int my_player_id, int alpha, int beta, int cur_player_id, int depth)
 {
-	if (depth == 0)
+	if (depth == 0 || get_winner(board) != -1)
 	{
 		struct move_and_score move_score = {.move = cur_move, .score = get_score(board, cur_player_id)};
 		return move_score;
