@@ -52,7 +52,7 @@ coverage: alltests
 
 
 run: install
-	./install/server ./install/player*.so
+	./install/server ./install/random.so ./install/alphabeta.so
 
 install: build test
 	cp server install/

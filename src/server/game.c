@@ -145,11 +145,11 @@ struct graph_t *init_graph(game_type_t game_type, size_t width)
 		if (width % 3 != 0)
 		{
 			fprintf(stderr, "For a DONUT graph, you need m mod 3 == 0\n");
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 		return init_donut_graph(width);
 	default:
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 
 	return NULL;

@@ -209,7 +209,7 @@ void do_one_mcts_iteration()
 
 struct move_t play(struct move_t previous_move)
 {
-	if (previous_move.queen_src != UINT_MAX && previous_move.queen_dst != UINT_MAX && previous_move.arrow_dst != UINT_MAX)
+	if (previous_move.queen_src != FIRST_MOVE_VAL && previous_move.queen_dst != FIRST_MOVE_VAL && previous_move.arrow_dst != FIRST_MOVE_VAL)
 	{
 		apply_move(global_player.board, &previous_move, abs((int)global_player.player_id - 1) % NUM_PLAYERS);
 		node_t *corresponding_node = node_get_child(monte_carlo_tree, &previous_move, (void *)cmp_node_data_move);

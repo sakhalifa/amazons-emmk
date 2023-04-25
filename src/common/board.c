@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "board.h"
-#include "move.h"
+#include "move_ext.h"
 #include "player.h"
 #include "position_set.h"
 #include "colors.h"

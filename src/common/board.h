@@ -5,7 +5,7 @@
 
 #include "dir.h"
 #include "graph_ext.h"
-#include "move.h"
+#include "move_ext.h"
 #include "player.h"
 #include "position_set.h"
 #define EMPTY_CELL (NUM_PLAYERS + 1)
