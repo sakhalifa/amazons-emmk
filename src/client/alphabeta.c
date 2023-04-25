@@ -15,7 +15,7 @@ void initialize(unsigned int player_id, struct graph_t *graph,
 
 	generic_initialize(&global_player, player_id, graph, num_queens, queens, "alphabeta");
 	size_t width = (size_t)sqrt(graph->num_vertices);
-	divider = width;
+	divider = width + (width / 2);
 }
 
 char const *get_player_name()
@@ -134,7 +134,7 @@ struct move_and_score alphabeta_recursive(board_t *board, struct move_t cur_move
 					struct move_t move = {queen_src, queen_dst, arrow_dst};
 					// Transform current node to child node
 					apply_move(board, &move, cur_player_id);
-					int score = alphabeta_recursive(board, move, my_player_id, alpha, beta, (cur_player_id + 1) % 2, depth - 1).score;
+					int score = -alphabeta_recursive(board, move, my_player_id, alpha, beta, (cur_player_id + 1) % 2, depth - 1).score;
 					if (score < value)
 					{
 						value = score;
@@ -176,12 +176,11 @@ struct move_t play(struct move_t previous_move)
 	{
 		apply_move(global_player.board, &previous_move, abs((int)global_player.player_id - 1) % NUM_PLAYERS);
 	}
+	printf("Depth: %d\n", (turns / divider) + 1);
 	struct move_t move = alphabeta(global_player.board, global_player.player_id, (turns / divider) + 1).move;
 	if (move.queen_src != UINT_MAX && move.queen_dst != UINT_MAX && move.arrow_dst != UINT_MAX)
 		apply_move(global_player.board, &move, global_player.player_id);
-	if(++turns == divider){
-		divider += 1;
-	}
+	turns += 1;
 	return move;
 }
 
