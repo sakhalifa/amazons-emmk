@@ -15,30 +15,14 @@ bool is_on_board(board_t *board, int position)
 
 bool is_cell_empty(board_t *board, unsigned int cell_position)
 {
-    for (size_t i = 0; i < NUM_PLAYERS; i++)
-    {
-        for (size_t j = 0; j < board->num_queens; j++)
-        {
-            if (board->queens[i][j] == cell_position)
-            {
-                return false;
-            }
-        }
-    }
-    return !board->arrows[cell_position];
+    return board->queens_on_board[cell_position] == -1 && !board->arrows[cell_position];    
 }
 
 bool has_queen(unsigned int player_id, board_t *board, unsigned int queen_position)
 {
-    for (size_t i = 0; i < board->num_queens; ++i)
-    {
-        if (board->queens[player_id][i] == queen_position)
-        {
-            return true;
-        }
-    }
-    return false;
+    return board->queens_on_board[queen_position] == player_id;
 }
+
 // old, deprecated
 void add_reachable_positions_aligned_deprecated(board_t *board, position_set *reachable_positions, unsigned int neighbor, enum dir_t direction_to_neighbor, size_t width)
 {
@@ -163,12 +147,7 @@ bool is_reachable_aligned_position(board_t *board, unsigned int src, unsigned in
     case DIR_SW:
         increment = width - 1;
         iterations = src % width;
-        break;
-    case DIR_NORTH:
-        increment = -width;
-        iterations = (size_t)src / width;
-        break;
-    case DIR_SOUTH:
+        break;is_cell_empty
         increment = width;
         iterations = (size_t)width - 1 - src / width;
         break;
@@ -230,11 +209,30 @@ board_t *init_board(struct graph_t *graph, unsigned int num_queens)
     board->graph = graph;
     board->num_queens = num_queens;
     board->arrows = (bool *)malloc(sizeof(bool) * graph->num_vertices);
+    board->queens_on_board = (int *)malloc(sizeof(int) * graph->num_vertices);
     for (size_t i = 0; i < graph->num_vertices; ++i)
     {
         board->arrows[i] = false;
+        board->queens_on_board[i] = -1;
     }
+    for (size_t i = 0; i < NUM_PLAYERS)
+    
     return board;
+}
+
+void place_queens_on_board(board_t *board, unsigned int* queens, unsigned int num_queens){
+    // Init queens array
+    for(size_t i = 0; i < NUM_PLAYERS; i++){
+        board->queens[i] = queens[i];
+    }
+
+    // Init board of queens (for direct access from a position)
+    for(size_t player_id = 0; player_id < NUM_PLAYERS; ++player_id){
+        for (size_t queen_index = 0; queen_index < num_queens; ++queen_index){
+            board->queens_on_board[queens[player_id][queen_index]] = player_id;
+        }
+    }
+
 }
 
 /// @brief Apply the given move to the given board.
@@ -450,6 +448,8 @@ void apply_queen_move(board_t *board, unsigned int player_id, unsigned int queen
             break;
         }
     }
+    board->queens_on_board[queen_src] = -1;
+    board->queens_on_board[queen_dst] = player_id;
 }
 
 void cancel_queen_move(board_t *board, unsigned int player_id, unsigned int queen_src, unsigned int queen_dst)
@@ -462,4 +462,6 @@ void cancel_queen_move(board_t *board, unsigned int player_id, unsigned int quee
             break;
         }
     }
+    board->queens_on_board[queen_src] = player_id;
+    board->queens_on_board[queen_dst] = -1;
 }

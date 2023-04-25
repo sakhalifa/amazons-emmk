@@ -14,9 +14,20 @@ typedef struct {
   unsigned int *queens[NUM_PLAYERS];
   unsigned int num_queens;
   bool *arrows; // 1-d maping of the positions of the arrows
+  /* 
+   * 1-d maping of the positions of the queens, to reduce time of is_cell_empty.
+   * -1 : No Queen on position
+   *  0 : Player 0 Queen on position
+   *  1 : Player 1 Queen on position
+  */
+  int *queens_on_board;
 } board_t;
 
 board_t *init_board(struct graph_t *graph, unsigned int num_queens);
+
+
+/// @brief Place the given queens on the board
+void place_queens_on_board(board_t *board, unsigned int* queens, unsigned int num_queens);
 
 /// @brief return true if the given position is indexing a valid position on the
 /// board
