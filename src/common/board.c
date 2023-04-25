@@ -224,6 +224,7 @@ void place_queens_on_board(board_t *board, unsigned int* queens[NUM_PLAYERS], un
     for(size_t i = 0; i < NUM_PLAYERS; i++){
         board->queens[i] = queens[i];
     }
+    printf("Placing queens\n");
 
     // Init board of queens (for direct access from a position)
     for(size_t player_id = 0; player_id < NUM_PLAYERS; ++player_id){
