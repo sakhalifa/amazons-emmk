@@ -255,7 +255,7 @@ void cancel_move(board_t *board, struct move_t *move, unsigned int player_id)
 void board_free(board_t *board)
 {
     graph_free(board->graph);
-    for (int i = 0; i < NUM_PLAYERS; i++)
+    for (int i = 0; i < NUM_PLAYERS; ++i)
         free(board->queens[i]);
     free(board->arrows);
     free(board->queens_on_board);
@@ -290,19 +290,18 @@ void print_board(board_t *board)
     printf("-\\\n");
     for (unsigned int i = 0; i < width; ++i)
     {
-        printf("%2d | ", i + 1);
+        printf("%2d |", i + 1);
         for (unsigned int j = 0; j < width; ++j)
         {
-            if (j > 0)
-                printf(" ");
+            printf(" ");
             unsigned int position = i * width + j;
             bool isReachable = false;
-            for (unsigned int i = 0; i < board->graph->t->size1; i++)
+            for (unsigned int x = 0; x < board->graph->t->nz; ++x)
             {
-                for (unsigned int k = board->graph->t->p[i]; k < (unsigned int)board->graph->t->p[i + 1]; k++)
+                for (unsigned int k = board->graph->t->p[x]; k < (unsigned int)board->graph->t->p[x + 1]; ++k)
                 {
                     unsigned int j = board->graph->t->i[k];
-                    if (i == position || j == position)
+                    if (x == position || j == position)
                     {
                         isReachable = true;
                         break;
