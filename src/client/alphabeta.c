@@ -2,6 +2,14 @@
 #include "player_ext.h"
 #include <math.h>
 
+#ifndef AGG_COEF
+#define AGG_COEF 50
+#endif
+
+#ifndef DEF_COEF
+#define DEF_COEF 50
+#endif
+
 static player_t global_player;
 
 static unsigned int divider = 0;
@@ -11,7 +19,6 @@ static unsigned int turns = 0;
 void initialize(unsigned int player_id, struct graph_t *graph,
 				unsigned int num_queens, unsigned int *queens[NUM_PLAYERS])
 {
-
 	generic_initialize(&global_player, player_id, graph, num_queens, queens, "alphabeta");
 	size_t width = (size_t)sqrt(graph->num_vertices);
 	divider = width + (width / 2);
@@ -42,8 +49,8 @@ int get_score(board_t *board, int my_player_id)
 		other_score += pos->count;
 		free_position_set(pos);
 	}
-
-	return other_score - my_score;
+	
+	return AGG_COEF * other_score - DEF_COEF * my_score;
 }
 
 int max(int a, int b)

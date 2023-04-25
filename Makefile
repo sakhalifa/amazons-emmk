@@ -1,5 +1,7 @@
 GSL_PATH ?= /net/ens/renault/save/gsl-2.6/install
-CFLAGS = -std=c99 -Wall -Wextra -Wno-unknown-pragmas -fPIC -g3 -pg -I$(GSL_PATH)/include --coverage
+AGG_COEF ?= 50
+DEF_COEF ?= 50
+CFLAGS = -std=c99 -Wall -Wextra -Wno-unknown-pragmas -fPIC -g3 -pg -DAGG_COEF=$(AGG_COEF) -DDEF_COEF=$(DEF_COEF) -I$(GSL_PATH)/include --coverage
 LDFLAGS = -lm -lgsl -lgslcblas -ldl \
 	-L$(GSL_PATH)/lib -L$(GSL_PATH)/lib64 \
 	-Wl,--rpath=${GSL_PATH}/lib
@@ -25,12 +27,14 @@ build: server client
 server: server.o dir.o player_handle.o graph.o game.o board.o position_set.o
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o server
 
-test: alltests
+test: alltestsprinf
 
 mcts.so: player_ext.o async_mcts.o dir.o board.o position_set.o graph.o tree.o array_list.o util.o
 mcts1.so: player_ext.o async_mcts.o dir.o board.o position_set.o graph.o tree.o array_list.o util.o
 
 alphabeta.so: player_ext.o alphabeta.o dir.o board.o position_set.o graph.o
+alphabeta_make: player_ext.o alphabeta.o dir.o board.o position_set.o graph.o
+	gcc -shared $(CFLAGS) $^ $(LDFLAGS) -o alphabeta_make.so
 alphabeta1.so: player_ext.o alphabeta.o dir.o board.o position_set.o graph.o
 
 random.so: player_ext.o player.o dir.o board.o position_set.o graph.o
@@ -66,7 +70,7 @@ clean:
 	@find . -executable -type f -not -iname "*.*" -delete
 	
 
-.PHONY: client install test clean
+.PHONY: client install test clean alphabeta_make
 
 include Makefile.inc
 
