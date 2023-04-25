@@ -15,7 +15,7 @@ bool is_on_board(board_t *board, int position)
 
 bool is_cell_empty(board_t *board, unsigned int cell_position)
 {
-    return board->queens_on_board[cell_position] == -1 && !board->arrows[cell_position];    
+    return board->queens_on_board[cell_position] == EMPTY_CELL && !board->arrows[cell_position];    
 }
 
 bool has_queen(unsigned int player_id, board_t *board, unsigned int queen_position)
@@ -147,7 +147,7 @@ bool is_reachable_aligned_position(board_t *board, unsigned int src, unsigned in
     case DIR_SW:
         increment = width - 1;
         iterations = src % width;
-        break;is_cell_empty
+        break;
         increment = width;
         iterations = (size_t)width - 1 - src / width;
         break;
@@ -209,18 +209,17 @@ board_t *init_board(struct graph_t *graph, unsigned int num_queens)
     board->graph = graph;
     board->num_queens = num_queens;
     board->arrows = (bool *)malloc(sizeof(bool) * graph->num_vertices);
-    board->queens_on_board = (int *)malloc(sizeof(int) * graph->num_vertices);
+    board->queens_on_board = (unsigned int *)malloc(sizeof(unsigned int) * graph->num_vertices);
     for (size_t i = 0; i < graph->num_vertices; ++i)
     {
         board->arrows[i] = false;
-        board->queens_on_board[i] = -1;
+        board->queens_on_board[i] = EMPTY_CELL;
     }
-    for (size_t i = 0; i < NUM_PLAYERS)
     
     return board;
 }
 
-void place_queens_on_board(board_t *board, unsigned int* queens, unsigned int num_queens){
+void place_queens_on_board(board_t *board, unsigned int* queens[NUM_PLAYERS], unsigned int num_queens){
     // Init queens array
     for(size_t i = 0; i < NUM_PLAYERS; i++){
         board->queens[i] = queens[i];
@@ -257,6 +256,7 @@ void board_free(board_t *board)
     for (int i = 0; i < NUM_PLAYERS; i++)
         free(board->queens[i]);
     free(board->arrows);
+    free(board->queens_on_board);
     free(board);
 }
 
@@ -448,7 +448,7 @@ void apply_queen_move(board_t *board, unsigned int player_id, unsigned int queen
             break;
         }
     }
-    board->queens_on_board[queen_src] = -1;
+    board->queens_on_board[queen_src] = EMPTY_CELL;
     board->queens_on_board[queen_dst] = player_id;
 }
 
@@ -463,5 +463,5 @@ void cancel_queen_move(board_t *board, unsigned int player_id, unsigned int quee
         }
     }
     board->queens_on_board[queen_src] = player_id;
-    board->queens_on_board[queen_dst] = -1;
+    board->queens_on_board[queen_dst] = EMPTY_CELL;
 }
