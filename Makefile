@@ -40,7 +40,7 @@ player_handle.o graph.o board.o position_set.o \
 mock_player.o player_handle.o
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o alltests
 
-profiling: $(PLAYER_TARGETS) dir.o player_handle.o graph.o game.o board.o position_set.o profiling.o
+profiling: alphabeta.o dir.o board.o position_set.o graph.o dir.o player_handle.o graph.o game.o board.o position_set.o profiling.o
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o profiler
 
 coverage: alltests

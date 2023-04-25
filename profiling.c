@@ -11,8 +11,9 @@ int main(void){
 	size_t width = 10;
 	struct graph_t *graph = init_square_graph(width);
 	unsigned int num_queens = 4 * (width / 10 + 1);
-	board_t *board = init_board(graph, num_queens, width);
+	board_t *board = init_board(graph, num_queens);
 	init_queens(board->queens, num_queens, width);
+	place_queens_on_board(board, board->queens, num_queens);
 
 	initialize(0, graph, num_queens, board->queens);
 	struct move_t prev_move = {-1, -1, -1};
