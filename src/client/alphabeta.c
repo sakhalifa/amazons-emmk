@@ -1,5 +1,4 @@
-#include "move.h"
-#include "board.h"
+#include "move_ext.h"
 #include "player_ext.h"
 #include <math.h>
 
@@ -177,12 +176,12 @@ struct move_and_score alphabeta(board_t *board, int my_player_id, int depth)
 
 struct move_t play(struct move_t previous_move)
 {
-	if (previous_move.queen_src != UINT_MAX && previous_move.queen_dst != UINT_MAX && previous_move.arrow_dst != UINT_MAX)
+	if (previous_move.queen_src != FIRST_MOVE_VAL && previous_move.queen_dst != FIRST_MOVE_VAL && previous_move.arrow_dst != FIRST_MOVE_VAL)
 	{
 		apply_move(global_player.board, &previous_move, abs((int)global_player.player_id - 1) % NUM_PLAYERS);
 	}
 	struct move_t move = alphabeta(global_player.board, global_player.player_id, (turns / divider) + 1).move;
-	if (move.queen_src != UINT_MAX && move.queen_dst != UINT_MAX && move.arrow_dst != UINT_MAX)
+	if (move.queen_src != FIRST_MOVE_VAL && move.queen_dst != FIRST_MOVE_VAL && move.arrow_dst != FIRST_MOVE_VAL)
 		apply_move(global_player.board, &move, global_player.player_id);
 	if(++turns == divider){
 		divider += 1;

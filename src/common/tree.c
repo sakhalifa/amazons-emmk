@@ -169,5 +169,5 @@ void detach_node(node_t *node){
     }
 
     fprintf(stderr, "FATAL ERROR! Could not find child in its parent!\n");
-    exit(1);
+    exit(EXIT_FAILURE);
 }

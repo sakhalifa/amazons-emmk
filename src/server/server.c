@@ -5,13 +5,13 @@
 #include <dlfcn.h>
 #include "graph_ext.h"
 #include "dir.h"
-#include "move.h"
+#include "move_ext.h"
 
 #include "server.h"
 #include "game.h"
 #include "colors.h"
 
-#define USAGE_STRING "Usage: %s [-t |] [-m |] <player1.so> <player2.so>\n"
+#define USAGE_STRING "Usage: %s [-s |] [-t |] [-m |] <player1.so> <player2.so>\n"
 
 void print_usage(char *binary_name)
 {
@@ -32,6 +32,10 @@ server_settings_t get_args(int argc, char *const *argv)
 		switch (opt)
 		{
 		case 't':
+			if (optarg == NULL) { // never executed, it looks like there is a default error message. I let it here for security.
+				printf("Option 't' requires an argument (example: %s" GREEN " -t c " RESET "<player1.so> <player2.so>)\n", argv[0]);
+                exit(EXIT_FAILURE);
+			}
 			switch (optarg[0])
 			{
 			case 'c':
@@ -47,33 +51,41 @@ server_settings_t get_args(int argc, char *const *argv)
 				settings.game_type = EIGHT;
 				break;
 			default:
-				fprintf(stderr, "'%c' isn't a valid board shape (example: %s" GREEN " -t c " RESET "<player1.so> <player2.so>)\n", optarg[0], argv[0]);
-				exit(1);
+				fprintf(stderr, "'%s' isn't a valid board shape (example: %s" GREEN " -t c " RESET "<player1.so> <player2.so>)\n", optarg, argv[0]);
+				exit(EXIT_FAILURE);
 			}
 			break;
 		case 'm':
+			if (optarg == NULL) { // never executed, it looks like there is a default error message. I let it here for security.
+				printf("Option 'm' requires an argument (example: %s" GREEN " -m 10 " RESET "<player1.so> <player2.so>)\n", argv[0]);
+                exit(EXIT_FAILURE);
+			}
 			width = atoi(optarg);
 			if (width < 5)
 			{
 				fprintf(stderr, "Width should be >=5 (example: %s" GREEN " -m 10 " RESET "<player1.so> <player2.so>)\n", argv[0]);
-				exit(1);
+				exit(EXIT_FAILURE);
 			}
 			settings.game_width = width;
 			break;
 		case 's':
+			if (optarg == NULL) { // never executed, it looks like there is a default error message. I let it here for security.
+				printf("Option 's' requires an argument (example: %s" GREEN " -s 10 " RESET "<player1.so> <player2.so>)\n", argv[0]);
+                exit(EXIT_FAILURE);
+			}
 			settings.seed = atoi(optarg);
 			break;
 		default:
 			fprintf(stderr, "'%c' isn't a valid parameter.\n", opt);
 			print_usage(argv[0]);
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 		
 	}
 	if (argv[optind] == NULL || argv[optind + 1] == NULL)
 	{
 		print_usage(argv[0]);
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 
 	settings.player_handles[0] = create_player_handle(argv[optind]);

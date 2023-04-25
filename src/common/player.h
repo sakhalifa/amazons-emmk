@@ -3,7 +3,7 @@
 
 #define NUM_PLAYERS 2
 
-#include "move.h"
+#include "move_ext.h"
 #include "graph.h"
 
 /* Access to player informations

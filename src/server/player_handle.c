@@ -6,7 +6,7 @@ player_handle_t create_player_handle(char *filepath){
 	if (player_handle == NULL)
 	{
 		fprintf(stderr, "Invalid library path '%s'!\n", filepath);
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 	player_handle_t p = {
 		.dl_handle = player_handle,

@@ -24,7 +24,7 @@ char const *get_player_name()
 
 struct move_t play(struct move_t previous_move)
 {
-    if (previous_move.queen_src != UINT_MAX)
+    if (previous_move.queen_src != FIRST_MOVE_VAL)
     {
         apply_move(global_player.board, &previous_move, (global_player.player_id + 1) % 2);
     }

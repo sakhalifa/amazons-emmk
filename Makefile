@@ -19,7 +19,7 @@ server: server.o dir.o player_handle.o graph.o game.o board.o position_set.o
 
 test: alltests
 
-PLAYER_TARGETS=async_mcts.o dir.o board.o position_set.o graph.o tree.o array_list.o util.o
+PLAYER_TARGETS=player.o dir.o board.o position_set.o graph.o tree.o array_list.o util.o
 
 player1.so: $(PLAYER_TARGETS)
 	gcc -shared $(CFLAGS) $^ $(LDFLAGS) -o player1.so
