@@ -343,6 +343,12 @@ void print_board(board_t *board)
 static bool is_cache_initialized = false;
 static unsigned int *neighbor_cache[NUM_DIRS];
 
+void neighbors_cache_free(){
+    for(size_t i = 0; i<NUM_DIRS; i++){
+        free(neighbor_cache[i]);
+    }
+}
+
 void initialize_neighbor_cache(size_t num_vertices)
 {
     for (enum dir_t dir = FIRST_DIR; dir <= LAST_DIR; dir++)

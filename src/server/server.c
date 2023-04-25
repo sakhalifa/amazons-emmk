@@ -129,6 +129,6 @@ int main(int argc, char *const *argv)
 		args.player_handles[i].finalize();
 		dlclose(args.player_handles[i].dl_handle);
 	}
-
+	neighbors_cache_free();
 	return 0;
 }

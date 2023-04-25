@@ -185,4 +185,5 @@ struct move_t play(struct move_t previous_move)
 void finalize()
 {
 	board_free(global_player.board);
+	neighbors_cache_free();
 }

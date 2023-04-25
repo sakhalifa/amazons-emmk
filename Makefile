@@ -27,13 +27,16 @@ server: server.o dir.o player_handle.o graph.o game.o board.o position_set.o
 
 test: alltests
 
-PLAYER_TARGETS=async_mcts.o dir.o board.o position_set.o graph.o tree.o array_list.o util.o
+mcts.so: player_ext.o async_mcts.o dir.o board.o position_set.o graph.o tree.o array_list.o util.o
+mcts1.so: player_ext.o async_mcts.o dir.o board.o position_set.o graph.o tree.o array_list.o util.o
 
 alphabeta.so: player_ext.o alphabeta.o dir.o board.o position_set.o graph.o
+alphabeta1.so: player_ext.o alphabeta.o dir.o board.o position_set.o graph.o
 
 random.so: player_ext.o player.o dir.o board.o position_set.o graph.o
+random1.so: player_ext.o player.o dir.o board.o position_set.o graph.o
 
-client: mcts.so alphabeta.so random.so
+client: mcts.so alphabeta.so random.so mcts1.so alphabeta1.so random1.so
 
 alltests: test_main.o test_game.o dir.o game.o \
 player_handle.o graph.o board.o position_set.o \
