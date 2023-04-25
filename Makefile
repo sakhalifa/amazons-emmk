@@ -10,6 +10,14 @@ COMMONDIR = ${SOURCEDIR}/common
 TESTDIR = test
 INSTALLDIR = install
 
+.SUFFIXES:
+
+%.o:
+	gcc -c -I${COMMONDIR} -I${CLIENTDIR} -I${SERVERDIR} $(CFLAGS) -o $@ $<
+
+%.so:
+	gcc -shared $(CFLAGS) $^ $(LDFLAGS) -o $@
+
 all: build
 
 build: server client
@@ -19,15 +27,13 @@ server: server.o dir.o player_handle.o graph.o game.o board.o position_set.o
 
 test: alltests
 
-PLAYER_TARGETS=async_mcts.o dir.o board.o position_set.o graph.o tree.o array_list.o util.o
+mcts.so: async_mcts.o dir.o board.o position_set.o graph.o tree.o array_list.o util.o
 
-player1.so: $(PLAYER_TARGETS)
-	gcc -shared $(CFLAGS) $^ $(LDFLAGS) -o player1.so
+alphabeta.so: alphabeta.o dir.o board.o position_set.o graph.o
 
-player2.so: $(PLAYER_TARGETS)
-	gcc -shared $(CFLAGS) $^ $(LDFLAGS) -o player2.so
+random.so: player.o dir.o board.o position_set.o graph.o
 
-client: player1.so player2.so
+client: mcts.so alphabeta.so
 
 alltests: test_main.o test_game.o dir.o game.o \
 player_handle.o graph.o board.o position_set.o \
@@ -47,7 +53,7 @@ run: install
 
 install: build test
 	cp server install/
-	cp player*.so install/
+	cp *.so install/
 	cp alltests install/alltests
 
 clean:
@@ -59,5 +65,5 @@ clean:
 
 .PHONY: client install test clean
 
-
 include Makefile.inc
+
