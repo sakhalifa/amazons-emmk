@@ -99,7 +99,7 @@ int main(int argc, char *const *argv)
 	srand(args.seed);
 	game_t *game = init_game_and_players(args);
 
-	struct move_t current_move = {-1, -1, -1};
+	struct move_t current_move = {FIRST_MOVE_VAL, FIRST_MOVE_VAL, FIRST_MOVE_VAL};
 	bool game_not_over = true;
 	size_t turns = 0;
 	while (game_not_over)

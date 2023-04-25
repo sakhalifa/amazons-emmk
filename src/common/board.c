@@ -266,15 +266,14 @@ void print_letter_line(unsigned int size)
 {
     for (unsigned int i = 0; i < size; ++i)
     {
-        if (i > 0)
-            printf(" ");
+        printf(" ");
         printf("%c", 'A' + i);
     }
 }
 
 void print_vertical_line(unsigned int size)
 {
-    for (unsigned int i = 0; i < size; ++i)
+    for (unsigned int i = 0; i < size + 1; ++i)
     {
         printf("-");
     }
@@ -291,7 +290,7 @@ void print_board(board_t *board)
     printf("-\\\n");
     for (unsigned int i = 0; i < width; ++i)
     {
-        printf("%2d |", i + 1);
+        printf("%2d | ", i + 1);
         for (unsigned int j = 0; j < width; ++j)
         {
             if (j > 0)

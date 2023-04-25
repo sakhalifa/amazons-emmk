@@ -29,12 +29,11 @@ unsigned int get_other_player_id(unsigned int player_id)
 
 void add_if_correct(size_t width, gsl_spmatrix_uint *mtrx, size_t x, size_t y, int dx, int dy)
 {
-	if (dx == 0 && dy == 0)
+	if ((dx == 0 && dy == 0)
+	||	((int)x + dx < 0 || x + dx >= width)
+	||	((int)y + dy < 0 || y + dy >= width)) {
 		return;
-	if ((int)(x + dx) < 0 || x + dx >= width)
-		return;
-	if ((int)(y + dy) < 0 || y + dy >= width)
-		return;
+	}
 	int i = x + y * width;
 	int j = (x + dx) + (y + dy) * width;
 	gsl_spmatrix_uint_set(mtrx, i, j, twoD_offset_to_dir(dx, dy));
@@ -49,9 +48,9 @@ struct graph_t *init_square_graph(size_t width)
 	{
 		size_t x = i % width;
 		size_t y = i / width;
-		for (int dy = -1; dy <= 1; dy++)
+		for (int dy = -1; dy <= 1; ++dy)
 		{
-			for (int dx = -1; dx <= 1; dx++)
+			for (int dx = -1; dx <= 1; ++dx)
 			{
 				add_if_correct(width, tmp, x, y, dx, dy);
 			}
@@ -149,6 +148,7 @@ struct graph_t *init_graph(game_type_t game_type, size_t width)
 		}
 		return init_donut_graph(width);
 	default:
+		fprintf(stderr, "The game type %d isn't handled.\n", game_type);
 		exit(EXIT_FAILURE);
 	}
 
