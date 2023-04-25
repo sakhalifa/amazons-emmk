@@ -11,7 +11,6 @@ static unsigned int turns = 0;
 void initialize(unsigned int player_id, struct graph_t *graph,
 				unsigned int num_queens, unsigned int *queens[NUM_PLAYERS])
 {
-
 	generic_initialize(&global_player, player_id, graph, num_queens, queens, "alphabeta");
 	size_t width = (size_t)sqrt(graph->num_vertices);
 	divider = width + 0.7*width;
