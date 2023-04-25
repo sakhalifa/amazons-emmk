@@ -14,6 +14,7 @@ typedef struct {
 	size_t game_width;
 	game_type_t game_type;
 	player_handle_t player_handles[NUM_PLAYERS];
+	unsigned int seed;
 } server_settings_t;
 
 #endif

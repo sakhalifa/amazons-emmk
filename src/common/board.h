@@ -36,6 +36,11 @@ void cancel_queen_move(board_t *board, unsigned int player_id, unsigned int quee
 void apply_move(board_t *board, struct move_t *move, unsigned int player_id);
 void cancel_move(board_t *board, struct move_t *move, unsigned int player_id);
 
+/// @brief Returns the id of the winner
+/// @param board the board
+/// @return -1 if no winner yet, or the id of the player that won.
+int get_winner(board_t *board);
+
 void board_free(board_t *board);
 
 void print_board(board_t *board);
