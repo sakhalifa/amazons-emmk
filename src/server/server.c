@@ -9,12 +9,13 @@
 
 #include "server.h"
 #include "game.h"
+#include "colors.h"
 
 #define USAGE_STRING "Usage: %s [-t |] [-m |] <player1.so> <player2.so>\n"
 
 void print_usage(char *binary_name)
 {
-	printf(USAGE_STRING, binary_name);
+	fprintf(stdout, USAGE_STRING, binary_name);
 }
 
 server_settings_t get_args(int argc, char *const *argv)
@@ -46,7 +47,7 @@ server_settings_t get_args(int argc, char *const *argv)
 				settings.game_type = EIGHT;
 				break;
 			default:
-				fprintf(stderr, "'%c' isn't a valid board shape.\n", optarg[0]);
+				fprintf(stderr, "'%c' isn't a valid board shape (example: %s" GREEN " -t c " RESET "<player1.so> <player2.so>)\n", optarg[0], argv[0]);
 				exit(1);
 			}
 			break;
@@ -54,7 +55,7 @@ server_settings_t get_args(int argc, char *const *argv)
 			width = atoi(optarg);
 			if (width < 5)
 			{
-				fprintf(stderr, "Width should be >=5");
+				fprintf(stderr, "Width should be >=5 (example: %s" GREEN " -m 10 " RESET "<player1.so> <player2.so>)\n", argv[0]);
 				exit(1);
 			}
 			settings.game_width = width;
@@ -64,6 +65,7 @@ server_settings_t get_args(int argc, char *const *argv)
 			break;
 		default:
 			fprintf(stderr, "'%c' isn't a valid parameter.\n", opt);
+			print_usage(argv[0]);
 			exit(1);
 		}
 		

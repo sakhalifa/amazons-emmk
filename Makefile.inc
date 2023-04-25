@@ -29,7 +29,8 @@ server.o: src/server/server.c src/common/graph_ext.h src/common/graph.h \
  src/common/dir.h src/common/move.h src/server/server.h \
  src/server/player_handle.h src/common/player.h src/common/move.h \
  src/server/game.h src/common/board.h src/common/dir.h \
- src/common/graph_ext.h src/common/player.h src/common/position_set.h
+ src/common/graph_ext.h src/common/player.h src/common/position_set.h \
+ src/common/colors.h
 game.o: src/server/game.c src/common/graph_ext.h src/common/graph.h \
  src/common/dir_ext.h src/common/dir.h src/server/server.h \
  src/server/player_handle.h src/common/player.h src/common/move.h \
