@@ -6,6 +6,7 @@
 #include "player.h"
 #include "position_set.h"
 #include "colors.h"
+#include "assert.h"
 
 bool is_on_board(board_t *board, int position)
 {
@@ -224,7 +225,6 @@ void place_queens_on_board(board_t *board, unsigned int* queens[NUM_PLAYERS], un
     for(size_t i = 0; i < NUM_PLAYERS; i++){
         board->queens[i] = queens[i];
     }
-    printf("Placing queens\n");
 
     // Init board of queens (for direct access from a position)
     for(size_t player_id = 0; player_id < NUM_PLAYERS; ++player_id){
@@ -232,7 +232,6 @@ void place_queens_on_board(board_t *board, unsigned int* queens[NUM_PLAYERS], un
             board->queens_on_board[queens[player_id][queen_index]] = player_id;
         }
     }
-
 }
 
 /// @brief Apply the given move to the given board.
