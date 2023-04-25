@@ -8,3 +8,5 @@ build/
 *.gcno
 *.gcda
 *.gcov
+*.log
+*.out
