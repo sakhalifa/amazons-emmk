@@ -44,6 +44,9 @@ server_settings_t get_args(int argc, char *const *argv)
 			case '8':
 				settings.game_type = EIGHT;
 				break;
+			default:
+				fprintf(stderr, "'%c' isn't a valid board shape.\n", optarg[0]);
+				exit(1);
 			}
 			break;
 		case 'm':
@@ -55,6 +58,9 @@ server_settings_t get_args(int argc, char *const *argv)
 			}
 			settings.game_width = width;
 			break;
+		default:
+			fprintf(stderr, "'%c' isn't a valid parameter.\n", opt);
+			exit(1);
 		}
 	}
 	if (argv[optind] == NULL || argv[optind + 1] == NULL)
