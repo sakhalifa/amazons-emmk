@@ -85,8 +85,7 @@ void set_square_matrix_diagonal_directions(gsl_spmatrix_uint* direction_matrix, 
 	}
 }
 
-gsl_spmatrix_uint* allocate_COO_square_direction_matrix(size_t width) {
-	size_t num_vertices = width * width;
+gsl_spmatrix_uint* allocate_COO_square_direction_matrix(size_t width, size_t num_vertices) {
 	gsl_spmatrix_uint* direction_matrix = gsl_spmatrix_uint_alloc(num_vertices, num_vertices);
 	set_square_matrix_cardinal_directions(direction_matrix, width, num_vertices);
 	set_square_matrix_diagonal_directions(direction_matrix, width);
@@ -97,20 +96,7 @@ struct graph_t *init_square_graph(size_t width)
 {
 	struct graph_t *graph = malloc(sizeof(struct graph_t));
 	graph->num_vertices = width * width;
-	/* gsl_spmatrix_uint *tmp = gsl_spmatrix_uint_alloc(graph->num_vertices, graph->num_vertices);
-	for (size_t i = 0; i < graph->num_vertices; ++i)
-	{
-		size_t x = i % width;
-		size_t y = i / width;
-		for (int dy = -1; dy <= 1; ++dy)
-		{
-			for (int dx = -1; dx <= 1; ++dx)
-			{
-				add_if_correct(width, tmp, x, y, dx, dy);
-			}
-		}
-	} */
-	gsl_spmatrix_uint* tmp = allocate_COO_square_direction_matrix(width);
+	gsl_spmatrix_uint* tmp = allocate_COO_square_direction_matrix(width, graph->num_vertices);
 	graph->t = gsl_spmatrix_uint_compress(tmp, GSL_SPMATRIX_CSR);
 	gsl_spmatrix_uint_free(tmp);
 	return graph;
@@ -124,32 +110,25 @@ bool pointInRectangle(size_t lx, size_t ly, size_t rx, size_t ry, size_t x, size
     return false;
 }
 
+void remove_all_dir_neighbors_in_square_grid(gsl_spmatrix_uint* neighbor_matrix, size_t removed_vertex, size_t width) {
+	for (int horizontal_offset = -1; horizontal_offset <= 1; ++horizontal_offset) {
+		for (int vertical_offset = -1; vertical_offset <= 1; ++vertical_offset) {
+			int total_offset = horizontal_offset + width * vertical_offset;
+			gsl_spmatrix_uint_set(neighbor_matrix, removed_vertex + total_offset, removed_vertex, NO_DIR);
+			gsl_spmatrix_uint_set(neighbor_matrix, removed_vertex, removed_vertex + total_offset, NO_DIR);
+		}
+	}
+}
+
 struct graph_t *init_donut_graph(size_t width)
 {
 	struct graph_t *graph = malloc(sizeof(struct graph_t));
 	graph->num_vertices = width * width;
-	size_t center_square_size = (width / 3) - 1;
-	int offset = (int)(width / 6) - 1;
-	offset = offset < 0 ? 0 : offset;
-	size_t lx = (width / 2) - 1 - offset;
-	size_t ly = (width / 2) - 1 - offset;
-	size_t rx = lx + center_square_size;
-	size_t ry = ly + center_square_size;
-	gsl_spmatrix_uint *tmp = gsl_spmatrix_uint_alloc(graph->num_vertices, graph->num_vertices);
-	for (size_t i = 0; i < graph->num_vertices; ++i)
-	{
-		size_t x = i % width;
-		size_t y = i / width;
-		if(pointInRectangle(lx, ly, rx, ry, x, y))
-			continue;
-		for (int dy = -1; dy <= 1; dy++)
-		{
-			for (int dx = -1; dx <= 1; dx++)
-			{
-				if(pointInRectangle(lx, ly, rx, ry, x + dx, y + dy))
-					continue;
-				add_if_correct(width, tmp, x, y, dx, dy);
-			}
+	gsl_spmatrix_uint* tmp = allocate_COO_square_direction_matrix(width, graph->num_vertices);
+	for (size_t row = width / 3; row < 2 * width / 3; ++row) {
+		for (size_t col = width / 3; col < 2 * width / 3; ++col) {
+			size_t vertex = col + row * width;
+			remove_all_dir_neighbors_in_square_grid(tmp, vertex, width);
 		}
 	}
 	graph->t = gsl_spmatrix_uint_compress(tmp, GSL_SPMATRIX_CSR);

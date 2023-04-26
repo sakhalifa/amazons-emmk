@@ -288,20 +288,20 @@ void print_board(board_t *board)
     printf("   /");
     print_vertical_line(width * 2 - 1);
     printf("-\\\n");
-    for (unsigned int i = 0; i < width; ++i)
+    for (unsigned int col = 0; col < width; ++col)
     {
-        printf("%2d |", i + 1);
-        for (unsigned int j = 0; j < width; ++j)
+        printf("%2d |", col + 1);
+        for (unsigned int row = 0; row < width; ++row)
         {
             printf(" ");
-            unsigned int position = i * width + j;
+            unsigned int position = col * width + row;
             bool isReachable = false;
-            for (unsigned int x = 0; x < board->graph->t->nz; ++x)
+            for (size_t row_ptr_index = 0; row_ptr_index <= board->graph->t->size1; ++row_ptr_index)
             {
-                for (unsigned int k = board->graph->t->p[x]; k < (unsigned int)board->graph->t->p[x + 1]; ++k)
+                for (size_t current_row = board->graph->t->p[row_ptr_index]; current_row < (size_t)board->graph->t->p[row_ptr_index + 1]; ++current_row)
                 {
-                    unsigned int j = board->graph->t->i[k];
-                    if (x == position || j == position)
+                    unsigned int nz_col_on_current_row = board->graph->t->i[current_row];
+                    if (row_ptr_index == position || nz_col_on_current_row == position)
                     {
                         isReachable = true;
                         break;
