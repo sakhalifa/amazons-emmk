@@ -3,7 +3,7 @@
 #include <getopt.h>
 #include <dlfcn.h>
 #include "graph_ext.h"
-#include "dir_ext.h"
+#include "dir.h"
 #include "server.h"
 #include "player.h"
 
@@ -25,18 +25,6 @@ unsigned int get_starting_player_id()
 unsigned int get_other_player_id(unsigned int player_id)
 {
 	return (player_id + 1) % NUM_PLAYERS;
-}
-
-void add_if_correct(size_t width, gsl_spmatrix_uint *mtrx, size_t x, size_t y, int dx, int dy)
-{
-	if ((dx == 0 && dy == 0)
-	||	((int)x + dx < 0 || x + dx >= width)
-	||	((int)y + dy < 0 || y + dy >= width)) {
-		return;
-	}
-	int i = x + y * width;
-	int j = (x + dx) + (y + dy) * width;
-	gsl_spmatrix_uint_set(mtrx, i, j, twoD_offset_to_dir(dx, dy));
 }
 
 void set_square_matrix_cardinal_directions(gsl_spmatrix_uint* direction_matrix, size_t width, size_t num_vertices) {
