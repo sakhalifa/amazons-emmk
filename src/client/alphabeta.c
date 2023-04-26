@@ -27,14 +27,14 @@ struct move_and_score
 	int score;
 };
 
-int get_score(board_t *board, int my_player_id)
+int get_score(board_t *board)
 {
 	int my_score = 0;
 	int other_score = 0;
-	int other_player_id = (my_player_id + 1) % 2;
+	int other_player_id = (global_player.player_id + 1) % 2;
 	for (size_t i = 0; i < board->num_queens; i++)
 	{
-		position_set *pos = get_reachable_positions_generic(board, board->queens[my_player_id][i]);
+		position_set *pos = get_reachable_positions_generic(board, board->queens[global_player.player_id][i]);
 		my_score += pos->count;
 		free_position_set(pos);
 		pos = get_reachable_positions_generic(board, board->queens[other_player_id][i]);
@@ -42,7 +42,7 @@ int get_score(board_t *board, int my_player_id)
 		free_position_set(pos);
 	}
 
-	return other_score - my_score;
+	return my_score - other_score;
 }
 
 int max(int a, int b)
@@ -59,7 +59,7 @@ struct move_and_score alphabeta_recursive(board_t *board, struct move_t cur_move
 {
 	if (depth == 0)
 	{
-		struct move_and_score move_score = {.move = cur_move, .score = get_score(board, cur_player_id)};
+		struct move_and_score move_score = {.move = cur_move, .score = get_score(board)};
 		return move_score;
 	}
 #pragma region maximize
@@ -132,7 +132,7 @@ struct move_and_score alphabeta_recursive(board_t *board, struct move_t cur_move
 					struct move_t move = {queen_src, queen_dst, arrow_dst};
 					// Transform current node to child node
 					apply_move(board, &move, cur_player_id);
-					int score = -alphabeta_recursive(board, move, my_player_id, alpha, beta, (cur_player_id + 1) % 2, depth - 1).score;
+					int score = alphabeta_recursive(board, move, my_player_id, alpha, beta, (cur_player_id + 1) % 2, depth - 1).score;
 					if (score < value)
 					{
 						value = score;
