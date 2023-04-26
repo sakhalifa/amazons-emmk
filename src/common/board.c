@@ -296,12 +296,12 @@ void print_board(board_t *board)
             printf(" ");
             unsigned int position = col * width + row;
             bool isReachable = false;
-            for (size_t row_ptr_index = 0; row_ptr_index <= board->graph->t->size1; ++row_ptr_index)
+            for (size_t current_row = 0; current_row <= board->graph->t->size1; ++current_row)
             {
-                for (size_t current_row = board->graph->t->p[row_ptr_index]; current_row < (size_t)board->graph->t->p[row_ptr_index + 1]; ++current_row)
+                for (size_t index_on_current_row = board->graph->t->p[current_row]; index_on_current_row < (size_t)board->graph->t->p[current_row + 1]; ++index_on_current_row)
                 {
-                    unsigned int nz_col_on_current_row = board->graph->t->i[current_row];
-                    if (row_ptr_index == position || nz_col_on_current_row == position)
+                    unsigned int nz_col_on_current_row = board->graph->t->i[index_on_current_row];
+                    if (current_row == position || nz_col_on_current_row == position)
                     {
                         isReachable = true;
                         break;
