@@ -15,7 +15,7 @@ INSTALLDIR = install
 %.o:
 	gcc -c -I${COMMONDIR} -I${CLIENTDIR} -I${SERVERDIR} $(CFLAGS) -o $@ $<
 
-%.so:
+%.so: player_ext.o graph.o dir.o board.o
 	gcc -shared $(CFLAGS) $^ $(LDFLAGS) -o $@
 
 all: build
@@ -27,14 +27,16 @@ server: server.o dir.o player_handle.o graph.o game.o board.o position_set.o
 
 test: alltests
 
-mcts.so: player_ext.o async_mcts.o dir.o board.o position_set.o graph.o tree.o array_list.o util.o
-mcts1.so: player_ext.o async_mcts.o dir.o board.o position_set.o graph.o tree.o array_list.o util.o
+mcts.so: async_mcts.o position_set.o tree.o array_list.o util.o
+mcts1.so: async_mcts.o position_set.o tree.o array_list.o util.o
 
-alphabeta.so: player_ext.o alphabeta.o dir.o board.o position_set.o graph.o
-alphabeta1.so: player_ext.o alphabeta.o dir.o board.o position_set.o graph.o
+alphabeta.so: alphabeta.o position_set.o 
+alphabeta1.so: alphabeta.o position_set.o
 
-random.so: player_ext.o player.o dir.o board.o position_set.o graph.o
-random1.so: player_ext.o player.o dir.o board.o position_set.o graph.o
+random.so: player.o dir.o position_set.o
+random1.so: player.o dir.o position_set.o
+
+human.so: player_ext.o human.o
 
 client: mcts.so alphabeta.so random.so mcts1.so alphabeta1.so random1.so
 

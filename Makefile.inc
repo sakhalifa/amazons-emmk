@@ -21,6 +21,10 @@ player_ext.o: src/client/player_ext.c src/client/player_ext.h \
  src/common/graph.h src/common/board.h src/common/dir.h \
  src/common/graph_ext.h src/common/player.h src/common/position_set.h \
  src/common/graph.h
+human.o: src/client/human.c src/client/player_ext.h src/common/player.h \
+ src/common/move_ext.h src/common/move.h src/common/graph.h \
+ src/common/board.h src/common/dir.h src/common/graph_ext.h \
+ src/common/player.h src/common/position_set.h
 position_set.o: src/common/position_set.c src/common/position_set.h
 board.o: src/common/board.c src/common/board.h src/common/dir.h \
  src/common/graph_ext.h src/common/graph.h src/common/move_ext.h \
