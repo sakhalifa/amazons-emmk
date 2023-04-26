@@ -39,12 +39,66 @@ void add_if_correct(size_t width, gsl_spmatrix_uint *mtrx, size_t x, size_t y, i
 	gsl_spmatrix_uint_set(mtrx, i, j, twoD_offset_to_dir(dx, dy));
 }
 
+void set_square_matrix_cardinal_directions(gsl_spmatrix_uint* direction_matrix, size_t width, size_t num_vertices) {
+	for (size_t vertex = width; vertex < num_vertices; ++vertex) {
+		gsl_spmatrix_uint_set(direction_matrix, vertex, vertex - width, DIR_NORTH);
+	}
+	for (size_t vertex = 0; vertex < num_vertices - width; ++vertex) {
+		gsl_spmatrix_uint_set(direction_matrix, vertex, vertex + width, DIR_SOUTH);
+	}
+	for (size_t row = 0; row < width; ++row) {
+		for (size_t col = 0; col < width - 1; ++col) {
+			size_t vertex = col + row * width;
+			gsl_spmatrix_uint_set(direction_matrix, vertex, vertex + 1, DIR_EAST);
+		}
+		for (size_t col = 1; col < width; ++col) {
+			size_t vertex = col + row * width;
+			gsl_spmatrix_uint_set(direction_matrix, vertex, vertex - 1, DIR_WEST);
+		}
+	}
+}
+
+void set_square_matrix_diagonal_directions(gsl_spmatrix_uint* direction_matrix, size_t width) {
+	for (size_t row = 0; row < width - 1; ++row) {
+		for (size_t col = 0; col < width - 1; ++col) {
+			size_t vertex = col + row * width;
+			gsl_spmatrix_uint_set(direction_matrix, vertex, vertex + width + 1, DIR_SE);
+		}
+	}
+	for (size_t row = 1; row < width; ++row) {
+		for (size_t col = 0; col < width - 1; ++col) {
+			size_t vertex = col + row * width;
+			gsl_spmatrix_uint_set(direction_matrix, vertex, vertex - width + 1, DIR_NE);
+		}
+	}
+	for (size_t row = 0; row < width - 1; ++row) {
+		for (size_t col = 1; col < width; ++col) {
+			size_t vertex = col + row * width;
+			gsl_spmatrix_uint_set(direction_matrix, vertex, vertex + width - 1, DIR_SW);
+		}
+	}
+	for (size_t row = 1; row < width; ++row) {
+		for (size_t col = 1; col < width; ++col) {
+			size_t vertex = col + row * width;
+			gsl_spmatrix_uint_set(direction_matrix, vertex, vertex - width - 1, DIR_NW);
+		}
+	}
+}
+
+gsl_spmatrix_uint* allocate_COO_square_direction_matrix(size_t width) {
+	size_t num_vertices = width * width;
+	gsl_spmatrix_uint* direction_matrix = gsl_spmatrix_uint_alloc(num_vertices, num_vertices);
+	set_square_matrix_cardinal_directions(direction_matrix, width, num_vertices);
+	set_square_matrix_diagonal_directions(direction_matrix, width);
+	return direction_matrix;
+}
+
 struct graph_t *init_square_graph(size_t width)
 {
 	struct graph_t *graph = malloc(sizeof(struct graph_t));
 	graph->num_vertices = width * width;
-	gsl_spmatrix_uint *tmp = gsl_spmatrix_uint_alloc(graph->num_vertices, graph->num_vertices);
-	for (size_t i = 0; i < graph->num_vertices; i++)
+	/* gsl_spmatrix_uint *tmp = gsl_spmatrix_uint_alloc(graph->num_vertices, graph->num_vertices);
+	for (size_t i = 0; i < graph->num_vertices; ++i)
 	{
 		size_t x = i % width;
 		size_t y = i / width;
@@ -55,49 +109,18 @@ struct graph_t *init_square_graph(size_t width)
 				add_if_correct(width, tmp, x, y, dx, dy);
 			}
 		}
-	}
+	} */
+	gsl_spmatrix_uint* tmp = allocate_COO_square_direction_matrix(width);
 	graph->t = gsl_spmatrix_uint_compress(tmp, GSL_SPMATRIX_CSR);
 	gsl_spmatrix_uint_free(tmp);
 	return graph;
 }
 
-void init_queens(unsigned int **queens, unsigned int num_queens, size_t width)
-{
-	for (int player_id = 0; player_id < NUM_PLAYERS; ++player_id)
-	{
-		queens[player_id] = (unsigned int *)malloc(sizeof(unsigned int) * num_queens);
-	}
-
-	int half = ((width - 1) / 2) - 1;
-	int cur = half;
-	int end = width * width - 1;
-	int row = 1; // Start placing at row 1, to avoid contact with top row
-	for (unsigned int i = 0; i < num_queens; i += 2)
-	{
-		if (cur >= 1)
-		{ // Place on top (or bottom) row
-			queens[0][i] = cur;
-			queens[0][i + 1] = width - (cur + 1);
-			queens[1][i] = end - cur;
-			queens[1][i + 1] = end - (width - (cur + 1));
-			cur -= 2;
-		}
-		else
-		{ // Place on columns
-			queens[0][i] = row * width;
-			queens[0][i + 1] = (row + 1) * width - 1;
-			queens[1][i] = end - row * width;
-			queens[1][i + 1] = end - ((row + 1) * width - 1);
-			row += 2;
-		}
-	}
-}
-
 bool pointInRectangle(size_t lx, size_t ly, size_t rx, size_t ry, size_t x, size_t y)
 {
-    if (x >= lx && x <= rx && y >= ly && y <= ry)
-        return true;
- 
+    if (x >= lx && x <= rx && y >= ly && y <= ry) {
+		return true;
+	}
     return false;
 }
 
@@ -105,15 +128,15 @@ struct graph_t *init_donut_graph(size_t width)
 {
 	struct graph_t *graph = malloc(sizeof(struct graph_t));
 	graph->num_vertices = width * width;
-	size_t sq_size = (width / 3) - 1;
+	size_t center_square_size = (width / 3) - 1;
 	int offset = (int)(width / 6) - 1;
 	offset = offset < 0 ? 0 : offset;
 	size_t lx = (width / 2) - 1 - offset;
 	size_t ly = (width / 2) - 1 - offset;
-	size_t rx = lx + sq_size;
-	size_t ry = ly + sq_size;
+	size_t rx = lx + center_square_size;
+	size_t ry = ly + center_square_size;
 	gsl_spmatrix_uint *tmp = gsl_spmatrix_uint_alloc(graph->num_vertices, graph->num_vertices);
-	for (size_t i = 0; i < graph->num_vertices; i++)
+	for (size_t i = 0; i < graph->num_vertices; ++i)
 	{
 		size_t x = i % width;
 		size_t y = i / width;
@@ -153,6 +176,38 @@ struct graph_t *init_graph(game_type_t game_type, size_t width)
 	}
 
 	return NULL;
+}
+
+void init_queens(unsigned int **queens, unsigned int num_queens, size_t width)
+{
+	for (int player_id = 0; player_id < NUM_PLAYERS; ++player_id)
+	{
+		queens[player_id] = (unsigned int *)malloc(sizeof(unsigned int) * num_queens);
+	}
+
+	int half = ((width - 1) / 2) - 1;
+	int cur = half;
+	int end = width * width - 1;
+	int row = 1; // Start placing at row 1, to avoid contact with top row
+	for (unsigned int i = 0; i < num_queens; i += 2)
+	{
+		if (cur >= 1)
+		{ // Place on top (or bottom) row
+			queens[0][i] = cur;
+			queens[0][i + 1] = width - (cur + 1);
+			queens[1][i] = end - cur;
+			queens[1][i + 1] = end - (width - (cur + 1));
+			cur -= 2;
+		}
+		else
+		{ // Place on columns
+			queens[0][i] = row * width;
+			queens[0][i + 1] = (row + 1) * width - 1;
+			queens[1][i] = end - row * width;
+			queens[1][i + 1] = end - ((row + 1) * width - 1);
+			row += 2;
+		}
+	}
 }
 
 game_t *init_game(unsigned int current_player, board_t *board)
