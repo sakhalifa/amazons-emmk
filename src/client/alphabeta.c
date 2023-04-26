@@ -4,16 +4,16 @@
 
 static player_t global_player;
 
-static unsigned int divider = 0;
-
 static unsigned int turns = 0;
+
+static double exp_coeff;
 
 void initialize(unsigned int player_id, struct graph_t *graph,
 				unsigned int num_queens, unsigned int *queens[NUM_PLAYERS])
 {
 	generic_initialize(&global_player, player_id, graph, num_queens, queens, "alphabeta");
 	size_t width = (size_t)sqrt(graph->num_vertices);
-	divider = width + 0.7*width;
+	exp_coeff = (1./(exp(0.05*width)*sqrt(width)*width));
 }
 
 char const *get_player_name()
@@ -27,14 +27,14 @@ struct move_and_score
 	int score;
 };
 
-int get_score(board_t *board, int my_player_id)
+int get_score(board_t *board)
 {
 	int my_score = 0;
 	int other_score = 0;
-	int other_player_id = (my_player_id + 1) % 2;
+	int other_player_id = (global_player.player_id + 1) % 2;
 	for (size_t i = 0; i < board->num_queens; i++)
 	{
-		position_set *pos = get_reachable_positions_generic(board, board->queens[my_player_id][i]);
+		position_set *pos = get_reachable_positions_generic(board, board->queens[global_player.player_id][i]);
 		my_score += pos->count;
 		free_position_set(pos);
 		pos = get_reachable_positions_generic(board, board->queens[other_player_id][i]);
@@ -42,7 +42,7 @@ int get_score(board_t *board, int my_player_id)
 		free_position_set(pos);
 	}
 
-	return other_score - my_score;
+	return my_score - other_score;
 }
 
 int max(int a, int b)
@@ -57,9 +57,9 @@ int min(int a, int b)
 
 struct move_and_score alphabeta_recursive(board_t *board, struct move_t cur_move, int my_player_id, int alpha, int beta, int cur_player_id, int depth)
 {
-	if (depth == 0 || get_winner(board) != -1)
+	if (depth == 0)
 	{
-		struct move_and_score move_score = {.move = cur_move, .score = get_score(board, cur_player_id)};
+		struct move_and_score move_score = {.move = cur_move, .score = get_score(board)};
 		return move_score;
 	}
 #pragma region maximize
@@ -132,7 +132,7 @@ struct move_and_score alphabeta_recursive(board_t *board, struct move_t cur_move
 					struct move_t move = {queen_src, queen_dst, arrow_dst};
 					// Transform current node to child node
 					apply_move(board, &move, cur_player_id);
-					int score = -alphabeta_recursive(board, move, my_player_id, alpha, beta, (cur_player_id + 1) % 2, depth - 1).score;
+					int score = alphabeta_recursive(board, move, my_player_id, alpha, beta, (cur_player_id + 1) % 2, depth - 1).score;
 					if (score < value)
 					{
 						value = score;
@@ -174,10 +174,11 @@ struct move_t play(struct move_t previous_move)
 	{
 		apply_move(global_player.board, &previous_move, abs((int)global_player.player_id - 1) % NUM_PLAYERS);
 	}
-	struct move_t move = alphabeta(global_player.board, global_player.player_id, (turns / divider) + 1).move;
+	int depth = exp(exp_coeff * turns);
+	struct move_t move = alphabeta(global_player.board, global_player.player_id, depth).move;
 	if (move.queen_src != FIRST_MOVE_VAL && move.queen_dst != FIRST_MOVE_VAL && move.arrow_dst != FIRST_MOVE_VAL)
 		apply_move(global_player.board, &move, global_player.player_id);
-	turns += 1;
+	turns += 2;
 	return move;
 }
 
@@ -185,4 +186,5 @@ void finalize()
 {
 	board_free(global_player.board);
 	neighbors_cache_free();
+	turns = 0;
 }

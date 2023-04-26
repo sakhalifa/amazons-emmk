@@ -10,3 +10,4 @@ build/
 *.gcov
 *.log
 *.out
+oprofile_data
