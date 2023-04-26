@@ -108,6 +108,15 @@ void remove_all_dir_neighbors_in_square_grid(gsl_spmatrix_uint* neighbor_matrix,
 	}
 }
 
+void remove_all_out_dir_neighbors_in_square_grid(gsl_spmatrix_uint* neighbor_matrix, size_t removed_vertex, size_t width) {
+	for (int horizontal_offset = -1; horizontal_offset <= 1; ++horizontal_offset) {
+		for (int vertical_offset = -1; vertical_offset <= 1; ++vertical_offset) {
+			int total_offset = horizontal_offset + width * vertical_offset;
+			gsl_spmatrix_uint_set(neighbor_matrix, removed_vertex, removed_vertex + total_offset, NO_DIR);
+		}
+	}
+}
+
 struct graph_t *init_donut_graph(size_t width)
 {
 	struct graph_t *graph = malloc(sizeof(struct graph_t));
@@ -157,8 +166,12 @@ struct graph_t *init_eight_graph(size_t width)
 			}
 		}
 	}
-	gsl_spmatrix_uint_set(tmp, width / 2, width / 2, DIR_NW);
-	gsl_spmatrix_uint_set(tmp, width / 2 - 1, width / 2 - 1, DIR_SE);
+	size_t bridge1_index = (width + 1) * (width / 2);
+	size_t bridge2_index = (width + 1) * (width / 2 - 1);
+	remove_all_out_dir_neighbors_in_square_grid(tmp, bridge1_index, width);
+	remove_all_out_dir_neighbors_in_square_grid(tmp, bridge2_index, width);
+	gsl_spmatrix_uint_set(tmp, bridge1_index, bridge1_index, DIR_NW);
+	gsl_spmatrix_uint_set(tmp, bridge2_index, bridge2_index, DIR_SE);
 	graph->t = gsl_spmatrix_uint_compress(tmp, GSL_SPMATRIX_CSR);
 	gsl_spmatrix_uint_free(tmp);
 	return graph;
