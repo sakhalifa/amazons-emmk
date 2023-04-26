@@ -30,7 +30,6 @@ board.o: src/common/board.c src/common/board.h src/common/dir.h \
  src/common/graph_ext.h src/common/graph.h src/common/move_ext.h \
  src/common/move.h src/common/player.h src/common/position_set.h \
  src/common/colors.h
-dir.o: src/common/dir.c src/common/dir_ext.h src/common/dir.h
 util.o: src/common/util.c src/common/util.h
 tree.o: src/common/tree.c src/common/tree.h src/common/util.h \
  src/common/array_list.h
@@ -44,9 +43,9 @@ server.o: src/server/server.c src/common/graph_ext.h src/common/graph.h \
  src/common/dir.h src/common/graph_ext.h src/common/player.h \
  src/common/position_set.h src/common/colors.h
 game.o: src/server/game.c src/common/graph_ext.h src/common/graph.h \
- src/common/dir_ext.h src/common/dir.h src/server/server.h \
- src/server/player_handle.h src/common/player.h src/common/move_ext.h \
- src/common/move.h src/server/game.h src/common/board.h \
+ src/common/dir.h src/server/server.h src/server/player_handle.h \
+ src/common/player.h src/common/move_ext.h src/common/move.h \
+ src/server/game.h src/common/board.h src/common/dir.h \
  src/common/graph_ext.h src/common/player.h src/common/position_set.h
 player_handle.o: src/server/player_handle.c src/server/player_handle.h \
  src/common/player.h src/common/move_ext.h src/common/move.h \

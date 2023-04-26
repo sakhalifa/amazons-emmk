@@ -43,12 +43,15 @@ server_settings_t get_args(int argc, char *const *argv)
 				break;
 			case 'd':
 				settings.game_type = DONUT;
+				settings.game_width = 6;
 				break;
 			case 't':
 				settings.game_type = CLOVER;
+				settings.game_width = 10;
 				break;
 			case '8':
 				settings.game_type = EIGHT;
+				settings.game_width = 8;
 				break;
 			default:
 				fprintf(stderr, "'%s' isn't a valid board shape (example: %s" GREEN " -t c " RESET "<player1.so> <player2.so>)\n", optarg, argv[0]);

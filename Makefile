@@ -22,7 +22,7 @@ all: build
 
 build: server client
 
-server: server.o dir.o player_handle.o graph.o game.o board.o position_set.o
+server: server.o player_handle.o graph.o game.o board.o position_set.o
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o server
 
 test: alltests
@@ -40,12 +40,12 @@ human.so: player_ext.o human.o
 
 client: mcts.so alphabeta.so random.so mcts1.so alphabeta1.so random1.so
 
-alltests: test_main.o test_game.o dir.o game.o \
+alltests: test_main.o test_game.o game.o \
 player_handle.o graph.o board.o position_set.o \
 mock_player.o player_handle.o
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o alltests
 
-profiling: alphabeta.o dir.o board.o position_set.o graph.o dir.o player_handle.o graph.o game.o board.o position_set.o profiling.o
+profiling: alphabeta.o board.o position_set.o graph.o player_handle.o graph.o game.o board.o position_set.o profiling.o
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o profiler
 
 coverage: alltests
