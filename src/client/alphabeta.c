@@ -13,7 +13,7 @@ void initialize(unsigned int player_id, struct graph_t *graph,
 {
 	generic_initialize(&global_player, player_id, graph, num_queens, queens, "alphabeta");
 	size_t width = (size_t)sqrt(graph->num_vertices);
-	divider = width + 0.7*width;
+	divider = width + 0.7 * width;
 }
 
 char const *get_player_name()
@@ -185,4 +185,6 @@ void finalize()
 {
 	board_free(global_player.board);
 	neighbors_cache_free();
+	turns = 0;
+	divider = 0;
 }
