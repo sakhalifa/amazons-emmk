@@ -8,12 +8,15 @@ static unsigned int divider = 0;
 
 static unsigned int turns = 0;
 
+static double exp_coeff;
+
 void initialize(unsigned int player_id, struct graph_t *graph,
 				unsigned int num_queens, unsigned int *queens[NUM_PLAYERS])
 {
 	generic_initialize(&global_player, player_id, graph, num_queens, queens, "alphabeta");
 	size_t width = (size_t)sqrt(graph->num_vertices);
-	divider = width + 0.7 * width;
+	divider = width;
+	exp_coeff = (1./(exp(0.05*divider)*sqrt(divider)*divider));
 }
 
 char const *get_player_name()
@@ -174,10 +177,12 @@ struct move_t play(struct move_t previous_move)
 	{
 		apply_move(global_player.board, &previous_move, abs((int)global_player.player_id - 1) % NUM_PLAYERS);
 	}
-	struct move_t move = alphabeta(global_player.board, global_player.player_id, (turns / divider) + 1).move;
+	int depth = exp(exp_coeff * turns);
+	printf("Depth: %d\n", depth);
+	struct move_t move = alphabeta(global_player.board, global_player.player_id, depth).move;
 	if (move.queen_src != FIRST_MOVE_VAL && move.queen_dst != FIRST_MOVE_VAL && move.arrow_dst != FIRST_MOVE_VAL)
 		apply_move(global_player.board, &move, global_player.player_id);
-	turns += 1;
+	turns += 2;
 	return move;
 }
 
