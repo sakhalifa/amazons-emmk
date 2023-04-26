@@ -80,4 +80,10 @@ position_set *get_reachable_arrows_generic(board_t *board, int player_id, unsign
 /// @return all the possibles moves of the given queen
 position_set *reachable_positions(board_t *board, unsigned int queen_position);
 
+/// @brief Return true if the considered position is a neighbor of any vertex of the spmatrix, in any direction.
+/// @param spmatrix the spmatrix containing the informations abour the neighbors of every vertex and their direction
+/// @param position we want to know if that position is the neighbor in any direction of any other postion
+/// @return true if the considered position is a neighbor of any vertex of the spmatrix, in any direction.
+bool is_reachable(gsl_spmatrix_uint* spmatrix, size_t position);
+
 #endif

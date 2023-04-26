@@ -279,8 +279,16 @@ void print_vertical_line(unsigned int size)
     }
 }
 
-void print_board(board_t *board)
-{
+bool is_reachable(gsl_spmatrix_uint* spmatrix, size_t position) {
+    for (size_t vertex = 0; vertex < spmatrix->size1; ++vertex) {
+        if (gsl_spmatrix_uint_get(spmatrix, vertex, position) != NO_DIR) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void print_board(board_t *board) {
     unsigned int width = sqrt(board->graph->num_vertices);
     printf("    ");
     print_letter_line(width);
@@ -288,29 +296,12 @@ void print_board(board_t *board)
     printf("   /");
     print_vertical_line(width * 2 - 1);
     printf("-\\\n");
-    for (unsigned int i = 0; i < width; ++i)
-    {
-        printf("%2d |", i + 1);
-        for (unsigned int j = 0; j < width; ++j)
-        {
+    for (unsigned int col = 0; col < width; ++col) {
+        printf("%2d |", col + 1);
+        for (unsigned int row = 0; row < width; ++row) {
             printf(" ");
-            unsigned int position = i * width + j;
-            bool isReachable = false;
-            for (unsigned int x = 0; x < board->graph->t->size1 + 1; ++x)
-            {
-                for (unsigned int k = board->graph->t->p[x]; k < (unsigned int)board->graph->t->p[x + 1]; ++k)
-                {
-                    unsigned int j = board->graph->t->i[k];
-                    if (x == position || j == position)
-                    {
-                        isReachable = true;
-                        break;
-                    }
-                }
-                if (isReachable)
-                    break;
-            }
-            if (!isReachable)
+            unsigned int position = col * width + row;
+            if (!is_reachable(board->graph->t, position))
             {
                 printf(" ");
                 continue;
