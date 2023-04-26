@@ -124,6 +124,26 @@ struct graph_t *init_donut_graph(size_t width)
 	return graph;
 }
 
+struct graph_t *init_clover_graph(size_t width)
+{
+	struct graph_t *graph = malloc(sizeof(struct graph_t));
+	graph->num_vertices = width * width;
+	gsl_spmatrix_uint* tmp = allocate_COO_square_direction_matrix(width, graph->num_vertices);
+	for (size_t row_zone = 0; row_zone <= 1; ++row_zone) {
+		for (size_t row = (row_zone * 2 + 1) * (width / 5); row < (row_zone * 2 + 2) * (width / 5); ++row) {
+			for (size_t col_zone = 0; col_zone <= 1; ++col_zone) {
+				for (size_t col = (col_zone * 2 + 1) * (width / 5); col < (col_zone * 2 + 2) * (width / 5); ++col) {
+					size_t vertex = col + row * width;
+					remove_all_dir_neighbors_in_square_grid(tmp, vertex, width);
+				}
+			}
+		}
+	}
+	graph->t = gsl_spmatrix_uint_compress(tmp, GSL_SPMATRIX_CSR);
+	gsl_spmatrix_uint_free(tmp);
+	return graph;
+}
+
 struct graph_t *init_graph(game_type_t game_type, size_t width)
 {
 	switch (game_type)
@@ -137,6 +157,13 @@ struct graph_t *init_graph(game_type_t game_type, size_t width)
 			exit(EXIT_FAILURE);
 		}
 		return init_donut_graph(width);
+	case CLOVER:
+		if (width % 5 != 0)
+		{
+			fprintf(stderr, "For a CLOVER graph, you need m mod 5 == 0\n");
+			exit(EXIT_FAILURE);
+		}
+		return init_clover_graph(width);
 	default:
 		fprintf(stderr, "The game type %d isn't handled.\n", game_type);
 		exit(EXIT_FAILURE);
