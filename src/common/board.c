@@ -296,7 +296,7 @@ void print_board(board_t *board)
             printf(" ");
             unsigned int position = i * width + j;
             bool isReachable = false;
-            for (unsigned int x = 0; x < board->graph->t->nz; ++x)
+            for (unsigned int x = 0; x < board->graph->t->size1 + 1; ++x)
             {
                 for (unsigned int k = board->graph->t->p[x]; k < (unsigned int)board->graph->t->p[x + 1]; ++k)
                 {
