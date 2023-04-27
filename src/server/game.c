@@ -90,14 +90,6 @@ struct graph_t *init_square_graph(size_t width)
 	return graph;
 }
 
-bool pointInRectangle(size_t lx, size_t ly, size_t rx, size_t ry, size_t x, size_t y)
-{
-    if (x >= lx && x <= rx && y >= ly && y <= ry) {
-		return true;
-	}
-    return false;
-}
-
 void remove_all_dir_neighbors_in_square_grid(gsl_spmatrix_uint* neighbor_matrix, size_t removed_vertex, size_t width) {
 	for (int horizontal_offset = -1; horizontal_offset <= 1; ++horizontal_offset) {
 		for (int vertical_offset = -1; vertical_offset <= 1; ++vertical_offset) {
