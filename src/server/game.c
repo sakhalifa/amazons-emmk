@@ -90,19 +90,20 @@ struct graph_t *init_square_graph(size_t width)
 	return graph;
 }
 
-bool pointInRectangle(size_t lx, size_t ly, size_t rx, size_t ry, size_t x, size_t y)
-{
-    if (x >= lx && x <= rx && y >= ly && y <= ry) {
-		return true;
-	}
-    return false;
-}
-
 void remove_all_dir_neighbors_in_square_grid(gsl_spmatrix_uint* neighbor_matrix, size_t removed_vertex, size_t width) {
 	for (int horizontal_offset = -1; horizontal_offset <= 1; ++horizontal_offset) {
 		for (int vertical_offset = -1; vertical_offset <= 1; ++vertical_offset) {
 			int total_offset = horizontal_offset + width * vertical_offset;
 			gsl_spmatrix_uint_set(neighbor_matrix, removed_vertex + total_offset, removed_vertex, NO_DIR);
+			gsl_spmatrix_uint_set(neighbor_matrix, removed_vertex, removed_vertex + total_offset, NO_DIR);
+		}
+	}
+}
+
+void remove_all_out_dir_neighbors_in_square_grid(gsl_spmatrix_uint* neighbor_matrix, size_t removed_vertex, size_t width) {
+	for (int horizontal_offset = -1; horizontal_offset <= 1; ++horizontal_offset) {
+		for (int vertical_offset = -1; vertical_offset <= 1; ++vertical_offset) {
+			int total_offset = horizontal_offset + width * vertical_offset;
 			gsl_spmatrix_uint_set(neighbor_matrix, removed_vertex, removed_vertex + total_offset, NO_DIR);
 		}
 	}
@@ -124,6 +125,50 @@ struct graph_t *init_donut_graph(size_t width)
 	return graph;
 }
 
+struct graph_t *init_clover_graph(size_t width)
+{
+	struct graph_t *graph = malloc(sizeof(struct graph_t));
+	graph->num_vertices = width * width;
+	gsl_spmatrix_uint* tmp = allocate_COO_square_direction_matrix(width, graph->num_vertices);
+	for (size_t row_zone = 0; row_zone <= 1; ++row_zone) {
+		for (size_t row = (row_zone * 2 + 1) * (width / 5); row < (row_zone * 2 + 2) * (width / 5); ++row) {
+			for (size_t col_zone = 0; col_zone <= 1; ++col_zone) {
+				for (size_t col = (col_zone * 2 + 1) * (width / 5); col < (col_zone * 2 + 2) * (width / 5); ++col) {
+					size_t vertex = col + row * width;
+					remove_all_dir_neighbors_in_square_grid(tmp, vertex, width);
+				}
+			}
+		}
+	}
+	graph->t = gsl_spmatrix_uint_compress(tmp, GSL_SPMATRIX_CSR);
+	gsl_spmatrix_uint_free(tmp);
+	return graph;
+}
+
+struct graph_t *init_eight_graph(size_t width)
+{
+	struct graph_t *graph = malloc(sizeof(struct graph_t));
+	graph->num_vertices = width * width;
+	gsl_spmatrix_uint* tmp = allocate_COO_square_direction_matrix(width, graph->num_vertices);
+	for (size_t row_zone = 1, col_zone = 2; row_zone <= 2; ++row_zone, --col_zone) {
+		for (size_t row = row_zone * width / 4; row < (row_zone + 1) * width / 4; ++row) {
+			for (size_t col = col_zone * width / 4; col < (col_zone + 1) * width / 4; ++col) {
+				size_t vertex = col + row * width;
+				remove_all_dir_neighbors_in_square_grid(tmp, vertex, width);
+			}
+		}
+	}
+	size_t bridge1_index = (width + 1) * (width / 2);
+	size_t bridge2_index = (width + 1) * (width / 2 - 1);
+	remove_all_out_dir_neighbors_in_square_grid(tmp, bridge1_index, width);
+	remove_all_out_dir_neighbors_in_square_grid(tmp, bridge2_index, width);
+	gsl_spmatrix_uint_set(tmp, bridge1_index, bridge2_index, DIR_NW);
+	gsl_spmatrix_uint_set(tmp, bridge2_index, bridge1_index, DIR_SE);
+	graph->t = gsl_spmatrix_uint_compress(tmp, GSL_SPMATRIX_CSR);
+	gsl_spmatrix_uint_free(tmp);
+	return graph;
+}
+
 struct graph_t *init_graph(game_type_t game_type, size_t width)
 {
 	switch (game_type)
@@ -137,6 +182,20 @@ struct graph_t *init_graph(game_type_t game_type, size_t width)
 			exit(EXIT_FAILURE);
 		}
 		return init_donut_graph(width);
+	case CLOVER:
+		if (width % 5 != 0)
+		{
+			fprintf(stderr, "For a CLOVER graph, you need m mod 5 == 0\n");
+			exit(EXIT_FAILURE);
+		}
+		return init_clover_graph(width);
+	case EIGHT:
+		if (width % 4 != 0)
+		{
+			fprintf(stderr, "For an EIGHT graph, you need m mod 4 == 0\n");
+			exit(EXIT_FAILURE);
+		}
+		return init_eight_graph(width);
 	default:
 		fprintf(stderr, "The game type %d isn't handled.\n", game_type);
 		exit(EXIT_FAILURE);
