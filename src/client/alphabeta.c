@@ -166,6 +166,9 @@ struct move_and_score alphabeta(board_t *board, int my_player_id, int depth)
 	return alphabeta_recursive(board, cur_move, my_player_id, INT_MIN, INT_MAX, my_player_id, depth);
 }
 
+/// @brief Computes the factorial of a number
+/// @param n the number
+/// @return The double representation of the factorial. This can be imprecise but allows for very large values
 long double fact(int n){
 	long double res = 1;
 	while(n > 0){
@@ -174,8 +177,8 @@ long double fact(int n){
 	return res;
 }
 
-
-
+/// @brief Computes the most reasonable alphabeta depth in computer performance and gameplay performance
+/// @return The most reasonable alphabeta depth in computer performance and gameplay performance
 int find_depth(){
 	int res = 1;
 	int cur = 1;
