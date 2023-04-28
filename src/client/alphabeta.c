@@ -1,17 +1,19 @@
 #include "move_ext.h"
 #include "player_ext.h"
 #include <math.h>
-#define MAX_COMPUTATIONS 1e7
 
 static player_t global_player;
 
 static unsigned int turns = 0;
 
+static double exp_coeff;
 
 void initialize(unsigned int player_id, struct graph_t *graph,
 				unsigned int num_queens, unsigned int *queens[NUM_PLAYERS])
 {
 	generic_initialize(&global_player, player_id, graph, num_queens, queens, "alphabeta");
+	size_t width = (size_t)sqrt(graph->num_vertices);
+	exp_coeff = (1./(exp(0.05*width)*sqrt(width)*width));
 }
 
 char const *get_player_name()
@@ -166,38 +168,13 @@ struct move_and_score alphabeta(board_t *board, int my_player_id, int depth)
 	return alphabeta_recursive(board, cur_move, my_player_id, INT_MIN, INT_MAX, my_player_id, depth);
 }
 
-/// @brief Computes the factorial of a number
-/// @param n the number
-/// @return The double representation of the factorial. This can be imprecise but allows for very large values
-long double fact(int n){
-	long double res = 1;
-	while(n > 0){
-		res *= n--;
-	}
-	return res;
-}
-
-/// @brief Computes the most reasonable alphabeta depth in computer performance and gameplay performance
-/// @return The most reasonable alphabeta depth in computer performance and gameplay performance
-int find_depth(){
-	int res = 1;
-	int cur = 1;
-	size_t n = global_player.board->graph->num_vertices;
-	while((fact(n-turns)/MAX_COMPUTATIONS) <= fact(n-turns-1-cur)){
-		res = cur;
-		++cur;
-	}
-	return res;
-}
-
 struct move_t play(struct move_t previous_move)
 {
 	if (previous_move.queen_src != FIRST_MOVE_VAL && previous_move.queen_dst != FIRST_MOVE_VAL && previous_move.arrow_dst != FIRST_MOVE_VAL)
 	{
 		apply_move(global_player.board, &previous_move, abs((int)global_player.player_id - 1) % NUM_PLAYERS);
 	}
-	int depth = find_depth();
-	printf("Depth: %d\n", depth);
+	int depth = exp(exp_coeff * turns);
 	struct move_t move = alphabeta(global_player.board, global_player.player_id, depth).move;
 	if (move.queen_src != FIRST_MOVE_VAL && move.queen_dst != FIRST_MOVE_VAL && move.arrow_dst != FIRST_MOVE_VAL)
 		apply_move(global_player.board, &move, global_player.player_id);
