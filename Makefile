@@ -30,11 +30,10 @@ test: alltests
 mcts.so: async_mcts.o position_set.o tree.o array_list.o util.o
 mcts1.so: async_mcts.o position_set.o tree.o array_list.o util.o
 
-variable_heuristic.o:
+#Yeah... I use this to say every single %_spec_heuristic.o has the same rules as variable_heuristic.o defined in Makefile.inc...
+HEURISTIC_TARGETS = $(shell make -f Makefile.inc -qp | grep variable_heuristic.o: | cut -d':' -f2)
+%_spec_heuristic.o: $(HEURISTIC_TARGETS)
 	gcc -c -I${COMMONDIR} -I${CLIENTDIR} -I${SERVERDIR} -DAGG=$(AGG) -DDEF=$(DEF) $(CFLAGS) -o $@ $<
-
-%_spec_heuristic.o: variable_heuristic.o
-	cp variable_heuristic.o $@
 
 balanced_spec_heuristic.o: AGG=1
 balanced_spec_heuristic.o: DEF=1
@@ -87,7 +86,13 @@ clean:
 	@find . -executable -type f -not -iname "*.*" -delete
 	
 
-.PHONY: client install test clean
+.PHONY: client install test clean .FORCE
+
+.FORCE:
 
 include Makefile.inc
+
+variable_heuristic.o: .FORCE
+variable_heuristic.o:
+	gcc -c -I${COMMONDIR} -I${CLIENTDIR} -I${SERVERDIR} -DAGG=$(AGG) -DDEF=$(DEF) $(CFLAGS) -o $@ $<
 

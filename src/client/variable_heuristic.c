@@ -22,5 +22,6 @@ int get_score(board_t *board, int player_id)
 		other_score += pos->count;
 		free_position_set(pos);
 	}
+	printf("%d %d\n", AGG, DEF);
 	return (DEF) * my_score - (AGG) * other_score;
 }
