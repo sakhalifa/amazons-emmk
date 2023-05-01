@@ -1,7 +1,8 @@
 #include <dlfcn.h>
 #include "player_handle.h"
 
-player_handle_t create_player_handle(char *filepath){
+player_handle_t create_player_handle(char *filepath)
+{
 	void *player_handle = dlopen(filepath, RTLD_LAZY);
 	if (player_handle == NULL)
 	{
@@ -13,6 +14,7 @@ player_handle_t create_player_handle(char *filepath){
 		.play = dlsym(player_handle, "play"),
 		.finalize = dlsym(player_handle, "finalize"),
 		.get_player_name = dlsym(player_handle, "get_player_name"),
-		.initialize = dlsym(player_handle, "initialize")};
+		.initialize = dlsym(player_handle, "initialize"),
+		.path = filepath};
 	return p;
 }

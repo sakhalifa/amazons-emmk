@@ -4,6 +4,7 @@
 
 typedef struct {
 	void *dl_handle;
+	char const *path;
 	char const *(*get_player_name)(void);
 	void (*initialize)(unsigned int, struct graph_t*,
                 unsigned int, unsigned int*[NUM_PLAYERS]);
