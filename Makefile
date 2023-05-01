@@ -46,6 +46,10 @@ defensive_spec_heuristic.o: AGG=0
 defensive_spec_heuristic.o: DEF=1
 shield.so: alphabeta.o defensive_spec_heuristic.o position_set.o 
 
+aggressive_spec_heuristic.o: AGG=1
+aggressive_spec_heuristic.o: DEF=0
+spear.so:alphabeta.o aggressive_spec_heuristic.o position_set.o
+
 trickery.so: trickery.o
 
 random.so: player.o position_set.o
@@ -53,7 +57,7 @@ random1.so: player.o position_set.o
 
 human.so: player_ext.o human.o
 
-client: mcts.so alphabeta.so random.so mcts1.so alphabeta1.so random1.so trickery.so
+client: mcts.so alphabeta.so random.so alphabeta1.so shield.so spear.so random1.so mcts1.so trickery.so
 
 alltests: test_main.o test_game.o game.o \
 player_handle.o graph.o board.o position_set.o \

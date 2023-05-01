@@ -1,4 +1,5 @@
 #include "heuristic.h"
+#include <stdio.h>
 #ifndef AGG
 #define AGG 0
 #endif
@@ -21,6 +22,5 @@ int get_score(board_t *board, int player_id)
 		other_score += pos->count;
 		free_position_set(pos);
 	}
-
-	return my_score - other_score;
+	return (DEF) * my_score - (AGG) * other_score;
 }
