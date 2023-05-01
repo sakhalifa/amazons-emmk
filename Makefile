@@ -86,9 +86,7 @@ clean:
 	@find . -executable -type f -not -iname "*.*" -delete
 	
 
-.PHONY: client install test clean .FORCE
-
-.FORCE:
+.PHONY: client install test clean
 
 include Makefile.inc
 
