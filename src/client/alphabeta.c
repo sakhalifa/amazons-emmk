@@ -1,5 +1,6 @@
 #include "move_ext.h"
 #include "player_ext.h"
+#include "heuristic.h"
 #include <math.h>
 
 static player_t global_player;
@@ -27,24 +28,6 @@ struct move_and_score
 	int score;
 };
 
-int get_score(board_t *board)
-{
-	int my_score = 0;
-	int other_score = 0;
-	int other_player_id = (global_player.player_id + 1) % 2;
-	for (size_t i = 0; i < board->num_queens; i++)
-	{
-		position_set *pos = get_reachable_positions_generic(board, board->queens[global_player.player_id][i]);
-		my_score += pos->count;
-		free_position_set(pos);
-		pos = get_reachable_positions_generic(board, board->queens[other_player_id][i]);
-		other_score += pos->count;
-		free_position_set(pos);
-	}
-
-	return my_score - other_score;
-}
-
 int max(int a, int b)
 {
 	return a > b ? a : b;
@@ -59,7 +42,7 @@ struct move_and_score alphabeta_recursive(board_t *board, struct move_t cur_move
 {
 	if (depth == 0)
 	{
-		struct move_and_score move_score = {.move = cur_move, .score = get_score(board)};
+		struct move_and_score move_score = {.move = cur_move, .score = get_score(board, global_player.player_id)};
 		return move_score;
 	}
 #pragma region maximize

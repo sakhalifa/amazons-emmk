@@ -7,7 +7,7 @@ alphabeta.o: src/client/alphabeta.c src/common/move_ext.h \
  src/common/move.h src/client/player_ext.h src/common/player.h \
  src/common/move_ext.h src/common/graph.h src/common/board.h \
  src/common/dir.h src/common/graph_ext.h src/common/player.h \
- src/common/position_set.h
+ src/common/position_set.h src/client/heuristic.h
 trickery.o: src/client/trickery.c src/common/player.h \
  src/common/move_ext.h src/common/move.h src/common/graph.h \
  src/common/move_ext.h
@@ -15,6 +15,10 @@ player.o: src/client/player.c src/client/player_ext.h src/common/player.h \
  src/common/move_ext.h src/common/move.h src/common/graph.h \
  src/common/board.h src/common/dir.h src/common/graph_ext.h \
  src/common/player.h src/common/position_set.h src/common/position_set.h
+variable_heuristic.o: src/client/variable_heuristic.c \
+ src/client/heuristic.h src/common/board.h src/common/dir.h \
+ src/common/graph_ext.h src/common/graph.h src/common/move_ext.h \
+ src/common/move.h src/common/player.h src/common/position_set.h
 afk.o: src/client/afk.c src/client/player_ext.h src/common/player.h \
  src/common/move_ext.h src/common/move.h src/common/graph.h \
  src/common/board.h src/common/dir.h src/common/graph_ext.h \
