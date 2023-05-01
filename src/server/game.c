@@ -12,21 +12,31 @@
 #include "board.h"
 
 /// @brief change the game's current player.
+/// @param game the game
 void update_player(game_t *game)
 {
 	game->current_player = get_other_player_id(game->current_player);
 }
 
+/// @brief Get the player who will start the game
+/// @returns the ID of the player
 unsigned int get_starting_player_id()
 {
 	return rand() % NUM_PLAYERS;
 }
 
+/// @brief Get the next player
+/// @param player_id the current player
+/// @returns the ID of the next player
 unsigned int get_other_player_id(unsigned int player_id)
 {
 	return (player_id + 1) % NUM_PLAYERS;
 }
 
+/// @brief define the cardinal directions for a square game board
+/// @param direction_matrix the matrix of directions
+/// @param width the width of the board
+/// @param num_vertices the number of vertices
 void set_square_matrix_cardinal_directions(gsl_spmatrix_uint* direction_matrix, size_t width, size_t num_vertices) {
 	for (size_t vertex = width; vertex < num_vertices; ++vertex) {
 		gsl_spmatrix_uint_set(direction_matrix, vertex, vertex - width, DIR_NORTH);
@@ -46,6 +56,9 @@ void set_square_matrix_cardinal_directions(gsl_spmatrix_uint* direction_matrix, 
 	}
 }
 
+/// @brief define diagonal directions for a square playing board
+/// @param direction_matrix the matrix of directions
+/// @param width the width of the board
 void set_square_matrix_diagonal_directions(gsl_spmatrix_uint* direction_matrix, size_t width) {
 	for (size_t row = 0; row < width - 1; ++row) {
 		for (size_t col = 0; col < width - 1; ++col) {
@@ -73,6 +86,10 @@ void set_square_matrix_diagonal_directions(gsl_spmatrix_uint* direction_matrix, 
 	}
 }
 
+/// @brief allocate a new matrix to store the directions of a square game board
+/// @param width the width of the board
+/// @param num_vertices the number of vertices
+/// @returns the newly allocated
 gsl_spmatrix_uint* allocate_COO_square_direction_matrix(size_t width, size_t num_vertices) {
 	gsl_spmatrix_uint* direction_matrix = gsl_spmatrix_uint_alloc(num_vertices, num_vertices);
 	set_square_matrix_cardinal_directions(direction_matrix, width, num_vertices);
@@ -80,6 +97,8 @@ gsl_spmatrix_uint* allocate_COO_square_direction_matrix(size_t width, size_t num
 	return direction_matrix;
 }
 
+/// @brief initialize a square game board with a given width
+/// @param width the width of the game board
 struct graph_t *init_square_graph(size_t width)
 {
 	struct graph_t *graph = malloc(sizeof(struct graph_t));
@@ -90,6 +109,7 @@ struct graph_t *init_square_graph(size_t width)
 	return graph;
 }
 
+/// @brief remove all neighbor directions from a given box on a square game board
 void remove_all_dir_neighbors_in_square_grid(gsl_spmatrix_uint* neighbor_matrix, size_t removed_vertex, size_t width) {
 	for (int horizontal_offset = -1; horizontal_offset <= 1; ++horizontal_offset) {
 		for (int vertical_offset = -1; vertical_offset <= 1; ++vertical_offset) {
@@ -100,6 +120,13 @@ void remove_all_dir_neighbors_in_square_grid(gsl_spmatrix_uint* neighbor_matrix,
 	}
 }
 
+/**
+ * @brief Remove all outgoing directional neighbors from a given vertex in a square grid graph.
+ * 
+ * @param neighbor_matrix The neighbor matrix of the graph.
+ * @param removed_vertex The vertex whose neighbors are to be removed.
+ * @param width The width of the square grid.
+ */
 void remove_all_out_dir_neighbors_in_square_grid(gsl_spmatrix_uint* neighbor_matrix, size_t removed_vertex, size_t width) {
 	for (int horizontal_offset = -1; horizontal_offset <= 1; ++horizontal_offset) {
 		for (int vertical_offset = -1; vertical_offset <= 1; ++vertical_offset) {
@@ -109,6 +136,12 @@ void remove_all_out_dir_neighbors_in_square_grid(gsl_spmatrix_uint* neighbor_mat
 	}
 }
 
+/**
+ * @brief Initialize a donut-shaped graph with a given width.
+ * 
+ * @param width The width of the donut graph.
+ * @return A pointer to the initialized graph.
+ */
 struct graph_t *init_donut_graph(size_t width)
 {
 	struct graph_t *graph = malloc(sizeof(struct graph_t));
@@ -125,6 +158,12 @@ struct graph_t *init_donut_graph(size_t width)
 	return graph;
 }
 
+/**
+ * @brief Initialize a clover-shaped graph with a given width.
+ * 
+ * @param width The width of the clover graph.
+ * @return A pointer to the initialized graph.
+ */
 struct graph_t *init_clover_graph(size_t width)
 {
 	struct graph_t *graph = malloc(sizeof(struct graph_t));
@@ -145,6 +184,12 @@ struct graph_t *init_clover_graph(size_t width)
 	return graph;
 }
 
+/**
+ * @brief Initialize a eight-shaped graph with a given width.
+ * 
+ * @param width The width of the eight graph.
+ * @return A pointer to the initialized graph.
+ */
 struct graph_t *init_eight_graph(size_t width)
 {
 	struct graph_t *graph = malloc(sizeof(struct graph_t));
@@ -169,6 +214,13 @@ struct graph_t *init_eight_graph(size_t width)
 	return graph;
 }
 
+/**
+ * @brief initializes a graph for a game
+ * 
+ * @param game_type The type of the game
+ * @param width The width of the graph.
+ * @return the resulting graph
+ */
 struct graph_t *init_graph(game_type_t game_type, size_t width)
 {
 	switch (game_type)
@@ -270,6 +322,7 @@ game_t *init_game_and_players(server_settings_t settings)
 
 	return init_game(starting_player_id, board);
 }
+
 
 void game_free(game_t *game)
 {
