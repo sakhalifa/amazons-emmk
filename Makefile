@@ -32,13 +32,19 @@ mcts1.so: async_mcts.o position_set.o tree.o array_list.o util.o
 
 variable_heuristic.o:
 	gcc -c -I${COMMONDIR} -I${CLIENTDIR} -I${SERVERDIR} -DAGG=$(AGG) -DDEF=$(DEF) $(CFLAGS) -o $@ $<
-balanced_heuristic.o: AGG=1
-balanced_heuristic.o: DEF=1
-balanced_heuristic.o: variable_heuristic.o # We do a little trickery...
-	cp variable_heuristic.o balanced_heuristic.o
 
-alphabeta.so: alphabeta.o balanced_heuristic.o position_set.o 
-alphabeta1.so: alphabeta.o balanced_heuristic.o position_set.o
+%_spec_heuristic.o: variable_heuristic.o
+	cp variable_heuristic.o $@
+
+balanced_spec_heuristic.o: AGG=1
+balanced_spec_heuristic.o: DEF=1
+
+alphabeta.so: alphabeta.o balanced_spec_heuristic.o position_set.o 
+alphabeta1.so: alphabeta.o balanced_spec_heuristic.o position_set.o
+
+defensive_spec_heuristic.o: AGG=0
+defensive_spec_heuristic.o: DEF=1
+shield.so: alphabeta.o defensive_spec_heuristic.o position_set.o 
 
 trickery.so: trickery.o
 
