@@ -92,7 +92,3 @@ clean:
 
 include Makefile.inc
 
-variable_heuristic.o: .FORCE
-variable_heuristic.o:
-	gcc -c -I${COMMONDIR} -I${CLIENTDIR} -I${SERVERDIR} -DAGG=$(AGG) -DDEF=$(DEF) $(CFLAGS) -o $@ $<
-
