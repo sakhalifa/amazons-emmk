@@ -11,23 +11,18 @@
 
 #include "board.h"
 
-/// @brief change the game's current player.
-/// @param game the game
 void update_player(game_t *game)
 {
 	game->current_player = get_other_player_id(game->current_player);
 }
 
 /// @brief Get the player who will start the game
-/// @returns the ID of the player
+/// @return the ID of the player
 unsigned int get_starting_player_id()
 {
 	return 0;
 }
 
-/// @brief Get the next player
-/// @param player_id the current player
-/// @returns the ID of the next player
 unsigned int get_other_player_id(unsigned int player_id)
 {
 	return (player_id + 1) % NUM_PLAYERS;
@@ -89,7 +84,7 @@ void set_square_matrix_diagonal_directions(gsl_spmatrix_uint* direction_matrix, 
 /// @brief allocate a new matrix to store the directions of a square game board
 /// @param width the width of the board
 /// @param num_vertices the number of vertices
-/// @returns the newly allocated
+/// @return the newly allocated
 gsl_spmatrix_uint* allocate_COO_square_direction_matrix(size_t width, size_t num_vertices) {
 	gsl_spmatrix_uint* direction_matrix = gsl_spmatrix_uint_alloc(num_vertices, num_vertices);
 	set_square_matrix_cardinal_directions(direction_matrix, width, num_vertices);
@@ -99,6 +94,7 @@ gsl_spmatrix_uint* allocate_COO_square_direction_matrix(size_t width, size_t num
 
 /// @brief initialize a square game board with a given width
 /// @param width the width of the game board
+/// @return the newly allocated
 struct graph_t *init_square_graph(size_t width)
 {
 	struct graph_t *graph = malloc(sizeof(struct graph_t));
@@ -110,6 +106,9 @@ struct graph_t *init_square_graph(size_t width)
 }
 
 /// @brief remove all neighbor directions from a given box on a square game board
+/// @param neighbor_matrix The neighbor matrix of the graph.
+/// @param removed_vertex The vertex whose neighbors are to be removed.
+/// @param width The width of the square grid.
 void remove_all_dir_neighbors_in_square_grid(gsl_spmatrix_uint* neighbor_matrix, size_t removed_vertex, size_t width) {
 	for (int horizontal_offset = -1; horizontal_offset <= 1; ++horizontal_offset) {
 		for (int vertical_offset = -1; vertical_offset <= 1; ++vertical_offset) {
@@ -120,13 +119,10 @@ void remove_all_dir_neighbors_in_square_grid(gsl_spmatrix_uint* neighbor_matrix,
 	}
 }
 
-/**
- * @brief Remove all outgoing directional neighbors from a given vertex in a square grid graph.
- * 
- * @param neighbor_matrix The neighbor matrix of the graph.
- * @param removed_vertex The vertex whose neighbors are to be removed.
- * @param width The width of the square grid.
- */
+/// @brief Remove all outgoing directional neighbors from a given vertex in a square grid graph.
+/// @param neighbor_matrix The neighbor matrix of the graph.
+/// @param removed_vertex The vertex whose neighbors are to be removed.
+/// @param width The width of the square grid.
 void remove_all_out_dir_neighbors_in_square_grid(gsl_spmatrix_uint* neighbor_matrix, size_t removed_vertex, size_t width) {
 	for (int horizontal_offset = -1; horizontal_offset <= 1; ++horizontal_offset) {
 		for (int vertical_offset = -1; vertical_offset <= 1; ++vertical_offset) {
@@ -136,12 +132,9 @@ void remove_all_out_dir_neighbors_in_square_grid(gsl_spmatrix_uint* neighbor_mat
 	}
 }
 
-/**
- * @brief Initialize a donut-shaped graph with a given width.
- * 
- * @param width The width of the donut graph.
- * @return A pointer to the initialized graph.
- */
+///@brief Initialize a donut-shaped graph with a given width.
+/// @param width The width of the donut graph.
+/// @return A pointer to the initialized graph.
 struct graph_t *init_donut_graph(size_t width)
 {
 	struct graph_t *graph = malloc(sizeof(struct graph_t));
@@ -158,12 +151,9 @@ struct graph_t *init_donut_graph(size_t width)
 	return graph;
 }
 
-/**
- * @brief Initialize a clover-shaped graph with a given width.
- * 
- * @param width The width of the clover graph.
- * @return A pointer to the initialized graph.
- */
+/// @brief Initialize a clover-shaped graph with a given width.
+/// @param width The width of the clover graph.
+/// @return A pointer to the initialized graph.
 struct graph_t *init_clover_graph(size_t width)
 {
 	struct graph_t *graph = malloc(sizeof(struct graph_t));
@@ -184,12 +174,9 @@ struct graph_t *init_clover_graph(size_t width)
 	return graph;
 }
 
-/**
- * @brief Initialize a eight-shaped graph with a given width.
- * 
- * @param width The width of the eight graph.
- * @return A pointer to the initialized graph.
- */
+/// @brief Initialize a eight-shaped graph with a given width. 
+/// @param width The width of the eight graph.
+/// @return A pointer to the initialized graph.
 struct graph_t *init_eight_graph(size_t width)
 {
 	struct graph_t *graph = malloc(sizeof(struct graph_t));
@@ -214,13 +201,10 @@ struct graph_t *init_eight_graph(size_t width)
 	return graph;
 }
 
-/**
- * @brief initializes a graph for a game
- * 
- * @param game_type The type of the game
- * @param width The width of the graph.
- * @return the resulting graph
- */
+/// @brief initializes a graph for a game
+/// @param game_type The type of the game
+/// @param width The width of the graph.
+/// @return the resulting graph
 struct graph_t *init_graph(game_type_t game_type, size_t width)
 {
 	switch (game_type)
@@ -256,6 +240,10 @@ struct graph_t *init_graph(game_type_t game_type, size_t width)
 	return NULL;
 }
 
+/// @brief Initialize the queens on the game board
+/// @param queens the placement of the differents queens
+/// @param num_queens the number of queens
+/// @param width the width of the graph
 void init_queens(unsigned int **queens, unsigned int num_queens, size_t width)
 {
 	for (int player_id = 0; player_id < NUM_PLAYERS; ++player_id)
@@ -296,8 +284,6 @@ game_t *init_game(unsigned int current_player, board_t *board)
 	return game;
 }
 
-/// @brief Init the game, the board, the graph, the queens and calls initialize functions of players
-/// @returns A game structure representing the current game.
 game_t *init_game_and_players(server_settings_t settings)
 {
 	// Init board
@@ -321,7 +307,6 @@ game_t *init_game_and_players(server_settings_t settings)
 
 	return init_game(starting_player_id, board);
 }
-
 
 void game_free(game_t *game)
 {
