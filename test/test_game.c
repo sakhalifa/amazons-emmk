@@ -47,20 +47,47 @@ void structural_test_init_queens()
     printf("OK\n");
 }
 
-void running_test_init_game_and_player()
-{
-    printf("\t%s\t", __func__);
+void running_test_init_game_and_player_on_board(game_type_t board_type, int game_width){
     server_settings_t settings = {
-        .game_type = SQUARE,
-        .game_width = 10,
+        .game_type = board_type,
+        .game_width = game_width,
     };
     settings.player_handles[0] = get_mock_player();
     settings.player_handles[1] = get_mock_player();
 
     game_t *game = init_game_and_players(settings);
 
+    unsigned int starting_player = game->current_player;
+    update_player(game);
+    assert(game->current_player != starting_player);
     game_free(game);
+}
 
+void running_test_init_game_and_player_on_square_board()
+{
+    printf("\t%s\t", __func__);
+    running_test_init_game_and_player_on_board(SQUARE, 10);
+    printf("OK\n");
+}
+
+void running_test_init_game_and_player_on_clover_board()
+{
+    printf("\t%s\t", __func__);
+    running_test_init_game_and_player_on_board(CLOVER, 15);
+    printf("OK\n");
+}
+
+void running_test_init_game_and_player_on_donut_board()
+{
+    printf("\t%s\t", __func__);
+    running_test_init_game_and_player_on_board(DONUT, 12);
+    printf("OK\n");
+}
+
+void running_test_init_game_and_player_on_eight_board()
+{
+    printf("\t%s\t", __func__);
+    running_test_init_game_and_player_on_board(EIGHT, 12);
     printf("OK\n");
 }
 
@@ -125,7 +152,10 @@ void test_init_square()
 void run_game_tests()
 {
     printf("Running test file \"%s\"\n", __FILE__);
-    running_test_init_game_and_player();
+    running_test_init_game_and_player_on_square_board();
+    running_test_init_game_and_player_on_clover_board();
+    running_test_init_game_and_player_on_donut_board();
+    running_test_init_game_and_player_on_eight_board();
     structural_test_init_queens();
     test_init_square();
 }

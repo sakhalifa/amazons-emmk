@@ -251,19 +251,18 @@ void init_queens(unsigned int **queens, unsigned int num_queens, size_t width)
 		queens[player_id] = (unsigned int *)malloc(sizeof(unsigned int) * num_queens);
 	}
 
-	int half = ((width - 1) / 2) - 1;
-	int half_queens = num_queens / 2;
-	int cur = half;
+	unsigned int half_queens = num_queens / 2;
+	int cur = 1;
 	int end = width * width - 1;
 	int row = 1; // Start placing at row 1, to avoid contact with top row
-	for (unsigned int i = 0; i < half_queens / 2; ++i)
+	for (unsigned int i = 0; i < half_queens; i += 2)
 	{
 		// Place on top (or bottom) row
 		queens[0][i] = cur;
 		queens[0][i + 1] = width - (cur + 1);
 		queens[1][i] = end - cur;
 		queens[1][i + 1] = end - (width - (cur + 1));
-		cur -= 2;
+		cur += 2;
 		
 		// Place on columns
 		queens[0][half_queens + i] = row * width;

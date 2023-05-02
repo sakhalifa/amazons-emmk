@@ -394,7 +394,6 @@ unsigned int find_neighbor_in_direction(struct graph_t *graph, unsigned int posi
     return UINT_MAX;
 }
 
-// recursive calls and not as opti as reachable_positions.
 position_set *get_reachable_positions_generic(board_t *board, unsigned int position)
 {
     size_t max_different_moves = board->graph->num_vertices - 1;
