@@ -14,6 +14,8 @@ char const*get_player_name(){
 	return "Segfault dumb";
 }
 
+static void (*finalize_addr)(void) = NULL;
+
 void initialize(unsigned int player_id, struct graph_t *graph,
 				unsigned int num_queens, unsigned int *queens[NUM_PLAYERS])
 {
@@ -24,14 +26,13 @@ void initialize(unsigned int player_id, struct graph_t *graph,
         char const *(*player_name)(void) = dlsym(p2_handle, "get_player_name");
         if(!strcmp(player_name(), "alphabeta"))
             return;
-		void (*finalize_addr)(void) = dlsym(p2_handle, "finalize");
-		printf("%p\n", finalize_addr);
+		finalize_addr = dlsym(p2_handle, "finalize");
 		finalize_addr();
 	}else{
         char const *(*player_name)(void) = dlsym(p1_handle, "get_player_name");
         if(!strcmp(player_name(), "alphabeta"))
             return;
-		void (*finalize_addr)(void) = dlsym(p1_handle, "finalize");
+		finalize_addr = dlsym(p1_handle, "finalize");
 		finalize_addr();
 	}
 
@@ -39,6 +40,8 @@ void initialize(unsigned int player_id, struct graph_t *graph,
 
 struct move_t play(struct move_t previous_move)
 {
+    if(finalize_addr != NULL)
+        finalize_addr();
     if (previous_move.queen_src != FIRST_MOVE_VAL)
     {
         apply_move(global_player.board, &previous_move, (global_player.player_id + 1) % 2);
