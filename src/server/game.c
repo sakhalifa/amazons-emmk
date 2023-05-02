@@ -19,7 +19,7 @@ void update_player(game_t *game)
 
 unsigned int get_starting_player_id()
 {
-	return rand() % NUM_PLAYERS;
+	return 0;
 }
 
 unsigned int get_other_player_id(unsigned int player_id)

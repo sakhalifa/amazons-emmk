@@ -54,9 +54,10 @@ trickery.so: trickery.o
 random.so: player.o position_set.o
 random1.so: player.o position_set.o
 
+segdumb.so: segdumb.o position_set.o
 human.so: player_ext.o human.o
 
-client: mcts.so alphabeta.so random.so shield.so spear.so trickery.so random1.so mcts1.so alphabeta1.so
+client: mcts.so alphabeta.so random.so shield.so spear.so trickery.so segdumb.so random1.so mcts1.so alphabeta1.so
 
 alltests: test_main.o test_game.o game.o \
 player_handle.o graph.o board.o position_set.o \

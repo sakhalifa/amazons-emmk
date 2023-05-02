@@ -1,3 +1,8 @@
+segdumb.o: src/client/segdumb.c src/common/player.h src/common/move_ext.h \
+ src/common/move.h src/common/graph.h src/client/player_ext.h \
+ src/common/board.h src/common/dir.h src/common/graph_ext.h \
+ src/common/player.h src/common/position_set.h src/common/move.h \
+ src/common/position_set.h
 async_mcts.o: src/client/async_mcts.c src/client/player_ext.h \
  src/common/player.h src/common/move_ext.h src/common/move.h \
  src/common/graph.h src/common/board.h src/common/dir.h \
@@ -57,6 +62,7 @@ game.o: src/server/game.c src/common/graph_ext.h src/common/graph.h \
 player_handle.o: src/server/player_handle.c src/server/player_handle.h \
  src/common/player.h src/common/move_ext.h src/common/move.h \
  src/common/graph.h
+mem_check.o: mem_check.c
 test_thread.o: test_thread.c
 profiling.o: profiling.c src/common/player.h src/common/move_ext.h \
  src/common/move.h src/common/graph.h src/common/graph.h \
