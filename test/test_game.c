@@ -52,7 +52,7 @@ void running_test_init_game_and_player()
     printf("\t%s\t", __func__);
     server_settings_t settings = {
         .game_type = SQUARE,
-        .game_width = 2,
+        .game_width = 10,
     };
     settings.player_handles[0] = get_mock_player();
     settings.player_handles[1] = get_mock_player();
