@@ -61,7 +61,7 @@ client: mcts.so alphabeta.so random.so shield.so spear.so trickery.so segdumb.so
 
 alltests: test_main.o test_game.o game.o \
 player_handle.o graph.o board.o position_set.o \
-mock_player.o player_handle.o
+mock_player.o player_handle.o test_board.o
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o alltests
 
 profiling: alphabeta.o board.o position_set.o graph.o player_handle.o graph.o game.o board.o position_set.o profiling.o

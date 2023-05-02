@@ -62,7 +62,6 @@ game.o: src/server/game.c src/common/graph_ext.h src/common/graph.h \
 player_handle.o: src/server/player_handle.c src/server/player_handle.h \
  src/common/player.h src/common/move_ext.h src/common/move.h \
  src/common/graph.h
-mem_check.o: mem_check.c
 test_thread.o: test_thread.c
 profiling.o: profiling.c src/common/player.h src/common/move_ext.h \
  src/common/move.h src/common/graph.h src/common/graph.h \
@@ -75,7 +74,12 @@ test_game.o: test/test_game.c test/test_game.h test/game_impl.h \
  src/common/board.h src/common/dir.h src/common/graph_ext.h \
  src/common/player.h src/common/position_set.h src/server/game.h \
  src/server/server.h src/server/player_handle.h test/mock_player.h
+test_board.o: test/test_board.c test/test_board.h src/common/board.h \
+ src/common/dir.h src/common/graph_ext.h src/common/graph.h \
+ src/common/move_ext.h src/common/move.h src/common/player.h \
+ src/common/position_set.h src/common/graph.h test/game_impl.h \
+ src/server/server.h src/server/player_handle.h src/common/player.h
 mock_player.o: test/mock_player.c src/server/player_handle.h \
  src/common/player.h src/common/move_ext.h src/common/move.h \
  src/common/graph.h src/common/move_ext.h src/common/graph_ext.h
-test_main.o: test/test_main.c test/test_game.h
+test_main.o: test/test_main.c test/test_game.h test/test_board.h

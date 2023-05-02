@@ -13,7 +13,7 @@
 bool is_on_board(board_t *board, int position)
 {
     return position >= 0 &&
-           (unsigned int)position < (board->graph->num_vertices * board->graph->num_vertices);
+           (unsigned int)position < board->graph->num_vertices;
 }
 
 bool is_cell_empty(board_t *board, unsigned int cell_position)
