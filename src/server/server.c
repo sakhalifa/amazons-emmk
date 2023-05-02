@@ -18,6 +18,10 @@ void print_usage(char *binary_name)
 	fprintf(stdout, USAGE_STRING, binary_name);
 }
 
+/// @brief get and set the settings of the game
+/// @param argc 
+/// @param argv 
+/// @return the server settings
 server_settings_t get_args(int argc, char *const *argv)
 {
 	server_settings_t settings = {

@@ -12,6 +12,9 @@ typedef struct {
 	void (*finalize)(void);
 } player_handle_t;
 
+/// @brief Create a player handle object
+/// @param filepath the filepath
+/// @return player_handle_t 
 player_handle_t create_player_handle(char *filepath);
 
 #endif
