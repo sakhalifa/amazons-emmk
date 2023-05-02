@@ -69,7 +69,7 @@ void test_is_on_board()
 	board_t *board = init_board(graph, 4);
 	assert(!is_on_board(board, -1));
 	assert(!is_on_board(board, WIDTH * WIDTH));
-	for (int pos = 0; pos < graph->num_vertices; pos++)
+	for (size_t pos = 0; pos < graph->num_vertices; pos++)
 	{
 		assert(is_on_board(board, pos));
 	}
@@ -128,16 +128,69 @@ void test_is_cell_empty()
 	printf("OK\n");
 }
 
-void test_move_oob(){
-	
+void test_move_oob()
+{
+	board_t *board = init_board(init_square_graph(5), 4);
+	unsigned int *queens[NUM_PLAYERS];
+	unsigned int queens0[4] = {5, 1, 3, 9};
+	unsigned int queens1[4] = {15, 21, 23, 19};
+	queens[0] = queens0;
+	queens[1] = queens1;
+	for (unsigned int player_id = 0; player_id < NUM_PLAYERS; player_id++)
+	{
+		struct move_t move = {queens[player_id][0], -1, 0};
+		assert(!is_move_legal(board, &move, player_id));
+	}
+	free_board_without_queens(board);
 }
 
-void test_is_move_legal(){
+void test_arrow_oob()
+{
+	board_t *board = init_board(init_square_graph(5), 4);
+	unsigned int *queens[NUM_PLAYERS];
+	unsigned int queens0[4] = {5, 1, 3, 9};
+	unsigned int queens1[4] = {15, 21, 23, 19};
+	queens[0] = queens0;
+	queens[1] = queens1;
+	for (unsigned int player_id = 0; player_id < NUM_PLAYERS; player_id++)
+	{
+		struct move_t move = {queens[player_id][0], 11, -1};
+		assert(!is_move_legal(board, &move, player_id));
+	}
+	free_board_without_queens(board);
+}
+
+void test_move_non_empty(){
+	board_t *board = init_board(init_square_graph(5), 4);
+	unsigned int *queens[NUM_PLAYERS];
+	unsigned int queens0[4] = {1, 3, 5, 9};
+	unsigned int queens1[4] = {15, 21, 23, 19};
+	queens[0] = queens0;
+	queens[1] = queens1;
+	board->arrows[10] = true;
+	//Move to queen
+	for (unsigned int player_id = 0; player_id < NUM_PLAYERS; player_id++)
+	{
+		struct move_t move = {queens[player_id][0], queens[player_id][1], 11};
+		assert(!is_move_legal(board, &move, player_id));
+	}
+	//Move to arrow
+	for (unsigned int player_id = 0; player_id < NUM_PLAYERS; player_id++)
+	{
+		struct move_t move = {queens[player_id][0], queens[player_id][1], 11};
+		assert(!is_move_legal(board, &move, player_id));
+	}
+	free_board_without_queens(board);
+}
+
+void test_is_move_legal()
+{
 	printf("\t%s\t", __func__);
 	test_move_oob();
+	test_arrow_oob();
+	test_move_non_empty();
 	printf("OK\n");
 }
-
 
 void run_board_tests()
 {
