@@ -11,3 +11,5 @@ build/
 *.log
 *.out
 oprofile_data
+*.aux
+*.pdf
