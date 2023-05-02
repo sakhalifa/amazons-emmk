@@ -389,7 +389,6 @@ unsigned int find_neighbor_in_direction(struct graph_t *graph, unsigned int posi
             neighbor_cache[direction - FIRST_DIR][position] = j;
             return j;
         }
-        // Do something for the edge from i to j
     }
     neighbor_cache[direction - FIRST_DIR][position] = UINT_MAX;
     return UINT_MAX;
