@@ -57,6 +57,9 @@ void running_test_init_game_and_player_on_board(game_type_t board_type, int game
 
     game_t *game = init_game_and_players(settings);
 
+    unsigned int starting_player = game->current_player;
+    update_player(game);
+    assert(game->current_player != starting_player);
     game_free(game);
 }
 
