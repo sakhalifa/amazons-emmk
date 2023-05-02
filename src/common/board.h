@@ -64,6 +64,11 @@ void print_board(board_t *board);
 /// @param neighbor the id of the first reachable neighbor reached in the given direction
 void add_reachable_positions_aligned_deprecated(board_t* board, position_set* reachable_positions, unsigned int neighbor, enum dir_t direction_to_neighbor, size_t width);
 
+/// @brief Adds to "reachable_positions" all the positions of the board reachable from "neighbor" and by going in the "direction_to_neighbor" direction
+/// @param board the board on which the reachable positions from the given position and in the given direction are computed
+/// @param reachable_positions the set in which the reachable returned positions are added
+/// @param neighbor the position (not added in "reachable_positions" by this function) from which the reachable aligned positions are computed
+/// @param direction_to_neighbor the direction in which the reachable neighbors are searched
 void add_reachable_positions_aligned(board_t *board, position_set *reachable_positions, unsigned int neighbor, enum dir_t direction_to_neighbor);
 
 /// @brief Gets all the reachable position from a given position. This is quite unoptimized BUT it works for any graph.
