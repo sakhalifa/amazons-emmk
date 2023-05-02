@@ -18,7 +18,7 @@ bool is_on_board(board_t *board, int position)
 
 bool is_cell_empty(board_t *board, unsigned int cell_position)
 {
-    return board->queens_on_board[cell_position] == EMPTY_CELL && !board->arrows[cell_position];    
+    return board->queens_on_board[cell_position] == EMPTY_CELL && !board->arrows[cell_position];
 }
 
 bool has_queen(unsigned int player_id, board_t *board, unsigned int queen_position)
@@ -35,7 +35,7 @@ void add_reachable_positions_aligned_deprecated(board_t *board, position_set *re
     {
         found = false;
         size_t next_neighbor = 0;
-        while (next_neighbor < width) //bug? width != num_vertices
+        while (next_neighbor < width) // bug? width != num_vertices
         {
             enum dir_t direction_to_next_neighbor = gsl_spmatrix_uint_get(board->graph->t, neighbor, next_neighbor);
             if (direction_to_next_neighbor == direction_to_neighbor && is_cell_empty(board, next_neighbor))
@@ -218,19 +218,23 @@ board_t *init_board(struct graph_t *graph, unsigned int num_queens)
         board->arrows[i] = false;
         board->queens_on_board[i] = EMPTY_CELL;
     }
-    
+
     return board;
 }
 
-void place_queens_on_board(board_t *board, unsigned int* queens[NUM_PLAYERS], unsigned int num_queens){
+void place_queens_on_board(board_t *board, unsigned int *queens[NUM_PLAYERS], unsigned int num_queens)
+{
     // Init queens array
-    for(size_t i = 0; i < NUM_PLAYERS; i++){
+    for (size_t i = 0; i < NUM_PLAYERS; i++)
+    {
         board->queens[i] = queens[i];
     }
 
     // Init board of queens (for direct access from a position)
-    for(size_t player_id = 0; player_id < NUM_PLAYERS; ++player_id){
-        for (size_t queen_index = 0; queen_index < num_queens; ++queen_index){
+    for (size_t player_id = 0; player_id < NUM_PLAYERS; ++player_id)
+    {
+        for (size_t queen_index = 0; queen_index < num_queens; ++queen_index)
+        {
             board->queens_on_board[queens[player_id][queen_index]] = player_id;
         }
     }
@@ -279,16 +283,20 @@ void print_vertical_line(unsigned int size)
     }
 }
 
-bool is_reachable(gsl_spmatrix_uint* spmatrix, size_t position) {
-    for (size_t vertex = 0; vertex < spmatrix->size1; ++vertex) {
-        if (gsl_spmatrix_uint_get(spmatrix, vertex, position) != NO_DIR) {
+bool is_reachable(gsl_spmatrix_uint *spmatrix, size_t position)
+{
+    for (size_t vertex = 0; vertex < spmatrix->size1; ++vertex)
+    {
+        if (gsl_spmatrix_uint_get(spmatrix, vertex, position) != NO_DIR)
+        {
             return true;
         }
     }
     return false;
 }
 
-void print_board(board_t *board) {
+void print_board(board_t *board)
+{
     unsigned int width = sqrt(board->graph->num_vertices);
     printf("    ");
     print_letter_line(width);
@@ -296,9 +304,11 @@ void print_board(board_t *board) {
     printf("   /");
     print_vertical_line(width * 2 - 1);
     printf("-\\\n");
-    for (unsigned int col = 0; col < width; ++col) {
+    for (unsigned int col = 0; col < width; ++col)
+    {
         printf("%2d |", col + 1);
-        for (unsigned int row = 0; row < width; ++row) {
+        for (unsigned int row = 0; row < width; ++row)
+        {
             printf(" ");
             unsigned int position = col * width + row;
             if (!is_reachable(board->graph->t, position))
@@ -333,8 +343,10 @@ void print_board(board_t *board) {
 static bool is_cache_initialized = false;
 static unsigned int *neighbor_cache[NUM_DIRS];
 
-void neighbors_cache_free(){
-    for(size_t i = 0; i<NUM_DIRS; i++){
+void neighbors_cache_free()
+{
+    for (size_t i = 0; i < NUM_DIRS; i++)
+    {
         free(neighbor_cache[i]);
     }
     is_cache_initialized = false;
@@ -367,13 +379,17 @@ unsigned int find_neighbor_in_direction(struct graph_t *graph, unsigned int posi
     {
         return result;
     }
-    for (size_t i = 0; i < graph->num_vertices; i++)
+    gsl_spmatrix_uint *csr = graph->t;
+    for (unsigned int k = csr->p[position]; k < csr->p[position + 1]; k++)
     {
-        if (gsl_spmatrix_uint_get(graph->t, position, i) == direction)
+        unsigned int j = csr->i[k];
+        enum dir_t dir = csr->data[k];
+        if (dir == direction)
         {
-            neighbor_cache[direction - FIRST_DIR][position] = i;
-            return i;
+            neighbor_cache[direction - FIRST_DIR][position] = j;
+            return j;
         }
+        // Do something for the edge from i to j
     }
     neighbor_cache[direction - FIRST_DIR][position] = UINT_MAX;
     return UINT_MAX;
@@ -398,7 +414,7 @@ position_set *get_reachable_positions_generic(board_t *board, unsigned int posit
 
 // any board shape, no recursive call
 position_set *reachable_positions(board_t *board, unsigned int queen_position)
-{  
+{
     size_t max_different_moves = board->graph->num_vertices - 1;
     position_set *moves = init_position_set(max_different_moves);
     for (size_t vertex = 0; vertex < board->graph->num_vertices; ++vertex)
@@ -433,27 +449,27 @@ position_set *reachable_positions(board_t *board, unsigned int queen_position)
     return moves;
 }
 
-//for square board shape, not opti
-//position_set *reachable_positions_deprecated(unsigned int queen_position)
-//{  
-//    size_t width = (size_t)sqrt(global_player.board->graph->num_vertices);
-//    size_t max_different_moves = width*4 - 4;
-//    position_set *moves = init_position_set(max_different_moves);
-//    for (size_t i = 0; i < global_player.board->graph->num_vertices; ++i)
-//    {
-//        enum dir_t direction_to_i = gsl_spmatrix_uint_get(global_player.board->graph->t, (size_t)queen_position, i);
-//        if (direction_to_i != NO_DIR && is_cell_empty(global_player.board, i))
-//        {
-//            //printf("in, q : %u, i : %u\n", queen_position, i); // for debug
-//            add_reachable_positions_aligned_deprecated(global_player.board, moves, i, direction_to_i, width);
-//        }
-//    }
-//    // printf("end\n"); // for debug
-//    return moves;
-//}
+// for square board shape, not opti
+// position_set *reachable_positions_deprecated(unsigned int queen_position)
+//{
+//     size_t width = (size_t)sqrt(global_player.board->graph->num_vertices);
+//     size_t max_different_moves = width*4 - 4;
+//     position_set *moves = init_position_set(max_different_moves);
+//     for (size_t i = 0; i < global_player.board->graph->num_vertices; ++i)
+//     {
+//         enum dir_t direction_to_i = gsl_spmatrix_uint_get(global_player.board->graph->t, (size_t)queen_position, i);
+//         if (direction_to_i != NO_DIR && is_cell_empty(global_player.board, i))
+//         {
+//             //printf("in, q : %u, i : %u\n", queen_position, i); // for debug
+//             add_reachable_positions_aligned_deprecated(global_player.board, moves, i, direction_to_i, width);
+//         }
+//     }
+//     // printf("end\n"); // for debug
+//     return moves;
+// }
 
 // for square board (cardinal and diagonal directions), opti
-//position_set *reachable_positions_square_opti(unsigned int queen_position) {
+// position_set *reachable_positions_square_opti(unsigned int queen_position) {
 //    size_t width = (size_t)sqrt(global_player.board->graph->num_vertices);
 //    return NULL;
 //}
