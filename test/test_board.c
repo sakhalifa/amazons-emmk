@@ -5,6 +5,13 @@
 #include <stdio.h>
 #include <assert.h>
 
+void free_board_without_queens(board_t *board){
+	graph_free(board->graph);
+	free(board->arrows);
+	free(board->queens_on_board);
+	free(board);
+}
+
 void test_init_board()
 {
 	printf("\t%s\t", __func__);
@@ -17,6 +24,7 @@ void test_init_board()
 	assert(board->num_queens == 4);
 	assert(board->queens != NULL);
 	assert(board->queens_on_board != NULL);
+	free_board_without_queens(board);
 	printf("OK\n");
 }
 
@@ -47,11 +55,7 @@ void test_place_queens_on_board()
 			assert(board->queens_on_board[i] == EMPTY_CELL);
 		}
 	}
-	graph_free(board->graph);
-	free(board->arrows);
-	free(board->queens_on_board);
-	free(board);
-	// board_free(board);
+	free_board_without_queens(board);
 	printf("OK\n");
 }
 
@@ -69,7 +73,7 @@ void test_is_on_board()
 		assert(is_on_board(board, pos));
 	}
 
-	// board_free(board);
+	free_board_without_queens(board);
 	printf("OK\n");
 }
 
