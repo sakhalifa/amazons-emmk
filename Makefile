@@ -59,7 +59,7 @@ human.so: player_ext.o human.o
 
 client: mcts.so alphabeta.so random.so shield.so spear.so trickery.so segdumb.so random1.so mcts1.so alphabeta1.so
 
-alltests: test_main.o test_game.o game.o \
+alltests: test_main.o test_game.o test_position_set.o game.o \
 player_handle.o graph.o board.o position_set.o \
 mock_player.o player_handle.o
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o alltests
@@ -69,7 +69,7 @@ profiling: alphabeta.o board.o position_set.o graph.o player_handle.o graph.o ga
 
 coverage: alltests
 	./alltests
-	gcov -o . server/game.c
+	gcov -o . $(SERVERDIR)/*.c $(COMMONDIR)/*.c
 
 
 run: install
