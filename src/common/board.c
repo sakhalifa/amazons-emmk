@@ -380,7 +380,7 @@ unsigned int find_neighbor_in_direction(struct graph_t *graph, unsigned int posi
         return result;
     }
     gsl_spmatrix_uint *csr = graph->t;
-    for (unsigned int k = csr->p[position]; k < csr->p[position + 1]; k++)
+    for (unsigned int k = csr->p[position]; (int)k < csr->p[position + 1]; k++)
     {
         unsigned int j = csr->i[k];
         enum dir_t dir = csr->data[k];
