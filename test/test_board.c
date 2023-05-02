@@ -128,6 +128,17 @@ void test_is_cell_empty()
 	printf("OK\n");
 }
 
+void test_move_oob(){
+	
+}
+
+void test_is_move_legal(){
+	printf("\t%s\t", __func__);
+	test_move_oob();
+	printf("OK\n");
+}
+
+
 void run_board_tests()
 {
 	printf("Running test file \"%s\"\n", __FILE__);
@@ -135,4 +146,5 @@ void run_board_tests()
 	test_init_board();
 	test_place_queens_on_board();
 	test_is_cell_empty();
+	test_is_move_legal();
 }

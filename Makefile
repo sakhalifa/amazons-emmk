@@ -18,7 +18,7 @@ INSTALLDIR = install
 %.so: player_ext.o graph.o board.o
 	gcc -shared $(CFLAGS) $^ $(LDFLAGS) -o $@
 
-all: build
+all: build alltests
 
 build: server client
 
@@ -59,13 +59,11 @@ human.so: player_ext.o human.o
 
 client: mcts.so alphabeta.so random.so bouclier.so epee.so trickery.so segdumb.so random1.so mcts1.so alphabeta1.so
 
-alltests: test_main.o test_game.o game.o \
-player_handle.o graph.o board.o position_set.o \
-mock_player.o player_handle.o test_board.o
-	gcc $(CFLAGS) $^ $(LDFLAGS) -o alltests
+alltests: game.o player_handle.o graph.o board.o position_set.o tree.o array_list.o
+alltests: test_main.o test_game.o mock_player.o test_board.o test_tree.o test_array_list.o
 
-profiling: alphabeta.o board.o position_set.o graph.o player_handle.o graph.o game.o board.o position_set.o profiling.o
-	gcc $(CFLAGS) $^ $(LDFLAGS) -o profiler
+alltests:
+	gcc $(CFLAGS) $^ $(LDFLAGS) -o alltests
 
 coverage: alltests
 	./alltests
