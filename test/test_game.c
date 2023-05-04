@@ -67,6 +67,7 @@ void running_test_init_game_and_player_on_square_board()
 {
     printf("\t%s\t", __func__);
     running_test_init_game_and_player_on_board(SQUARE, 10);
+    neighbors_cache_free();
     printf("OK\n");
 }
 
@@ -74,6 +75,7 @@ void running_test_init_game_and_player_on_clover_board()
 {
     printf("\t%s\t", __func__);
     running_test_init_game_and_player_on_board(CLOVER, 15);
+    neighbors_cache_free();
     printf("OK\n");
 }
 
@@ -81,6 +83,7 @@ void running_test_init_game_and_player_on_donut_board()
 {
     printf("\t%s\t", __func__);
     running_test_init_game_and_player_on_board(DONUT, 12);
+    neighbors_cache_free();
     printf("OK\n");
 }
 
@@ -88,6 +91,7 @@ void running_test_init_game_and_player_on_eight_board()
 {
     printf("\t%s\t", __func__);
     running_test_init_game_and_player_on_board(EIGHT, 12);
+    neighbors_cache_free();
     printf("OK\n");
 }
 

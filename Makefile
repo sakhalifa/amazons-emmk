@@ -18,7 +18,7 @@ INSTALLDIR = install
 %.so: player_ext.o graph.o board.o
 	gcc -shared $(CFLAGS) $^ $(LDFLAGS) -o $@
 
-all: build
+all: build test
 
 build: server client
 

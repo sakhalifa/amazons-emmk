@@ -15,20 +15,28 @@ static unsigned int *neighbor_cache[NUM_DIRS];
 
 void neighbors_cache_free()
 {
-    for (size_t i = 0; i < NUM_DIRS; i++)
+    if (is_cache_initialized)
     {
-        free(neighbor_cache[i]);
+        for (size_t i = 0; i < NUM_DIRS; i++)
+        {
+            free(neighbor_cache[i]);
+            neighbor_cache[i] = NULL;
+        }
+        is_cache_initialized = false;
     }
-    is_cache_initialized = false;
 }
 
 void initialize_neighbor_cache(size_t num_vertices)
 {
-    for (enum dir_t dir = FIRST_DIR; dir <= LAST_DIR; dir++)
+    if (!is_cache_initialized)
     {
-        neighbor_cache[dir - FIRST_DIR] = malloc(sizeof(unsigned int) * num_vertices);
-        for (size_t i = 0; i < num_vertices; i++)
-            neighbor_cache[dir - FIRST_DIR][i] = UINT_MAX - 1;
+        for (enum dir_t dir = FIRST_DIR; dir <= LAST_DIR; dir++)
+        {
+            neighbor_cache[dir - FIRST_DIR] = malloc(sizeof(unsigned int) * num_vertices);
+            for (size_t i = 0; i < num_vertices; i++)
+                neighbor_cache[dir - FIRST_DIR][i] = UINT_MAX - 1;
+        }
+        is_cache_initialized = true;
     }
 }
 
@@ -260,20 +268,24 @@ bool is_move_legal(board_t *board, struct move_t *move, unsigned int player_id)
            is_reachable_arrow(board, move, player_id);
 }
 
-size_t count_accessible_vertices(struct graph_t *graph){
+size_t count_accessible_vertices(struct graph_t *graph)
+{
     size_t inaccessible_vertices = 0;
-    for(size_t pos = 0; pos<graph->num_vertices; pos++){
+    for (size_t pos = 0; pos < graph->num_vertices; pos++)
+    {
         bool isAccessible = false;
-        for(enum dir_t dir = FIRST_DIR; dir <= LAST_DIR; dir++){
-            if(find_neighbor_in_direction(graph, pos, dir) != UINT_MAX){
+        for (enum dir_t dir = FIRST_DIR; dir <= LAST_DIR; dir++)
+        {
+            if (find_neighbor_in_direction(graph, pos, dir) != UINT_MAX)
+            {
                 isAccessible = true;
                 break;
             }
         }
-        if(!isAccessible)
+        if (!isAccessible)
             inaccessible_vertices++;
     }
-    return graph->num_vertices-inaccessible_vertices;
+    return graph->num_vertices - inaccessible_vertices;
 }
 
 board_t *init_board(struct graph_t *graph, unsigned int num_queens)
@@ -288,7 +300,7 @@ board_t *init_board(struct graph_t *graph, unsigned int num_queens)
         board->arrows[i] = false;
         board->queens_on_board[i] = EMPTY_CELL;
     }
-
+    initialize_neighbor_cache(graph->num_vertices);
     board->num_accessible_vertices = count_accessible_vertices(graph);
 
     return board;
