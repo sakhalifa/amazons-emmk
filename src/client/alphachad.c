@@ -182,7 +182,6 @@ struct move_t play(struct move_t previous_move)
 	{
 		depth++;
 	}
-	printf("Depth: %d\n", depth);
 	if (move.queen_src != FIRST_MOVE_VAL && move.queen_dst != FIRST_MOVE_VAL && move.arrow_dst != FIRST_MOVE_VAL)
 		apply_move(global_player.board, &move, global_player.player_id);
 	turns += 2;
