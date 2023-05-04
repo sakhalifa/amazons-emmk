@@ -9,9 +9,6 @@ player_handle_t create_player_handle(char *filepath)
 		fprintf(stderr, "Invalid library path '%s'!\n", filepath);
 		exit(EXIT_FAILURE);
 	}
-	printf("%s\n", filepath);
-	printf("\t%p\n", player_handle);
-	printf("\t%p\n", dlsym(player_handle, "get_player_name"));
 	
 	player_handle_t p = {
 		.dl_handle = player_handle,

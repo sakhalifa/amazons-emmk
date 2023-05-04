@@ -128,6 +128,7 @@ int main(int argc, char *const *argv)
 		{
 			printf("Player %u ('%s') (from '%s') timeout!\n", game->current_player,
 				   args.player_handles[game->current_player].get_player_name(), args.player_handles[game->current_player].path);
+			exit(1);
 		}
 		if (!is_move_legal(game->board, &current_move, game->current_player))
 		{
