@@ -4,7 +4,7 @@
 #include <getopt.h>
 #include <dlfcn.h>
 #include <time.h>
-#include <stdint.h>
+#include <string.h>
 #include "graph_ext.h"
 #include "dir.h"
 #include "move_ext.h"
@@ -113,9 +113,8 @@ int main(int argc, char *const *argv)
 	struct move_t current_move = {FIRST_MOVE_VAL, FIRST_MOVE_VAL, FIRST_MOVE_VAL};
 	bool game_not_over = true;
 	size_t turns = 0;
-	double player_times[NUM_PLAYERS];
-	for (int i = 0; i < NUM_PLAYERS; i++)
-		player_times[NUM_PLAYERS] = 0;
+	double *player_times = malloc(sizeof(double) * NUM_PLAYERS);
+	memset(player_times, 0, sizeof(double)*NUM_PLAYERS);
 
 	while (game_not_over)
 	{
@@ -155,5 +154,6 @@ int main(int argc, char *const *argv)
 		dlclose(args.player_handles[i].dl_handle);
 	}
 	neighbors_cache_free();
+	free(player_times);
 	return 0;
 }
