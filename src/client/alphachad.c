@@ -1,32 +1,40 @@
 #include "move_ext.h"
 #include "player_ext.h"
 #include "heuristic.h"
+#include <time.h>
 #include <math.h>
 
-static player_t global_player;
-
-static unsigned int turns = 0;
-
-static double exp_coeff;
-
-void initialize(unsigned int player_id, struct graph_t *graph,
-				unsigned int num_queens, unsigned int *queens[NUM_PLAYERS])
-{
-	generic_initialize(&global_player, player_id, graph, num_queens, queens, "alphabeta");
-	size_t width = (size_t)sqrt(graph->num_vertices);
-	exp_coeff = (1. / (exp(0.05 * width) * sqrt(width) * width));
-}
-
-char const *get_player_name()
-{
-	return global_player.name;
-}
+#define TIMEOUT 10
 
 struct move_and_score
 {
 	struct move_t move;
 	int score;
 };
+
+struct move_and_score alphabeta(board_t *board, int my_player_id, int depth);
+
+static player_t global_player;
+
+static double max_time_per_turn;
+
+static int depth = 1;
+
+static int turns = 0;
+
+void initialize(unsigned int player_id, struct graph_t *graph,
+				unsigned int num_queens, unsigned int *queens[NUM_PLAYERS])
+{
+	generic_initialize(&global_player, player_id, graph, num_queens, queens, "alphachad");
+	if (player_id == 1)
+		turns++;
+	max_time_per_turn = (double)TIMEOUT / graph->num_vertices;
+}
+
+char const *get_player_name()
+{
+	return global_player.name;
+}
 
 int max(int a, int b)
 {
@@ -142,18 +150,14 @@ struct move_and_score alphabeta_recursive(board_t *board, struct move_t cur_move
 		struct move_and_score move_score = {.move = cur_move, .score = get_score(board, global_player.player_id)};
 		return move_score;
 	}
-#pragma region maximize
 	if (my_player_id == cur_player_id)
 	{
 		return max_alphabeta(board, my_player_id, alpha, beta, cur_player_id, depth);
 	}
-#pragma endregion
-#pragma region minimize
 	else
 	{
 		return min_alphabeta(board, my_player_id, alpha, beta, cur_player_id, depth);
 	}
-#pragma endregion
 }
 
 struct move_and_score alphabeta(board_t *board, int my_player_id, int depth)
@@ -168,8 +172,17 @@ struct move_t play(struct move_t previous_move)
 	{
 		apply_move(global_player.board, &previous_move, abs((int)global_player.player_id - 1) % NUM_PLAYERS);
 	}
-	int depth = exp(exp_coeff * turns);
+	clock_t start_time = clock();
 	struct move_t move = alphabeta(global_player.board, global_player.player_id, depth).move;
+	double time_taken = (double)(clock() - start_time) / CLOCKS_PER_SEC;
+	if(time_taken > max_time_per_turn)
+		depth--;
+	size_t num_vertices = global_player.board->num_accessible_vertices - turns;
+	if (((double)num_vertices*2/sqrt(num_vertices))*time_taken < max_time_per_turn)
+	{
+		depth++;
+	}
+	printf("Depth: %d\n", depth);
 	if (move.queen_src != FIRST_MOVE_VAL && move.queen_dst != FIRST_MOVE_VAL && move.arrow_dst != FIRST_MOVE_VAL)
 		apply_move(global_player.board, &move, global_player.player_id);
 	turns += 2;
@@ -180,5 +193,5 @@ void finalize()
 {
 	board_free(global_player.board);
 	neighbors_cache_free();
-	turns = 0;
+	depth = 1;
 }
