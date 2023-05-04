@@ -3,15 +3,18 @@
 #include <time.h>
 #include <getopt.h>
 #include <dlfcn.h>
+#include <time.h>
+#include <stdint.h>
 #include "graph_ext.h"
 #include "dir.h"
 #include "move_ext.h"
-
 #include "server.h"
 #include "game.h"
 #include "colors.h"
 
 #define USAGE_STRING "Usage: %s [-s |] [-t |] [-m |] <player1.so> <player2.so>\n"
+#define TIMEOUT (20)
+#define TIMEOUT_PER_PLAYER (TIMEOUT / NUM_PLAYERS)
 
 void print_usage(char *binary_name)
 {
@@ -19,16 +22,15 @@ void print_usage(char *binary_name)
 }
 
 /// @brief get and set the settings of the game
-/// @param argc 
-/// @param argv 
+/// @param argc
+/// @param argv
 /// @return the server settings
 server_settings_t get_args(int argc, char *const *argv)
 {
 	server_settings_t settings = {
 		.game_type = SQUARE,
 		.game_width = 5,
-		.seed = time(NULL)
-	};
+		.seed = time(NULL)};
 	char opt;
 	int width;
 	while ((opt = getopt(argc, argv, "t:m:s:")) != -1)
@@ -36,9 +38,10 @@ server_settings_t get_args(int argc, char *const *argv)
 		switch (opt)
 		{
 		case 't':
-			if (optarg == NULL) { // never executed, it looks like there is a default error message. I let it here for security.
+			if (optarg == NULL)
+			{ // never executed, it looks like there is a default error message. I let it here for security.
 				printf("Option 't' requires an argument (example: %s" GREEN " -t c " RESET "<player1.so> <player2.so>)\n", argv[0]);
-                exit(EXIT_FAILURE);
+				exit(EXIT_FAILURE);
 			}
 			switch (optarg[0])
 			{
@@ -63,9 +66,10 @@ server_settings_t get_args(int argc, char *const *argv)
 			}
 			break;
 		case 'm':
-			if (optarg == NULL) { // never executed, it looks like there is a default error message. I let it here for security.
+			if (optarg == NULL)
+			{ // never executed, it looks like there is a default error message. I let it here for security.
 				printf("Option 'm' requires an argument (example: %s" GREEN " -m 10 " RESET "<player1.so> <player2.so>)\n", argv[0]);
-                exit(EXIT_FAILURE);
+				exit(EXIT_FAILURE);
 			}
 			width = atoi(optarg);
 			if (width < 5)
@@ -76,9 +80,10 @@ server_settings_t get_args(int argc, char *const *argv)
 			settings.game_width = width;
 			break;
 		case 's':
-			if (optarg == NULL) { // never executed, it looks like there is a default error message. I let it here for security.
+			if (optarg == NULL)
+			{ // never executed, it looks like there is a default error message. I let it here for security.
 				printf("Option 's' requires an argument (example: %s" GREEN " -s 10 " RESET "<player1.so> <player2.so>)\n", argv[0]);
-                exit(EXIT_FAILURE);
+				exit(EXIT_FAILURE);
 			}
 			settings.seed = atoi(optarg);
 			break;
@@ -87,7 +92,6 @@ server_settings_t get_args(int argc, char *const *argv)
 			print_usage(argv[0]);
 			exit(EXIT_FAILURE);
 		}
-		
 	}
 	if (argv[optind] == NULL || argv[optind + 1] == NULL)
 	{
@@ -109,12 +113,22 @@ int main(int argc, char *const *argv)
 	struct move_t current_move = {FIRST_MOVE_VAL, FIRST_MOVE_VAL, FIRST_MOVE_VAL};
 	bool game_not_over = true;
 	size_t turns = 0;
+	double player_times[NUM_PLAYERS];
+	for (int i = 0; i < NUM_PLAYERS; i++)
+		player_times[NUM_PLAYERS] = 0;
+
 	while (game_not_over)
 	{
 
 		print_board(game->board);
-		
+		clock_t start_time = clock();
 		current_move = args.player_handles[game->current_player].play(current_move);
+		player_times[game->current_player] += (double)(clock() - start_time) / CLOCKS_PER_SEC;
+		if (player_times[game->current_player] >= TIMEOUT_PER_PLAYER)
+		{
+			printf("Player %u ('%s') (from '%s') timeout!\n", game->current_player,
+				   args.player_handles[game->current_player].get_player_name(), args.player_handles[game->current_player].path);
+		}
 		if (!is_move_legal(game->board, &current_move, game->current_player))
 		{
 			game_not_over = false;
@@ -131,8 +145,11 @@ int main(int argc, char *const *argv)
 	unsigned int winner = game->current_player;
 	printf("Player %u ('%s') (from '%s') won in %lu turns!\n", winner, args.player_handles[winner].get_player_name(), args.player_handles[winner].path, turns);
 	game_free(game);
+
 	for (int i = 0; i < NUM_PLAYERS; i++)
 	{
+		printf("Time taken for Player %u ('%s') (from '%s') : %fs\n", i,
+			   args.player_handles[i].get_player_name(), args.player_handles[i].path, player_times[i]);
 		args.player_handles[i].finalize();
 		dlclose(args.player_handles[i].dl_handle);
 	}
