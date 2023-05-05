@@ -60,7 +60,9 @@ random1.so: player.o position_set.o
 segdumb.so: segdumb.o position_set.o
 human.so: player_ext.o human.o
 
-client: alphachad.so alphabeta.so mcts.so random.so bouclier.so epee.so random1.so mcts1.so alphabeta1.so
+allclients: alphachad.so alphabeta.so mcts.so random.so bouclier.so epee.so random1.so mcts1.so alphabeta1.so
+
+client: alphachad.so alphabeta.so random.so
 
 alltests: test_main.o test_game.o test_position_set.o game.o \
 player_handle.o graph.o board.o position_set.o \
