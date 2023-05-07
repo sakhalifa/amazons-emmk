@@ -3,5 +3,6 @@ SOURCEDIR=src
 CLIENTDIR=$SOURCEDIR/client
 SERVERDIR=$SOURCEDIR/server
 COMMONDIR=$SOURCEDIR/common
+LIBDIR=$SOURCEDIR/lib
 
-find . -name "*.c" | xargs gcc -MM -I$SERVERDIR -I$CLIENTDIR -I$COMMONDIR  > Makefile.inc
+find . -name "*.c" | xargs gcc -MM -I$SERVERDIR -I$CLIENTDIR -I$COMMONDIR -I$LIBDIR  > Makefile.inc
