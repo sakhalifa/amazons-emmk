@@ -1,6 +1,6 @@
 \documentclass{article}
 
-\author{Youri Chancrin - Th\'eo Descomps - Samuel Khalifa - Jean-Baptiste Martinez}
+\author{Youri Chancrin - Th\'eo Descomps\\Samuel Khalifa - Jean-Baptiste Martinez}
 \title{Rapport de projet Amazons}
 
 \begin{document}
@@ -12,9 +12,9 @@ L'objectif de ce projet est la cr\'eation d'un serveur de jeu et de clients pouv
 du jeu des amazons.
 
 Le jeu des amazons est un jeu de plateau o\`u deux joueurs s'affrontent en jouant tour \`a tour.
-Ils disposent chacun de reines, qui ont des m\^emes déplacements que les reines des \'echecs.
+Ils disposent chacun de reines, qui ont des m\^emes d\'eplacements que les reines des \'echecs.
 Durant son tour, un joueur bouge une de ses reines, puis tire une fl\^eche depuis la position atteinte par la reine.
-La fl\^eche est lancée sur l'une des 8 directions cardinales et ne peux traverser de reines ou d'autres fl\^eches.
+La fl\^eche est lanc\'ee sur l'une des 8 directions cardinales et ne peux traverser de reines ou d'autres fl\^eches.
 
 Le premier joueur qui ne peut pas jouer un coup valide perd.
 
@@ -24,7 +24,7 @@ Le sujet impose les contraintes suivantes :
 \subsubsection{Structure Client Serveur}
 
 Le projet doit contenir un executable actant comme un serveur responsable d'une partie entre deux joueurs.
-Le serveur doit s'assurer du lancement et du déroulement de la partie. Une fois celle-ci finie, 
+Le serveur doit s'assurer du lancement et du d\'eroulement de la partie. Une fois celle-ci finie, 
 il doit d\'eclarer le vainqueur.
 
 Le serveur est responsable de l'isolation des variables. 
@@ -38,9 +38,11 @@ quelque soit le serveur qui h\'eberge la partie.
 
 Pour repr\'esenter le plateau de jeu, la GNU Scientific Library (GSL) est utilis\'ee.
 
+Quatres plateaux de jeux doivent \^etre impl\'ement\'es, un carré, un donut, un huit et un tr\`efle.
+
 \subsubsection{Utilisation de dllib}
 
-Les clients sont des librairies dynamiques charg\'ees avant le début de la partie par le serveur.
+Les clients sont des librairies dynamiques charg\'ees avant le d\'ebut de la partie par le serveur.
 Le chargement doit \^etre r\'ealis\'e avec dllib.
 
 \section{Mod\`ele Client-Serveur}
@@ -94,7 +96,7 @@ Dans le cas o\`u les clients et le serveur seraient sur des machines s\'epar\'ee
 la question ne se poserait pas et les clients seraient contraints
 d'allouer eux-m\^emes la m\'emoire pour cette t\^ache.
 
-\subsection{Determination du vainqueur}
+\subsection{D\'etermination du vainqueur}
 Au fur et \`a mesure de la partie, le serveur re\c coit les coups des deux joueurs.
 Il applique les modifications engendr\'ees par ces coups sur un plateau dont seul lui a l'acc\`es.
 Ce plateau est fourni par le module Common. Lorsque que le serveur obtient le coup 
@@ -104,34 +106,59 @@ S'il re\c coit la valeur false, le joueur courrant \`a perdu, l'autre joueur est
 
 \section{Module Common}
 Le module Common contient un ensemble de fonctionnalit\'es qui sont 
-utilis\'ees la fois par le serveur et par les clients. On y retrouve 
-notamment diverses structures de donn\'ees :
+utilis\'ees \`a la fois par le serveur et par les clients. 
+
+\subsection{Structures de donn\'ees}
+Le module Common dispose de plusieurs structures de donn\'ees et op\'erateurs utils :
 \begin{itemize}
-    \item ArrayList
-    \item Ensemble de positions
-    \item Arbre
+    \item \textbf{ArrayList} : Une liste d'objet quelconque.
+    \item \textbf{PositionSet} : Un set de positions.
+    \item \textbf{Arbre} : Un arbre d'objet quelconque. Utilise ArrayList.
+    \item \textbf{Hash} de Zobrist : Permet de transformer un plateau de jeu en hash.
+    \item \textbf{Board} : Une représentation du plateu de jeu.
 \end{itemize}
 
 Ces structures offrent une diversit\'e de complexit\'es dont les clients 
 peuvent se servir pour minimiser leurs temps d'\'executions.
 
-\subsection{Immutabilité du graphe}
-=> Le graphe est sous un format optimisé, on choisit de ne jamais 
-le modifier car c'est une opération couteuse et complexe. Pour 
-enregistrer les évolutions de la partie, on utilise des 
-tableaux représentant l'ensemble des cases du plateau.
+Les avoir \`a disposition de tous les clients simplifie le prototypage de nouvelles strat\'egies.
+Par exemple, la structure Arbre permet de mod\'eliser un arbre des parties possibles pour les 
+stratégies qui gardent en m\'emoire une pr\'evision des prochains tours.
+
+\subsection{Plateau de jeu}
+Le plateau de jeu enveloppe le graphe fournit par GSL.
+Ce-dernier \'etant dans un format optimis\'e, on choisit de ne jamais 
+le modifier car c'est une op\'eration couteuse et complexe. Pour 
+enregistrer les \'evolutions de la partie, on utilise des 
+tableaux repr\'esentant l'ensemble des cases du plateau.
+Ces tableaux contiennent les fl\^eches ainsi que les reines 
+et permettent d'acc\'eder au contenu d'une case en temps constant.
 
 
 \section{Module Client}
-\section{IA du client}
-samuel la c'est pour toi
+Un client doit retourner un coup \`a' jouer lorsque le serveur lui demande.
+Ce coup doit \^etre valide, si cela est possible.
+
+Tous les clients disposent des fonctions de l'interface impos\'ees.
+La diff\'erence principale se situe au niveau de la fonction \textbf{play()}.
+
+\section{Client Random}
+\section{Client Alphabeta}
+\section{Client MCTS}
 
 \section{Optimisations}
-Modifications du code après profilage pour réduire le temps 
-d'execution des clients.
-- Optimisation des calculs sur plateau en grille.
+Les clients les plus complexes n\'ecessite une grande quantit\'e de calculs.
+Cependant, une contrainte du classement des clients est qu'ils puissent jouer en moins de deux secondes.
+Apr\`es profilage du tour d'un client, certaines fonctions ont \'et\'e am\'elior\'ees.
+
+Notamment \textbf{find\_nearest\_neighbor()} et \textbf{is\_cell\_empty()}, qui avaient des co\^uts faibles, 
+mais qui \'etaient appel\'ees tr\`es fr\'equement.
+
+Cela pourrait \^etre encore am\'elior\'e avec des 
+optimisation de calculs des voisins sur les plateaus en grille, 
+ce qui est le cas des plateaux du sujet.
 
 
 \section{Conclusion}
-On é trop fort
+
 \end{document}
