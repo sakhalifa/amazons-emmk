@@ -65,9 +65,9 @@ allclients: alphachad.so alphabeta.so mcts.so random.so bouclier.so epee.so rand
 
 client: alphachad.so alphabeta.so random.so
 
-alltests: test_main.o test_game.o test_position_set.o game.o \
+alltests: test_main.o test_game.o test_position_set.o test_board.o game.o \
 player_handle.o graph.o board.o position_set.o \
-mock_player.o player_handle.o
+mock_player.o player_handle.o 
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o alltests
 
 profiling: alphabeta.o board.o position_set.o graph.o player_handle.o graph.o game.o board.o position_set.o profiling.o
