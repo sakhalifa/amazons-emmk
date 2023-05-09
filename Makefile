@@ -79,7 +79,7 @@ coverage: alltests
 
 
 run: install
-	./install/server ./install/alphabeta.so ./install/alphabeta1.so
+	./install/server ./install/random.so ./install/alphabeta.so
 
 install: build test
 	cp server install/
