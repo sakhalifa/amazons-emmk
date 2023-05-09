@@ -42,6 +42,12 @@ alphachad.o: src/client/alphachad.c src/common/move_ext.h \
  src/common/move_ext.h src/common/graph.h src/common/board.h \
  src/common/dir.h src/common/graph_ext.h src/common/player.h \
  src/common/position_set.h src/client/heuristic.h
+linked_list.o: src/common/linked_list.c src/common/linked_list.h
+board_distance_table.o: src/common/board_distance_table.c \
+ src/common/board_distance_table.h src/common/board.h src/common/dir.h \
+ src/common/graph_ext.h src/common/graph.h src/common/move_ext.h \
+ src/common/move.h src/common/player.h src/common/position_set.h \
+ src/common/linked_list.h src/common/array_list.h
 position_set.o: src/common/position_set.c src/common/position_set.h
 board.o: src/common/board.c src/common/board.h src/common/dir.h \
  src/common/graph_ext.h src/common/graph.h src/common/move_ext.h \
@@ -86,7 +92,15 @@ test_game.o: test/test_game.c test/test_game.h test/game_impl.h \
  src/server/server.h src/server/player_handle.h test/mock_player.h
 test_position_set.o: test/test_position_set.c test/test_position_set.h \
  src/common/position_set.h
+test_distance.o: test/test_distance.c test/test_distance.h \
+ src/common/board_distance_table.h src/common/board.h src/common/dir.h \
+ src/common/graph_ext.h src/common/graph.h src/common/move_ext.h \
+ src/common/move.h src/common/player.h src/common/position_set.h \
+ test/game_impl.h src/server/server.h src/server/player_handle.h \
+ src/common/player.h src/common/board.h src/common/graph.h
 mock_player.o: test/mock_player.c src/server/player_handle.h \
  src/common/player.h src/common/move_ext.h src/common/move.h \
  src/common/graph.h src/common/move_ext.h src/common/graph_ext.h
-test_main.o: test/test_main.c test/test_game.h test/test_position_set.h
+common.o: test/common.c test/common.h
+test_main.o: test/test_main.c test/test_game.h test/test_position_set.h \
+ test/test_distance.h
