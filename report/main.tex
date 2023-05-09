@@ -11,12 +11,12 @@
 L'objectif de ce projet est la création d'un serveur de jeu et de clients pouvant faire des parties 
 du jeu des amazons.
 
-Le jeu des amazons est un jeu de plateau ou deux joueurs s'affrontent en jouant tour à tour.
-Ils disposent chacun de reines, qui disposent des mêmes déplacements que les reines des échecs.
-Durant son tour, un joueur bouge sa reine, puis tire une flêche depuis la position atteinte par la reine.
+Le jeu des amazons est un jeu de plateau où deux joueurs s'affrontent en jouant tour à tour.
+Ils disposent chacun de reines, qui ont des mêmes déplacements que les reines des échecs.
+Durant son tour, un joueur bouge une de ses reines, puis tire une flêche depuis la position atteinte par la reine.
 La flêche est lancée sur l'une des 8 directions cardinales et ne peux traverser de reines ou d'autres flêches.
 
-Le premier joueur qui ne peut pas jouer perd.
+Le premier joueur qui ne peut pas jouer un coup valide perd.
 
 \subsection{Contraintes}
 Le sujet impose les contraintes suivantes :
@@ -48,6 +48,7 @@ Le chargement doit être réalisé avec dllib.
 Le modèle client serveur implique deux choses.
 Premièrement, il est nécessaire d'isoler les responsabilités entre le module client et le module serveur.
 Secondement, il est nécessaire d'avoir une interface pour que les modules puissent communiquer.
+Cette dernière est imposée par le sujet.
 
 \subsection{Isolation des responsabilités}
 
@@ -64,17 +65,42 @@ aux clients et au serveur.
 
 \subsection{Interface entre client et serveur}
 
+Les clients doivent disposer de quatres fonctions.
+\begin{itemize}
+    \item get_player_name() : Retourne le nom du joueur.
+    \item initialize() : Permet au joueur de se prépaprer pour la partie à venir.
+    \item play(coup_precedent) : Demande au joueur un coup, en fonction 
+    du coup fait par son adversaire au tour précédent.
+    \item finalize() : Permet au joueur de libérer les ressources allouées.
+\end{itemize}
 
-On découpe le projet en 3 parties
-- Serveur
-- Client
-- Common
+Cette interface établie une généricité entre tous les clients et permet de les faire s'affronter.
+Cela rend possible la création d'une compétition pour établir quelle est 
+la meilleur stratégie.
+
+\section{Module Serveur}
+
+Le serveur s'occupe de gérer une partie jouée par deux clients. 
+
+D'une part, il s'occupe de l'isolation de la mémoire lors de l'initialisation.
+D'autre part, il doit être capable de déterminer le gagnant de la partie.
 
 
-\section{Serveur}
-Boucle de jeu : (à décrire)
+\subsection{Isolation de la mémoire}
+Le serveur copie les données d'initialisation de la partie pour chaque client.
+Dans le cas où les clients et le serveur seraient sur des machines séparées, 
+la question ne se poserait pas et les clients seraient contraints
+d'allouer eux-mêmes la mémoire pour cette tâche.
 
-Le serveur s'occupe de gérer une partie jouée par 2 clients. 
+\subsection{Determination du vainqueur}
+Au fur et à mesure de la partie, le serveur reçoit les coups des deux joueurs.
+Il applique les modifications engendrées par ces coups sur un plateau dont seul lui a l'accès.
+Ce plateau est fourni par le module Common. Lorsque que le serveur obtient le coup 
+du joueur courrant, il effectue un test à l'aide la fonction is_move_legal() de l'interface board.h.
+S'il reçoit la valeur false, le joueur courrant à perdu, l'autre joueur est donc le vainqueur.
+
+
+\section{Module Common}
 Le module Common contient un ensemble de fonctionnalités qui sont 
 utilisées la fois par le serveur et par les clients. On y retrouve 
 notamment diverses structures de données :
@@ -85,21 +111,14 @@ notamment diverses structures de données :
 Ces structures offrent une diversité de complexité dont les clients 
 peuvent se servir pour minimiser leurs temps d'éxecutions.
 
-\section{Isolation de la mémoire}
-=> Le serveur copie des données et les mets a disposition de chacun
-des clients, dans le cas ou les clients et le serveur seraient sur 
-des machines séparées, les clients devraient allouer leur mémoire.
-
-
-\section{Client}
-
-\section{Immutabilité du graphe}
+\subsection{Immutabilité du graphe}
 => Le graphe est sous un format optimisé, on choisit de ne jamais 
 le modifier car c'est une opération couteuse et complexe. Pour 
 enregistrer les évolutions de la partie, on utilise des 
 tableaux représentant l'ensemble des cases du plateau.
 
 
+\section{Module Client}
 \section{IA du client}
 samuel la c'est pour toi
 
