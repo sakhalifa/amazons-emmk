@@ -1,68 +1,77 @@
 \documentclass{article}
 
-\author{Youri Chancrin - Th\'eo Descomps\\Samuel Khalifa - Jean-Baptiste Martinez}
+\usepackage[utf8]{inputenc}
+
+\author{Youri Chancrin - Théo Descomps\\Samuel Khalifa - Jean-Baptiste Martinez}
 \title{Rapport de projet Amazons}
 
 \begin{document}
 \maketitle
 
-\section{Pr\'esentation du sujet}
+\section{Présentation du sujet}
 
-L'objectif de ce projet est la cr\'eation d'un serveur de jeu et de clients pouvant faire des parties 
+L'objectif de ce projet est la création d'un serveur de jeu et de clients pouvant faire des parties 
 du jeu des amazons.
 
-Le jeu des amazons est un jeu de plateau o\`u deux joueurs s'affrontent en jouant tour \`a tour.
-Ils disposent chacun de reines, qui ont des m\^emes d\'eplacements que les reines des \'echecs.
-Durant son tour, un joueur bouge une de ses reines, puis tire une fl\^eche depuis la position atteinte par la reine.
-La fl\^eche est lanc\'ee sur l'une des 8 directions cardinales et ne peux traverser de reines ou d'autres fl\^eches.
+Le jeu des amazons est un jeu de plateau où deux joueurs s'affrontent en jouant tour à tour.
+Ils disposent chacun de reines, qui ont des mêmes déplacements que les reines des échecs.
+Durant son tour, un joueur bouge une de ses reines, puis tire une flêche depuis la position atteinte par la reine.
+La flêche est lancée sur l'une des 8 directions cardinales et ne peux traverser de reines ou d'autres flêches.
 
 Le premier joueur qui ne peut pas jouer un coup valide perd.
 
-\subsection{Contraintes}
-Le sujet impose les contraintes suivantes :
+Pour répondre à ce besoin, nous avons suivis les spécifications du sujet,
+mis en place une infrastructure client-serveur, et réalisé plusieurs clients 
+capable de jouer une partie, et souvent la gagner.
+
+\subsection{Spécifications du sujet}
+Le sujet dispose de deux grands types de spécifications.
+Tout d'abord, une spécification structurelle, le client-serveur.
+Secondement, des spécifications d'implémentations, avec l'Utilisation 
+de GSL et de dlopen.
 
 \subsubsection{Structure Client Serveur}
 
 Le projet doit contenir un executable actant comme un serveur responsable d'une partie entre deux joueurs.
-Le serveur doit s'assurer du lancement et du d\'eroulement de la partie. Une fois celle-ci finie, 
-il doit d\'eclarer le vainqueur.
+Le serveur doit s'assurer du lancement et du déroulement de la partie. Une fois celle-ci finie, 
+il doit déclarer le vainqueur.
 
 Le serveur est responsable de l'isolation des variables. 
-C'est \`a lui de faire des copies du plateau du jeu au d\'ebut de la partie et de les fournir aux clients 
+C'est à lui de faire des copies du plateau du jeu au début de la partie et de les fournir aux clients 
 pour qu'ils s'initialisent correctement.
 
 Les clients doivent respecter une interface afin de garantir qu'ils puissent tous s'affronter,
-quelque soit le serveur qui h\'eberge la partie.
+quelque soit le serveur qui héberge la partie.
 
 \subsubsection{Utilisation de GSL}
 
-Pour repr\'esenter le plateau de jeu, la GNU Scientific Library (GSL) est utilis\'ee.
+Pour représenter le plateau de jeu, la GNU Scientific Library (GSL) est utilisée.
 
-Quatres plateaux de jeux doivent \^etre impl\'ement\'es, un carr\'e, un donut, un huit et un tr\`efle.
+Quatres plateaux de jeux doivent être implémentés, un carré, un donut, un huit et un trèfle.
 
 \subsubsection{Utilisation de dllib}
 
-Les clients sont des librairies dynamiques charg\'ees avant le d\'ebut de la partie par le serveur.
-Le chargement doit \^etre r\'ealis\'e avec dllib.
+Les clients sont des librairies dynamiques chargées avant le début de la partie par le serveur.
+Le chargement doit être réalisé avec dllib.
 
-\section{Mod\`ele Client-Serveur}
+\section{Modèle Client-Serveur}
 
-Le mod\`ele client serveur implique deux choses.
-Premi\`erement, il est n\'ecessaire d'isoler les responsabilit\'es entre le module client et le module serveur.
-Secondement, il est n\'ecessaire d'avoir une interface pour que les modules puissent communiquer.
-Cette derni\`ere est impos\'ee par le sujet.
+Le modèle client serveur implique deux choses.
+Premièrement, il est nécessaire d'isoler les responsabilités entre le module client et le module serveur.
+Secondement, il est nécessaire d'avoir une interface pour que les modules puissent communiquer.
+Cette dernière est imposée par le sujet.
 
-\subsection{Isolation des responsabilit\'es}
+\subsection{Isolation des responsabilités}
 
-Le serveur est responsable du lancement, du d\'eroulement, ainsi que la terminaison de la partie.
+Le serveur est responsable du lancement, du déroulement, ainsi que la terminaison de la partie.
 Le client est responsable des coups qu'il joue lorsque le serveur lui demande de jouer, 
-en l'informant du coup de son adversaire au tour pr\'ec\'edent.
+en l'informant du coup de son adversaire au tour précédent.
 
-On remarque que les deux modules ont besoin de pouvoir garder en m\'emoire l'\'evolution d'une partie.
+On remarque que les deux modules ont besoin de pouvoir garder en mémoire l'évolution d'une partie.
 Le serveur en a besoin pour savoir si un joueur fait un coup invalide.
-Les clients en ont besoin pour suivre une strat\'egie coh\'erente.
+Les clients en ont besoin pour suivre une stratégie cohérente.
 
-On d\'ecide de faire un troisi\`eme module nomm\'e Common qui impl\'ementera toutes les fonctionnalit\'es communes 
+On décide de faire un troisième module nommé Common qui implémentera toutes les fonctionnalités communes 
 aux clients et au serveur.
 
 \subsection{Interface entre client et serveur}
@@ -70,94 +79,93 @@ aux clients et au serveur.
 Les clients doivent disposer de quatres fonctions.
 \begin{itemize}
     \item \textbf{get\_player\_name()} : Retourne le nom du joueur.
-    \item \textbf{initialize()} : Permet au joueur de se pr\'epaprer pour la partie \`a venir.
+    \item \textbf{initialize()} : Permet au joueur de se prépaprer pour la partie à venir.
     \item \textbf{play(coup\_precedent)} : Demande au joueur un coup, en fonction 
-    du coup fait par son adversaire au tour pr\'ec\'edent.
-    \item \textbf{finalize()} : Permet au joueur de lib\'erer les ressources allou\'ees.
+    du coup fait par son adversaire au tour précédent.
+    \item \textbf{finalize()} : Permet au joueur de libérer les ressources allouées.
 \end{itemize}
 
-Cette interface \'etablie une g\'en\'ericit\'e entre tous les clients et permet de les faire s'affronter.
-Cela rend possible la cr\'eation d'une comp\'etition pour \'etablir quelle est 
-la meilleur strat\'egie.
+Cette interface établie une généricité entre tous les clients et permet de les faire s'affronter.
+Cela rend possible la création d'une compétition pour établir quelle est 
+la meilleur stratégie.
 
 \section{Module Serveur}
 
-Le serveur s'occupe de g\'erer une partie jou\'ee par deux clients. 
+Le serveur s'occupe de gérer une partie jouée par deux clients. 
 
-D'une part, il s'occupe de l'isolation de la m\'emoire lors de l'initialisation.
-D'autre part, il doit \^etre capable de d\'eterminer le gagnant de la partie.
+D'une part, il s'occupe de l'isolation de la mémoire lors de l'initialisation.
+D'autre part, il doit être capable de déterminer le gagnant de la partie.
 
 
-\subsection{Isolation de la m\'emoire}
-Le serveur copie les donn\'ees d'initialisation de la partie pour chaque client.
-Cela emp\^echerait un potentiel client malicieux de modifier la m\'emoire du serveur ou 
+\subsection{Isolation de la mémoire}
+Le serveur copie les données d'initialisation de la partie pour chaque client.
+Cela empêcherait un potentiel client malicieux de modifier la mémoire du serveur ou 
 de son adversaire.
-Dans le cas o\`u les clients et le serveur seraient sur des machines s\'epar\'ees, 
+Dans le cas où les clients et le serveur seraient sur des machines séparées, 
 la question ne se poserait pas et les clients seraient contraints
-d'allouer eux-m\^emes la m\'emoire pour cette t\^ache.
+d'allouer eux-mêmes la mémoire pour cette tâche.
 
-\subsection{D\'etermination du vainqueur}
-Au fur et \`a mesure de la partie, le serveur re\c coit les coups des deux joueurs.
-Il applique les modifications engendr\'ees par ces coups sur un plateau dont seul lui a l'acc\`es.
+\subsection{Détermination du vainqueur}
+Au fur et à mesure de la partie, le serveur reçoit les coups des deux joueurs.
+Il applique les modifications engendrées par ces coups sur un plateau dont seul lui a l'accès.
 Ce plateau est fourni par le module Common. Lorsque que le serveur obtient le coup 
-du joueur courrant, il effectue un test \`a l'aide la fonction \textbf{is\_move\_legal()} de l'interface board.h.
-S'il re\c coit la valeur false, le joueur courrant \`a perdu, l'autre joueur est donc le vainqueur.
+du joueur courrant, il effectue un test à l'aide la fonction \textbf{is\_move\_legal()} de l'interface board.h.
+S'il reçoit la valeur false, le joueur courrant à perdu, l'autre joueur est donc le vainqueur.
 
 
 \section{Module Common}
-Le module Common contient un ensemble de fonctionnalit\'es qui sont 
-utilis\'ees \`a la fois par le serveur et par les clients. 
+Le module Common contient un ensemble de fonctionnalités qui sont 
+utilisées à la fois par le serveur et par les clients. 
 
-\subsection{Structures de donn\'ees}
-Le module Common dispose de plusieurs structures de donn\'ees et op\'erateurs utils :
+\subsection{Structures de données}
+Le module Common dispose de plusieurs structures de données et opérateurs utils :
 \begin{itemize}
     \item \textbf{ArrayList} : Une liste d'objet quelconque.
     \item \textbf{PositionSet} : Un set de positions.
     \item \textbf{Arbre} : Un arbre d'objet quelconque. Utilise ArrayList.
     \item \textbf{Hash de Zobrist} : Permet de transformer un plateau de jeu en hash.
-    \item \textbf{Board} : Une repr\'esentation du plateu de jeu.
+    \item \textbf{Board} : Une représentation du plateu de jeu.
 \end{itemize}
 
-Ces structures offrent une diversit\'e de complexit\'es dont les clients 
-peuvent se servir pour minimiser leurs temps d'\'executions.
+Ces structures offrent une diversité de complexités dont les clients 
+peuvent se servir pour minimiser leurs temps d'éxecutions.
 
-Les avoir \`a disposition de tous les clients simplifie le prototypage de nouvelles strat\'egies.
-Par exemple, la structure Arbre permet de mod\'eliser un arbre des parties possibles pour les 
-strat\'egies qui gardent en m\'emoire une pr\'evision des prochains tours.
+Les avoir à disposition de tous les clients simplifie le prototypage de nouvelles stratégies.
+Par exemple, la structure Arbre permet de modéliser un arbre des parties possibles pour les 
+stratégies qui gardent en mémoire une prévision des prochains tours.
 
 \subsection{Plateau de jeu}
 Le plateau de jeu enveloppe le graphe fournit par GSL.
-Ce-dernier \'etant dans un format optimis\'e, on choisit de ne jamais 
-le modifier car c'est une op\'eration couteuse et complexe. Pour 
-enregistrer les \'evolutions de la partie, on utilise des 
-tableaux repr\'esentant l'ensemble des cases du plateau.
-Ces tableaux contiennent les fl\^eches ainsi que les reines 
-et permettent d'acc\'eder au contenu d'une case en temps constant.
+Ce-dernier étant dans un format optimisé, on choisit de ne jamais 
+le modifier car c'est une opération couteuse et complexe. Pour 
+enregistrer les évolutions de la partie, on utilise des 
+tableaux représentant l'ensemble des cases du plateau.
+Ces tableaux contiennent les flêches ainsi que les reines 
+et permettent d'accéder au contenu d'une case en temps constant.
 
 
 \section{Module Client}
-Un client doit retourner un coup \`a' jouer lorsque le serveur lui demande.
-Ce coup doit \^etre valide, si cela est possible.
+Un client doit retourner un coup à jouer lorsque le serveur lui demande.
+Ce coup doit être valide, si cela est possible.
 
-Tous les clients disposent des fonctions de l'interface impos\'ees.
-La diff\'erence principale se situe au niveau de la fonction \textbf{play()}.
+Tous les clients disposent des fonctions de l'interface imposées.
+La différence principale se situe au niveau de la fonction \textbf{play()}.
 
 \section{Client Random}
 \section{Client Alphabeta}
 \section{Client MCTS}
 
 \section{Optimisations}
-Les clients les plus complexes n\'ecessite une grande quantit\'e de calculs.
+Les clients les plus complexes nécessite une grande quantité de calculs.
 Cependant, une contrainte du classement des clients est qu'ils puissent jouer en moins de deux secondes.
-Apr\`es profilage du tour d'un client, certaines fonctions ont \'et\'e am\'elior\'ees.
+Après profilage du tour d'un client, certaines fonctions ont été améliorées.
 
-Notamment \textbf{find\_nearest\_neighbor()} et \textbf{is\_cell\_empty()}, qui avaient des co\^uts faibles, 
-mais qui \'etaient appel\'ees tr\`es fr\'equement.
+Notamment \textbf{find\_nearest\_neighbor()} et \textbf{is\_cell\_empty()}, qui avaient des coûts faibles, 
+mais qui étaient appelées très fréquement.
 
-Cela pourrait \^etre encore am\'elior\'e avec des 
+Cela pourrait être encore amélioré avec des 
 optimisation de calculs des voisins sur les plateaus en grille, 
 ce qui est le cas des plateaux du sujet.
-
 
 \section{Conclusion}
 
