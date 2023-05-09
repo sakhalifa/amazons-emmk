@@ -38,7 +38,7 @@ quelque soit le serveur qui h\'eberge la partie.
 
 Pour repr\'esenter le plateau de jeu, la GNU Scientific Library (GSL) est utilis\'ee.
 
-Quatres plateaux de jeux doivent \^etre impl\'ement\'es, un carré, un donut, un huit et un tr\`efle.
+Quatres plateaux de jeux doivent \^etre impl\'ement\'es, un carr\'e, un donut, un huit et un tr\`efle.
 
 \subsubsection{Utilisation de dllib}
 
@@ -115,7 +115,7 @@ Le module Common dispose de plusieurs structures de donn\'ees et op\'erateurs ut
     \item \textbf{PositionSet} : Un set de positions.
     \item \textbf{Arbre} : Un arbre d'objet quelconque. Utilise ArrayList.
     \item \textbf{Hash} de Zobrist : Permet de transformer un plateau de jeu en hash.
-    \item \textbf{Board} : Une représentation du plateu de jeu.
+    \item \textbf{Board} : Une repr\'esentation du plateu de jeu.
 \end{itemize}
 
 Ces structures offrent une diversit\'e de complexit\'es dont les clients 
@@ -123,7 +123,7 @@ peuvent se servir pour minimiser leurs temps d'\'executions.
 
 Les avoir \`a disposition de tous les clients simplifie le prototypage de nouvelles strat\'egies.
 Par exemple, la structure Arbre permet de mod\'eliser un arbre des parties possibles pour les 
-stratégies qui gardent en m\'emoire une pr\'evision des prochains tours.
+strat\'egies qui gardent en m\'emoire une pr\'evision des prochains tours.
 
 \subsection{Plateau de jeu}
 Le plateau de jeu enveloppe le graphe fournit par GSL.
