@@ -10,6 +10,68 @@
 #include "colors.h"
 #include "assert.h"
 
+static bool is_cache_initialized = false;
+static unsigned int *neighbor_cache[NUM_DIRS];
+
+void neighbors_cache_free()
+{
+    if (is_cache_initialized)
+    {
+        for (size_t i = 0; i < NUM_DIRS; i++)
+        {
+            free(neighbor_cache[i]);
+            neighbor_cache[i] = NULL;
+        }
+        is_cache_initialized = false;
+    }
+}
+
+void initialize_neighbor_cache(size_t num_vertices)
+{
+    if (!is_cache_initialized)
+    {
+        for (enum dir_t dir = FIRST_DIR; dir <= LAST_DIR; dir++)
+        {
+            neighbor_cache[dir - FIRST_DIR] = malloc(sizeof(unsigned int) * num_vertices);
+            for (size_t i = 0; i < num_vertices; i++)
+                neighbor_cache[dir - FIRST_DIR][i] = UINT_MAX - 1;
+        }
+        is_cache_initialized = true;
+    }
+}
+
+unsigned int find_neighbor_in_cache(unsigned int position, enum dir_t direction)
+{
+    return neighbor_cache[direction - FIRST_DIR][position];
+}
+
+unsigned int find_neighbor_in_direction(struct graph_t *graph, unsigned int position, enum dir_t direction)
+{
+    if (!is_cache_initialized)
+    {
+        initialize_neighbor_cache(graph->num_vertices);
+        is_cache_initialized = true;
+    }
+    unsigned int result = find_neighbor_in_cache(position, direction);
+    if (result != UINT_MAX - 1)
+    {
+        return result;
+    }
+    gsl_spmatrix_uint *csr = graph->t;
+    for (unsigned int k = csr->p[position]; (int)k < csr->p[position + 1]; k++)
+    {
+        unsigned int j = csr->i[k];
+        enum dir_t dir = csr->data[k];
+        if (dir == direction)
+        {
+            neighbor_cache[direction - FIRST_DIR][position] = j;
+            return j;
+        }
+    }
+    neighbor_cache[direction - FIRST_DIR][position] = UINT_MAX;
+    return UINT_MAX;
+}
+
 bool is_on_board(board_t *board, int position)
 {
     return position >= 0 &&
@@ -206,6 +268,26 @@ bool is_move_legal(board_t *board, struct move_t *move, unsigned int player_id)
            is_reachable_arrow(board, move, player_id);
 }
 
+size_t count_accessible_vertices(struct graph_t *graph)
+{
+    size_t inaccessible_vertices = 0;
+    for (size_t pos = 0; pos < graph->num_vertices; pos++)
+    {
+        bool isAccessible = false;
+        for (enum dir_t dir = FIRST_DIR; dir <= LAST_DIR; dir++)
+        {
+            if (find_neighbor_in_direction(graph, pos, dir) != UINT_MAX)
+            {
+                isAccessible = true;
+                break;
+            }
+        }
+        if (!isAccessible)
+            inaccessible_vertices++;
+    }
+    return graph->num_vertices - inaccessible_vertices;
+}
+
 board_t *init_board(struct graph_t *graph, unsigned int num_queens)
 {
     board_t *board = (board_t *)malloc(sizeof(board_t));
@@ -218,6 +300,8 @@ board_t *init_board(struct graph_t *graph, unsigned int num_queens)
         board->arrows[i] = false;
         board->queens_on_board[i] = EMPTY_CELL;
     }
+    initialize_neighbor_cache(graph->num_vertices);
+    board->num_accessible_vertices = count_accessible_vertices(graph);
 
     return board;
 }
@@ -338,60 +422,6 @@ void print_board(board_t *board)
     printf("   \\");
     print_vertical_line(width * 2 - 1);
     printf("-/\n");
-}
-
-static bool is_cache_initialized = false;
-static unsigned int *neighbor_cache[NUM_DIRS];
-
-void neighbors_cache_free()
-{
-    for (size_t i = 0; i < NUM_DIRS; i++)
-    {
-        free(neighbor_cache[i]);
-    }
-    is_cache_initialized = false;
-}
-
-void initialize_neighbor_cache(size_t num_vertices)
-{
-    for (enum dir_t dir = FIRST_DIR; dir <= LAST_DIR; dir++)
-    {
-        neighbor_cache[dir - FIRST_DIR] = malloc(sizeof(unsigned int) * num_vertices);
-        for (size_t i = 0; i < num_vertices; i++)
-            neighbor_cache[dir - FIRST_DIR][i] = UINT_MAX - 1;
-    }
-}
-
-unsigned int find_neighbor_in_cache(unsigned int position, enum dir_t direction)
-{
-    return neighbor_cache[direction - FIRST_DIR][position];
-}
-
-unsigned int find_neighbor_in_direction(struct graph_t *graph, unsigned int position, enum dir_t direction)
-{
-    if (!is_cache_initialized)
-    {
-        initialize_neighbor_cache(graph->num_vertices);
-        is_cache_initialized = true;
-    }
-    unsigned int result = find_neighbor_in_cache(position, direction);
-    if (result != UINT_MAX - 1)
-    {
-        return result;
-    }
-    gsl_spmatrix_uint *csr = graph->t;
-    for (unsigned int k = csr->p[position]; (int)k < csr->p[position + 1]; k++)
-    {
-        unsigned int j = csr->i[k];
-        enum dir_t dir = csr->data[k];
-        if (dir == direction)
-        {
-            neighbor_cache[direction - FIRST_DIR][position] = j;
-            return j;
-        }
-    }
-    neighbor_cache[direction - FIRST_DIR][position] = UINT_MAX;
-    return UINT_MAX;
 }
 
 position_set *get_reachable_positions_generic(board_t *board, unsigned int position)

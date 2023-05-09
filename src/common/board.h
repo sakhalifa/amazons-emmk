@@ -22,6 +22,9 @@ typedef struct
    *  1 : Player 1 Queen on position
    */
   unsigned int *queens_on_board;
+
+  /// @brief It gives us the number of accessible vertices. This is useful in the case of weird boards, like clover ones.
+  size_t num_accessible_vertices;
 } board_t;
 
 /// @brief Initialize the game board

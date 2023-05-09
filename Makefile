@@ -1,24 +1,25 @@
-GSL_PATH ?= /net/ens/renault/save/gsl-2.6/install
-CFLAGS = -std=c99 -Wall -Wextra -Wno-unknown-pragmas -fPIC -g3 -O3 -I$(GSL_PATH)/include --coverage
-LDFLAGS = -lm -lgsl -lgslcblas -ldl \
-	-L$(GSL_PATH)/lib -L$(GSL_PATH)/lib64 \
-	-Wl,--rpath=${GSL_PATH}/lib
 SOURCEDIR = src
 CLIENTDIR = ${SOURCEDIR}/client
 SERVERDIR = ${SOURCEDIR}/server
 COMMONDIR = ${SOURCEDIR}/common
+LIBDIR = ${SOURCEDIR}/lib
+GSL_PATH ?= /net/ens/renault/save/gsl-2.6/install
+CFLAGS = -std=c99 -Wall -Wextra -Wno-unknown-pragmas -fPIC $(shell [ -z $(TURBO) ] && echo '-g3') -O3 -I$(GSL_PATH)/include --coverage -I${CLIENTDIR} -I${SERVERDIR} -I ${COMMONDIR} -I${LIBDIR}
+LDFLAGS = -lm -lgsl -lgslcblas -ldl -lrt \
+	-L$(GSL_PATH)/lib -L$(GSL_PATH)/lib64 \
+	-Wl,--rpath=${GSL_PATH}/lib
 TESTDIR = test
 INSTALLDIR = install
 
 .SUFFIXES:
 
 %.o:
-	gcc -c -I${COMMONDIR} -I${CLIENTDIR} -I${SERVERDIR} $(CFLAGS) -o $@ $<
+	gcc -c $(CFLAGS) -o $@ $<
 
 %.so: player_ext.o graph.o board.o
 	gcc -shared $(CFLAGS) $^ $(LDFLAGS) -o $@
 
-all: build
+all: build test
 
 build: server client
 
@@ -33,13 +34,16 @@ mcts1.so: async_mcts.o position_set.o tree.o array_list.o util.o
 #Yeah... I use this to say every single %_spec_heuristic.o has the same rules as variable_heuristic.o defined in Makefile.inc...
 HEURISTIC_TARGETS = $(shell make -f Makefile.inc -qp | grep variable_heuristic.o: | cut -d':' -f2)
 %_spec_heuristic.o: $(HEURISTIC_TARGETS)
-	gcc -c -I${COMMONDIR} -I${CLIENTDIR} -I${SERVERDIR} -DAGG=$(AGG) -DDEF=$(DEF) $(CFLAGS) -o $@ $<
+	gcc -c -DAGG=$(AGG) -DDEF=$(DEF) $(CFLAGS) -o $@ $<
 
 balanced_spec_heuristic.o: AGG=1
 balanced_spec_heuristic.o: DEF=1
 
 alphabeta.so: alphabeta.o balanced_spec_heuristic.o position_set.o 
 alphabeta1.so: alphabeta.o balanced_spec_heuristic.o position_set.o
+
+alphachad.so: alphachad.o balanced_spec_heuristic.o position_set.o 
+alphachad1.so: alphachad.o balanced_spec_heuristic.o position_set.o
 
 defensive_spec_heuristic.o: AGG=0
 defensive_spec_heuristic.o: DEF=1
@@ -57,7 +61,9 @@ random1.so: player.o position_set.o
 segdumb.so: segdumb.o position_set.o
 human.so: player_ext.o human.o
 
-client: mcts.so alphabeta.so random.so bouclier.so epee.so trickery.so segdumb.so random1.so mcts1.so alphabeta1.so
+allclients: alphachad.so alphabeta.so mcts.so random.so bouclier.so epee.so random1.so mcts1.so alphabeta1.so
+
+client: alphachad.so alphabeta.so random.so
 
 alltests: test_main.o test_game.o test_position_set.o game.o \
 player_handle.o graph.o board.o position_set.o \
