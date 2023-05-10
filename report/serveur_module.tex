@@ -5,9 +5,11 @@ D'autre part, il doit être capable de déterminer le gagnant de la partie.
 
 
 \subsection{Isolation de la mémoire}
-Le serveur copie les données d'initialisation de la partie pour chaque client.
-Cela empêcherait un potentiel client malicieux de modifier la mémoire du serveur ou 
-de son adversaire.
+Il nous a été nécessaire d'isoler la mémoire entre chaque clients.
+En effet, le C donnant un accès complet à la mémoire, et vu que le serveur et les clients
+sont dans le même processus, il est extrêmement risqué de donner le même pointeur au plateau à chaque client.
+Pour éviter cela, le serveur doit copier les données d'initialisation de la partie pour chaque client.
+
 Dans le cas où les clients et le serveur seraient sur des machines séparées, 
 la question ne se poserait pas et les clients seraient contraints
 d'allouer eux-mêmes la mémoire pour cette tâche.
@@ -15,6 +17,6 @@ d'allouer eux-mêmes la mémoire pour cette tâche.
 \subsection{Détermination du vainqueur}
 Au fur et à mesure de la partie, le serveur reçoit les coups des deux joueurs.
 Il applique les modifications engendrées par ces coups sur un plateau dont seul lui a l'accès.
-Ce plateau est fourni par le module Common. Lorsque que le serveur obtient le coup 
+Ce plateau est fourni par le module \verb|common|. Lorsque que le serveur obtient le coup 
 du joueur courrant, il effectue un test à l'aide la fonction \textbf{is\_move\_legal()} de l'interface board.h.
 S'il reçoit la valeur false, le joueur courrant à perdu, l'autre joueur est donc le vainqueur.
