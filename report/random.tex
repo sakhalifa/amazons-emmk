@@ -1,0 +1,20 @@
+Avant de commencer les autres clients plus avancés, il nous a d'abord
+fallu implémenter un client de base permettant de "comparer". Ce client de base
+consiste à jouer aléatoirement jusqu'à qu'il ne puisse plus jouer aucune reines.
+Son algorithme~(\ref{alg:random}) est simple et rapide, ce qui permet de rapidement
+mesurer l'efficacité de nos nouvelles stratégies.
+
+\begin{algorithm}[H]
+	\Entree{$plateau$: un plateau de jeu}
+	\Deb{
+		$coup \gets \{coup~invalide\}$\;
+		\lSi{reines\_non\_bloquees($plateau$) $= \emptyset$}{
+			\Retour{$coup$}
+		}
+		$reine \gets element\_aleatoire(reines\_non\_bloquees(plateau))$\;
+		$coup \gets element\_aleatoire(tous\_coups\_possibles(reine))$\;
+		\Retour{$coup$}\;
+	}
+	\caption{Algorithme du joueur aléatoire}
+	\label{alg:random}
+\end{algorithm}
