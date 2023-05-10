@@ -1,13 +1,28 @@
-L'objectif de ce projet est la création d'un serveur de jeu et de clients pouvant faire des parties 
-du jeu des amazons.
+L'objectif de ce projet est la création d'un serveur\footnote{Un serveur au sens figuré du terme. Nous n'avons pas eu a faire de réseau, heureusement.}
+sur lequel des joueurs (\textit{clients}) peuvent jouer au jeu des \textit{Amazones}. Il nous a aussi été demandé d'implémenter quelques clients même si cela était plutôt secondaire.
+
+\subsection{Le jeu des Amazones}
 
 Le jeu des amazons est un jeu de plateau où deux joueurs s'affrontent en jouant tour à tour.
-Ils disposent chacun de reines, qui ont des mêmes déplacements que les reines des échecs.
-Durant son tour, un joueur bouge une de ses reines, puis tire une flêche depuis la position atteinte par la reine.
-La flêche est lancée sur l'une des 8 directions cardinales et ne peux traverser de reines ou d'autres flêches.
+Ils disposent chacun de reines\footnote{Plus exactement $\mathtt{floor}(4*(m/10 + 1))$ où $m$ est la largeur du plateau},
+qui peuvent se déplacer comme des reines au jeu des échecs. Les reines doivent être espacés d'au moins 2 espaces ou d'un espace en diagonale.
+Le jeu requiert que les reines soient symmétriques entre les joueurs et qu'il y ait autant de reines sur la ligne externe que sur les colonnes externes.
 
+\begin{figure}[h!]
+	\centering
+	\newchessgame[
+		setwhite={qb1, qg1, qa2, qh2},
+		addblack={qb8, qg8, qa7, qh7}
+	]
+	\chessboard[showmover=false]
+	\caption{Un jeu des Amazones.}
+	\label{fig:amazon-game}
+\end{figure}
+
+Chaque joueur joue une reine puis tire une flêche depuis la position atteinte par la reine.
+Les flêches agissent comme une reine dans le jeu des échecs mais ne peuvent traverser de reines ou d'autres flêches.
 Le premier joueur qui ne peut pas jouer un coup valide perd.
-
+\medbreak
 Pour répondre à ce besoin, nous avons suivis les spécifications du sujet,
 mis en place une infrastructure client-serveur, et réalisé plusieurs clients 
 capable de jouer une partie, et souvent la gagner.
