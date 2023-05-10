@@ -1,27 +1,29 @@
 \subsection{Spécifications du sujet}
-Le sujet dispose de deux grands types de spécifications.
-Tout d'abord, une spécification structurelle, le client-serveur.
-Secondement, des spécifications d'implémentations, avec l'Utilisation 
-de GSL et de dlopen.
+Le sujet nous demandait d'implémenter un modèle client-serveur et nous a
+contraint à utiliser la librairie GSL.
 
 \subsubsection{Structure Client Serveur}
 
-Le projet doit contenir un executable actant comme un serveur responsable d'une partie entre deux joueurs.
-Le serveur doit s'assurer du lancement et du déroulement de la partie. Une fois celle-ci finie, 
-il doit déclarer le vainqueur.
-
-Le serveur est responsable de l'isolation des variables. 
-C'est à lui de faire des copies du plateau du jeu au début de la partie et de les fournir aux clients 
-pour qu'ils s'initialisent correctement.
-
-Les clients doivent respecter une interface afin de garantir qu'ils puissent tous s'affronter,
-quelque soit le serveur qui héberge la partie.
+La structure client-serveur, autrement appelée "monolithe", permet de séparer
+la responsabilité des joueurs et du jeu en lui même. Le serveur représente le jeu. Il organise le
+déroulement du jeu, retransmet l'information d'un client $x$ aux autres clients et vérifie que tout coup joué est valide.
 
 \subsubsection{Utilisation de GSL}
 
-Pour représenter le plateau de jeu, la GNU Scientific Library (GSL) est utilisée.
+Il nous a été demandé de représenter le plateau de jeu comme un graphe. 
+Cela permet quelques folies pour implémenter moultes plateaux intéressant.
+Dans les règles des échecs, une case aura au plus 8 voisins, cela veut dire que dans le graphe, un noeud aura au maximum 8 voisins, alors qu'un graphe fait au moins 25 noeuds.
+Pour représenter ce graphe, il nous a été demandé de le représenter par sa matrice d'adjacence. 
+Pour stocker cette matrice, nous étions contraints d'utiliser la GNU Scientific Library (GSL).
+Cette librairie permet le stockage et traitement de matrices optimisées autrement appelées \textit{matrices creuses}.
+Il aurait peut-être été plus judicieux de stocker une liste d'adjacence directement, mais les matrices creuses sous format Compressed Sparse Row (CSR) peuvent s'apparenter à cela.
 
-Quatres plateaux de jeux doivent être implémentés, un carré, un donut, un huit et un trèfle.
+Enfin, le sujet demandait à implémenter les plateaux présenté en figure \ref{fig:all-boards}
+
+\begin{figure}
+	
+\end{figure}
+% Quatres plateaux de jeux doivent être implémentés, un carré, un donut, un huit et un trèfle.
 
 \subsubsection{Utilisation de dllib}
 

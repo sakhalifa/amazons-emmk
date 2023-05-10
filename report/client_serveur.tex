@@ -1,3 +1,24 @@
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}
+		\begin{scope}[every node/.style={circle, draw}]
+			\node (S) at (0,0) {Serveur};
+			\node[draw=red] (C1) at (-4,0) {Client 1};
+			\node[draw=blue] (C2) at (4,0) {Client 2};
+		\end{scope}
+		\begin{scope}[every edge/.style={draw=red, very thick, bend right=30}]
+			\path [->] (C1) edge node {} (S);
+			\path [->] (S) edge node {} (C2);
+		\end{scope}
+		\begin{scope}[every edge/.style={draw=blue, very thick, bend right=30}]
+			\path [->] (C2) edge node {} (S);
+			\path [->] (S) edge node {} (C1);
+		\end{scope}
+	\end{tikzpicture}
+	\caption{Une représentation abstraite du modèle client-serveur}
+	\label{fig:repr-serveur}
+\end{figure}
+
 Le modèle client serveur implique deux choses.
 Premièrement, il est nécessaire d'isoler les responsabilités entre le module client et le module serveur.
 Secondement, il est nécessaire d'avoir une interface pour que les modules puissent communiquer.
