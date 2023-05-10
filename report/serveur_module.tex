@@ -1,0 +1,20 @@
+Le serveur s'occupe de gérer une partie jouée par deux clients. 
+
+D'une part, il s'occupe de l'isolation de la mémoire lors de l'initialisation.
+D'autre part, il doit être capable de déterminer le gagnant de la partie.
+
+
+\subsection{Isolation de la mémoire}
+Le serveur copie les données d'initialisation de la partie pour chaque client.
+Cela empêcherait un potentiel client malicieux de modifier la mémoire du serveur ou 
+de son adversaire.
+Dans le cas où les clients et le serveur seraient sur des machines séparées, 
+la question ne se poserait pas et les clients seraient contraints
+d'allouer eux-mêmes la mémoire pour cette tâche.
+
+\subsection{Détermination du vainqueur}
+Au fur et à mesure de la partie, le serveur reçoit les coups des deux joueurs.
+Il applique les modifications engendrées par ces coups sur un plateau dont seul lui a l'accès.
+Ce plateau est fourni par le module Common. Lorsque que le serveur obtient le coup 
+du joueur courrant, il effectue un test à l'aide la fonction \textbf{is\_move\_legal()} de l'interface board.h.
+S'il reçoit la valeur false, le joueur courrant à perdu, l'autre joueur est donc le vainqueur.

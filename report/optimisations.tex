@@ -1,0 +1,10 @@
+Les clients les plus complexes nécessite une grande quantité de calculs.
+Cependant, une contrainte du classement des clients est qu'ils puissent jouer en moins de deux secondes.
+Après profilage du tour d'un client, certaines fonctions ont été améliorées.
+
+Notamment \textbf{find\_nearest\_neighbor()} et \textbf{is\_cell\_empty()}, qui avaient des coûts faibles, 
+mais qui étaient appelées très fréquement.
+
+Cela pourrait être encore amélioré avec des 
+optimisation de calculs des voisins sur les plateaus en grille, 
+ce qui est le cas des plateaux du sujet.

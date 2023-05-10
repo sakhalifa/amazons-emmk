@@ -13,3 +13,7 @@ build/
 oprofile_data
 *.aux
 *.pdf
+*.fdb_latexmk
+*.fls
+*.gz
+*.toc
