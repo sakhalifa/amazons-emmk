@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 typedef struct linked_list linked_list_t;
+typedef struct linked_list_cell linked_list_cell_t;
 
 /// @brief Allocates an empty linked_list
 /// @param free_func the function used to free all of its elements
@@ -47,5 +48,15 @@ void linked_list_push(linked_list_t *l, void *val);
 /// @param l the list
 /// @param val the element to enqueue
 void linked_list_queue(linked_list_t *l, void *val);
+
+void *linked_list_cell_get_data(linked_list_cell_t* c);
+
+linked_list_cell_t *linked_list_first_cell(linked_list_t *l);
+
+linked_list_cell_t *linked_list_last_cell(linked_list_t *l);
+
+linked_list_cell_t *linked_list_cell_next(linked_list_cell_t *c);
+
+linked_list_cell_t *linked_list_cell_prev(linked_list_cell_t *c);
 
 #endif

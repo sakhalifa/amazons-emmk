@@ -2,45 +2,45 @@
 #include <stdlib.h>
 #include <assert.h>
 
-typedef struct cell
+struct linked_list_cell
 {
     void *value;
-    struct cell *next;
-    struct cell *prev;
-} cell_t;
+    struct linked_list_cell *next;
+    struct linked_list_cell *prev;
+};
 struct linked_list
 {
-    cell_t *first;
-    cell_t *last;
+    linked_list_cell_t *first;
+    linked_list_cell_t *last;
     size_t length;
     void (*free_func)(void *);
 };
 
-cell_t *cell_next(cell_t *c)
+linked_list_cell_t *linked_list_cell_next(linked_list_cell_t *c)
 {
     return c->next;
 }
 
-cell_t *cell_prev(cell_t *c)
+linked_list_cell_t *linked_list_cell_prev(linked_list_cell_t *c)
 {
     return c->prev;
 }
 
-void *cell_get_value(cell_t *c)
+void *linked_list_cell_get_data(linked_list_cell_t *c)
 {
     return c->value;
 }
 
-cell_t *create_cell(void *val)
+linked_list_cell_t *create_cell(void *val)
 {
-    cell_t *cell = malloc(sizeof(cell_t));
+    linked_list_cell_t *cell = malloc(sizeof(linked_list_cell_t));
     cell->value = val;
     cell->next = NULL;
     cell->prev = NULL;
     return cell;
 }
 
-void cell_free(cell_t *c, linked_list_t *l)
+void cell_free(linked_list_cell_t *c, linked_list_t *l)
 {
     l->free_func(c->value);
     free(c);
@@ -84,9 +84,17 @@ void *linked_list_get_last(linked_list_t *l)
     return l->last->value;
 }
 
+linked_list_cell_t *linked_list_first_cell(linked_list_t *l){
+    return l->first;
+}
+
+linked_list_cell_t *linked_list_last_cell(linked_list_t *l){
+    return l->last;
+}
+
 void linked_list_push(linked_list_t *l, void *val)
 {
-    cell_t *c = create_cell(val);
+    linked_list_cell_t *c = create_cell(val);
     c->prev = l->last;
     l->last = c;
     if (c->prev == NULL)
@@ -102,7 +110,7 @@ void linked_list_push(linked_list_t *l, void *val)
 
 void linked_list_queue(linked_list_t *l, void *val)
 {
-    cell_t *c = create_cell(val);
+    linked_list_cell_t *c = create_cell(val);
     c->next = l->first;
     l->first = c;
     if (c->next == NULL)
@@ -123,7 +131,7 @@ bool linked_list_remove_last(linked_list_t *l)
         return false;
     }
 
-    cell_t *new_last = l->last->prev;
+    linked_list_cell_t *new_last = l->last->prev;
     cell_free(l->last, l);
     l->last = new_last;
     if (l->last != NULL)
@@ -139,7 +147,7 @@ bool linked_list_remove_first(linked_list_t *l)
     {
         return false;
     }
-    cell_t *new_first = l->first->next;
+    linked_list_cell_t *new_first = l->first->next;
     cell_free(l->first, l);
     l->first = new_first;
     if (l->first != NULL)

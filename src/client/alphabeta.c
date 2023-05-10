@@ -14,7 +14,7 @@ void initialize(unsigned int player_id, struct graph_t *graph,
 {
 	generic_initialize(&global_player, player_id, graph, num_queens, queens, "alphabeta");
 	size_t width = (size_t)sqrt(graph->num_vertices);
-	exp_coeff = (1. / (exp(0.05 * width) * sqrt(width) * width));
+	exp_coeff = (1. / (exp(0.05 * width) * 1.3 * sqrt(width) * width));
 }
 
 char const *get_player_name()
@@ -66,13 +66,13 @@ struct move_and_score max_alphabeta(board_t *board, int my_player_id, int alpha,
 					value = score;
 					best_move = move;
 				}
-				if (value > beta)
-				{
-					break_for = true;
-					cancel_move(board, &move, cur_player_id);
-					break;
-				}
-				alpha = max(alpha, value);
+				// if (value > beta)
+				// {
+				// 	break_for = true;
+				// 	cancel_move(board, &move, cur_player_id);
+				// 	break;
+				// }
+				// alpha = max(alpha, value);
 				// Transform child node to current node
 				cancel_move(board, &move, cur_player_id);
 			}
@@ -113,13 +113,13 @@ struct move_and_score min_alphabeta(board_t *board, int my_player_id, int alpha,
 					value = score;
 					best_move = move;
 				}
-				if (value < alpha)
-				{
-					break_for = true;
-					cancel_move(board, &move, cur_player_id);
-					break;
-				}
-				beta = min(beta, value);
+				// if (value < alpha)
+				// {
+				// 	break_for = true;
+				// 	cancel_move(board, &move, cur_player_id);
+				// 	break;
+				// }
+				// beta = min(beta, value);
 				// Transform child node to current node
 				cancel_move(board, &move, cur_player_id);
 			}
