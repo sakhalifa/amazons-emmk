@@ -92,6 +92,8 @@ struct marker *get_dist_table(board_t *board)
 		}
 	}
 
+	linked_list_free(queue);
+
 	return table;
 }
 
@@ -109,6 +111,6 @@ int get_score(board_t *board, int player_id)
 		if (mark.D[other_player_id] < mark.D[player_id])
 			other_score += mark.D[other_player_id] - mark.D[player_id];
 	}
-
+	free(dist_table);
 	return my_score - other_score;
 }
