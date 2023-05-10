@@ -19,22 +19,28 @@
 	\label{fig:repr-serveur}
 \end{figure}
 
-Le modèle client serveur implique deux choses.
-Premièrement, il est nécessaire d'isoler les responsabilités entre le module client et le module serveur.
-Secondement, il est nécessaire d'avoir une interface pour que les modules puissent communiquer.
-Cette dernière est imposée par le sujet.
+Comme le montre le graphe dans la figure~\ref{fig:repr-serveur}, 
+chaque client $x$ communique au serveur, puis ce que le client $x$ communique au serveur est retranscrit  aux autres clients.
+Cela implique deux choses. Premièrement, un isolement des responsabilités. En effet, le serveur
+et les clients ne font pas du tout la même chose. Le serveur fait le principal du travail tandis que les clients jouent.
+Deuxièmement, il faut une langue commune. En effet, si le client 1 parle anglais, tandis que le serveur parle espagnol et le client 2 russe,
+ils ne se comprendront pas\footnote{Sauf coup de chance extrême}. Cette idée de langue
+commune s'appelle une \emph{interface} en programmation. Il faut une interface
+commune à chaque client entre clients et serveurs. Cette interface nous a été fourni par le sujet. Cela permet
+de faire jouer les clients des différentes équipes dans un tournoi.
 
 \subsection{Isolation des responsabilités}
 
-Le serveur est responsable du lancement, du déroulement, ainsi que la terminaison de la partie.
-Le client est responsable des coups qu'il joue lorsque le serveur lui demande de jouer, 
-en l'informant du coup de son adversaire au tour précédent.
+Le serveur s'occupe de lancer la partie, de la dérouler, et de déterminer la terminaison de la partie.
+Pour avoir un bon déroulement de la partie et permettre aux clients de jouer,
+il doit informer le prochain client à jouer du coup joué par le client précédent.
+Les clients, eux, doivent jouer \emph{correctement} à la partie.
 
-On remarque que les deux modules ont besoin de pouvoir garder en mémoire l'évolution d'une partie.
+On remarque que le serveur et les clients ont besoin de pouvoir garder en mémoire l'évolution d'une partie.
 Le serveur en a besoin pour savoir si un joueur fait un coup invalide.
 Les clients en ont besoin pour suivre une stratégie cohérente.
 
-On décide de faire un troisième module nommé Common qui implémentera toutes les fonctionnalités communes 
+On décide de créer un troisième module nommé \verb|common| qui implémentera toutes les fonctionnalités communes 
 aux clients et au serveur.
 
 \subsection{Interface entre client et serveur}
@@ -42,9 +48,8 @@ aux clients et au serveur.
 Les clients doivent disposer de quatres fonctions.
 \begin{itemize}
     \item \textbf{get\_player\_name()} : Retourne le nom du joueur.
-    \item \textbf{initialize()} : Permet au joueur de se prépaprer pour la partie à venir.
-    \item \textbf{play(coup\_precedent)} : Demande au joueur un coup, en fonction 
-    du coup fait par son adversaire au tour précédent.
+    \item \textbf{initialize(plateau)} : Permet au joueur de se préparer pour la partie à venir.
+    \item \textbf{play(coup\_precedent)} : Indique au joueur quel coup l'autre client a joué et demande au joueur de jouer un coup.
     \item \textbf{finalize()} : Permet au joueur de libérer les ressources allouées.
 \end{itemize}
 
