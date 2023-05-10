@@ -105,6 +105,10 @@ int get_score(board_t *board, int player_id)
 	struct marker *dist_table = get_dist_table(board);
 	for (unsigned int i = 0; i < board->graph->num_vertices; i++)
 	{
+		if (board->arrows[i] || board->queens_on_board[i] != EMPTY_CELL)
+			continue;
+		if(!is_marked(dist_table+i))
+			continue;
 		struct marker mark = dist_table[i];
 		if (mark.D[player_id] < mark.D[other_player_id])
 			my_score += mark.D[player_id] - mark.D[other_player_id];

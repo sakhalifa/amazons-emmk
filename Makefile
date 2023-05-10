@@ -4,7 +4,7 @@ SERVERDIR = ${SOURCEDIR}/server
 COMMONDIR = ${SOURCEDIR}/common
 LIBDIR = ${SOURCEDIR}/lib
 GSL_PATH ?= /net/ens/renault/save/gsl-2.6/install
-CFLAGS = -std=c99 -Wall -Wextra -Wno-unknown-pragmas -fPIC $(shell [ -z $(TURBO) ] && echo '-g3') -I$(GSL_PATH)/include --coverage -I${CLIENTDIR} -I${SERVERDIR} -I ${COMMONDIR} -I${LIBDIR}
+CFLAGS = -std=c99 -Wall -Wextra -Wno-unknown-pragmas -fPIC $(shell [ -z $(TURBO) ] && echo '-g3') -O3 -I$(GSL_PATH)/include --coverage -I${CLIENTDIR} -I${SERVERDIR} -I ${COMMONDIR} -I${LIBDIR}
 LDFLAGS = -lm -lgsl -lgslcblas -ldl -lrt \
 	-L$(GSL_PATH)/lib -L$(GSL_PATH)/lib64 \
 	-Wl,--rpath=${GSL_PATH}/lib

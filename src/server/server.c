@@ -123,12 +123,12 @@ int main(int argc, char *const *argv)
 		clock_t start_time = clock();
 		current_move = args.player_handles[game->current_player].play(current_move);
 		player_times[game->current_player] += (double)(clock() - start_time) / CLOCKS_PER_SEC;
-		// if (player_times[game->current_player] >= TIMEOUT_PER_PLAYER)
-		// {
-		// 	printf("Player %u ('%s') (from '%s') timeout!\n", game->current_player,
-		// 		   args.player_handles[game->current_player].get_player_name(), args.player_handles[game->current_player].path);
-		// 	exit(1);
-		// }
+		if (player_times[game->current_player] >= TIMEOUT_PER_PLAYER)
+		{
+			printf("Player %u ('%s') (from '%s') timeout!\n", game->current_player,
+				   args.player_handles[game->current_player].get_player_name(), args.player_handles[game->current_player].path);
+			exit(1);
+		}
 		if (!is_move_legal(game->board, &current_move, game->current_player))
 		{
 			game_not_over = false;
