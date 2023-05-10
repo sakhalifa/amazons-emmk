@@ -20,6 +20,11 @@ player.o: src/client/player.c src/client/player_ext.h src/common/player.h \
  src/common/move_ext.h src/common/move.h src/common/graph.h \
  src/common/board.h src/common/dir.h src/common/graph_ext.h \
  src/common/player.h src/common/position_set.h src/common/position_set.h
+alphaalpha.o: src/client/alphaalpha.c src/common/move_ext.h \
+ src/common/move.h src/client/player_ext.h src/common/player.h \
+ src/common/move_ext.h src/common/graph.h src/common/board.h \
+ src/common/dir.h src/common/graph_ext.h src/common/player.h \
+ src/common/position_set.h src/client/heuristic.h
 variable_heuristic.o: src/client/variable_heuristic.c \
  src/client/heuristic.h src/common/board.h src/common/dir.h \
  src/common/graph_ext.h src/common/graph.h src/common/move_ext.h \
@@ -42,11 +47,6 @@ territory_heuristic.o: src/client/territory_heuristic.c \
  src/common/graph_ext.h src/common/graph.h src/common/move_ext.h \
  src/common/move.h src/common/player.h src/common/position_set.h \
  src/common/linked_list.h
-alphachad.o: src/client/alphachad.c src/common/move_ext.h \
- src/common/move.h src/client/player_ext.h src/common/player.h \
- src/common/move_ext.h src/common/graph.h src/common/board.h \
- src/common/dir.h src/common/graph_ext.h src/common/player.h \
- src/common/position_set.h src/client/heuristic.h
 linked_list.o: src/common/linked_list.c src/common/linked_list.h
 position_set.o: src/common/position_set.c src/common/position_set.h
 board.o: src/common/board.c src/common/board.h src/common/dir.h \
