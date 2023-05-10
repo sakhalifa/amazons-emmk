@@ -10,22 +10,40 @@ déroulement du jeu, retransmet l'information d'un client $x$ aux autres clients
 
 \subsubsection{Utilisation de GSL}
 
-Il nous a été demandé de représenter le plateau de jeu comme un graphe. 
+Il nous a été demandé de représenter le plateau de jeu comme un graphe.
 Cela permet quelques folies pour implémenter moultes plateaux intéressant.
 Dans les règles des échecs, une case aura au plus 8 voisins, cela veut dire que dans le graphe, un noeud aura au maximum 8 voisins, alors qu'un graphe fait au moins 25 noeuds.
-Pour représenter ce graphe, il nous a été demandé de le représenter par sa matrice d'adjacence. 
+Pour représenter ce graphe, il nous a été demandé de le représenter par sa matrice d'adjacence.
 Pour stocker cette matrice, nous étions contraints d'utiliser la GNU Scientific Library (GSL).
 Cette librairie permet le stockage et traitement de matrices optimisées autrement appelées \textit{matrices creuses}.
 Il aurait peut-être été plus judicieux de stocker une liste d'adjacence directement, mais les matrices creuses sous format Compressed Sparse Row (CSR) peuvent s'apparenter à cela.
 
 Enfin, le sujet demandait à implémenter les plateaux présenté en figure \ref{fig:all-boards}
 
-\begin{figure}
-	
+\begin{figure}[H]
+	\centering
+	\subfloat[][Plateau classique]{
+		\includegraphics[width=0.3\linewidth]{classic_board}
+	}
+	\subfloat[][Plateau donut]{
+		\includegraphics[width=0.3\linewidth]{donut_board}
+	}
+
+	\raisebox{-0.5\height}{
+		\subfloat[][Plateau trèfle]{
+			\includegraphics[width=0.3\linewidth]{clover_board}
+		}
+		\subfloat[][Plateau huit]{
+			\includegraphics[width=0.3\linewidth]{eight_board}
+		}
+	}
+	\caption{Les différents plateaux à implémenter et leurs graphes}
+	\label{fig:all-boards}
 \end{figure}
 % Quatres plateaux de jeux doivent être implémentés, un carré, un donut, un huit et un trèfle.
 
-\subsubsection{Utilisation de dllib}
+\subsubsection{Utilisation de libdl}
 
-Les clients sont des librairies dynamiques chargées avant le début de la partie par le serveur.
-Le chargement doit être réalisé avec dllib.
+Chaque client devait être compilé en tant que librairie dynamique.
+Le serveur devait lancer les clients en tant que librairies dynamiques ouvertes
+au \textit{runtime} en utilisant la fonction \verb|dlopen| de la librairie \verb|libdl|
