@@ -26,6 +26,7 @@ void initialize(unsigned int player_id, struct graph_t *graph,
 				unsigned int num_queens, unsigned int *queens[NUM_PLAYERS])
 {
 	generic_initialize(&global_player, player_id, graph, num_queens, queens, "alphachad");
+	compute_accessible_vertices(global_player.board);
 	if (player_id == 1)
 		turns++;
 	max_time_per_turn = (double)TIMEOUT / graph->num_vertices;

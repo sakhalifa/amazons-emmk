@@ -219,6 +219,8 @@ board_t *init_board(struct graph_t *graph, unsigned int num_queens)
         board->queens_on_board[i] = EMPTY_CELL;
     }
 
+    
+
     return board;
 }
 
@@ -293,6 +295,16 @@ bool is_reachable(gsl_spmatrix_uint *spmatrix, size_t position)
         }
     }
     return false;
+}
+
+void compute_accessible_vertices(board_t *board){
+    size_t vertices = 0;
+    for(unsigned int p = 0; p<board->graph->num_vertices; p++){
+        if(is_reachable(board->graph->t, p))
+            vertices++;
+    }
+
+    board->num_accessible_vertices = vertices;
 }
 
 void print_board(board_t *board)

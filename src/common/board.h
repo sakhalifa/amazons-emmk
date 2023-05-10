@@ -123,4 +123,8 @@ position_set *reachable_positions(board_t *board, unsigned int queen_position);
 /// @return true if the considered position is a neighbor of any vertex of the spmatrix, in any direction.
 bool is_reachable(gsl_spmatrix_uint *spmatrix, size_t position);
 
+/// @brief Computes the acessible vertices and sets the \p num_accessible_vertices on the board
+/// @param board The board
+void compute_accessible_vertices(board_t *board);
+
 #endif
