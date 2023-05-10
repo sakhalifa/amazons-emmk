@@ -190,12 +190,24 @@ struct graph_t *init_eight_graph(size_t width)
 			}
 		}
 	}
+
 	size_t bridge1_index = (width + 1) * (width / 2);
 	size_t bridge2_index = (width + 1) * (width / 2 - 1);
-	remove_all_out_dir_neighbors_in_square_grid(tmp, bridge1_index, width);
-	remove_all_out_dir_neighbors_in_square_grid(tmp, bridge2_index, width);
+	remove_all_dir_neighbors_in_square_grid(tmp, bridge1_index, width);
+	remove_all_dir_neighbors_in_square_grid(tmp, bridge2_index, width);
+
 	gsl_spmatrix_uint_set(tmp, bridge1_index, bridge2_index, DIR_NW);
 	gsl_spmatrix_uint_set(tmp, bridge2_index, bridge1_index, DIR_SE);
+
+	gsl_spmatrix_uint_set(tmp, bridge2_index, bridge2_index - 1, DIR_WEST);
+	gsl_spmatrix_uint_set(tmp, bridge2_index - 1, bridge2_index, DIR_EAST);
+
+	gsl_spmatrix_uint_set(tmp, bridge2_index, bridge2_index - width, DIR_NORTH);
+	gsl_spmatrix_uint_set(tmp, bridge2_index - width, bridge2_index, DIR_SOUTH);
+
+	gsl_spmatrix_uint_set(tmp, bridge2_index, bridge2_index - 1 - width, DIR_NW);
+	gsl_spmatrix_uint_set(tmp, bridge2_index - 1 - width, bridge2_index, DIR_SE);
+
 	graph->t = gsl_spmatrix_uint_compress(tmp, GSL_SPMATRIX_CSR);
 	gsl_spmatrix_uint_free(tmp);
 	return graph;

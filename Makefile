@@ -68,7 +68,7 @@ allclients: alphachad.so alphabeta.so mcts.so random.so bouclier.so epee.so rand
 client: alphachad.so alphabeta.so alphasigma.so
 
 alltests: game.o player_handle.o graph.o board.o position_set.o linked_list.o
-alltests: common.o mock_player.o test_main.o test_game.o test_position_set.o
+alltests: common.o mock_player.o test_main.o test_game.o test_position_set.o test_board.o
 	gcc $(CFLAGS) $^ $(LDFLAGS) -o alltests
 
 profiling: alphabeta.o board.o position_set.o graph.o player_handle.o graph.o game.o board.o position_set.o profiling.o
@@ -80,7 +80,7 @@ coverage: alltests
 
 
 run: install
-	./install/server ./install/alphabeta.so ./install/alphabeta1.so
+	./install/server ./install/random.so ./install/alphabeta.so
 
 install: build test
 	cp server install/
