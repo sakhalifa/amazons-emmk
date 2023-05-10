@@ -39,14 +39,14 @@ HEURISTIC_TARGETS = $(shell make -f Makefile.inc -qp | grep variable_heuristic.o
 balanced_spec_heuristic.o: AGG=1
 balanced_spec_heuristic.o: DEF=1
 
-alphabeta.so: alphabeta.o balanced_spec_heuristic.o position_set.o
-alphabeta1.so: alphabeta.o balanced_spec_heuristic.o position_set.o
+alphabeta.so: alphabeta.o function_deepening.o balanced_spec_heuristic.o position_set.o
+alphabeta1.so: alphabeta.o function_deepening.o balanced_spec_heuristic.o position_set.o
 
-alphaalpha.so: alphaalpha.o balanced_spec_heuristic.o position_set.o 
-alphaalpha1.so: alphaalpha.o balanced_spec_heuristic.o position_set.o
+alphaalpha.so: alphabeta.o time_deepening.o balanced_spec_heuristic.o position_set.o 
+alphaalpha1.so: alphabeta.o time_deepening.o balanced_spec_heuristic.o position_set.o
 
-alphasigma.so: alphabeta.o territory_heuristic.o position_set.o linked_list.o
-alphasigma1.so: alphabeta.o territory_heuristic.o position_set.o linked_list.o
+alphasigma.so: alphabeta.o function_deepening.o territory_heuristic.o position_set.o linked_list.o
+alphasigma1.so: alphabeta.o function_deepening.o territory_heuristic.o position_set.o linked_list.o
 
 defensive_spec_heuristic.o: AGG=0
 defensive_spec_heuristic.o: DEF=1

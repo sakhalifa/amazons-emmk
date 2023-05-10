@@ -1,41 +1,13 @@
-#include "move_ext.h"
-#include "player_ext.h"
 #include "heuristic.h"
+#include "alphabeta.h"
 #include <math.h>
 
-static player_t global_player;
-
-static unsigned int turns = 0;
-
-static double exp_coeff;
-
-void initialize(unsigned int player_id, struct graph_t *graph,
-				unsigned int num_queens, unsigned int *queens[NUM_PLAYERS])
-{
-	generic_initialize(&global_player, player_id, graph, num_queens, queens, "alphabeta");
-	size_t width = (size_t)sqrt(graph->num_vertices);
-	exp_coeff = (1. / (exp(0.05 * width) * sqrt(width) * width));
-	if (player_id == 0)
-		exp_coeff *= 1.1;
-}
-
-char const *get_player_name()
-{
-	return global_player.name;
-}
-
-struct move_and_score
-{
-	struct move_t move;
-	int score;
-};
-
-int max(int a, int b)
+static inline int max(int a, int b)
 {
 	return a > b ? a : b;
 }
 
-int min(int a, int b)
+static inline int min(int a, int b)
 {
 	return a < b ? a : b;
 }
@@ -141,7 +113,7 @@ struct move_and_score alphabeta_recursive(board_t *board, struct move_t cur_move
 {
 	if (depth == 0)
 	{
-		struct move_and_score move_score = {.move = cur_move, .score = get_score(board, global_player.player_id)};
+		struct move_and_score move_score = {.move = cur_move, .score = get_score(board, my_player_id)};
 		return move_score;
 	}
 #pragma region maximize
@@ -164,23 +136,3 @@ struct move_and_score alphabeta(board_t *board, int my_player_id, int depth)
 	return alphabeta_recursive(board, cur_move, my_player_id, INT_MIN, INT_MAX, my_player_id, depth);
 }
 
-struct move_t play(struct move_t previous_move)
-{
-	if (previous_move.queen_src != FIRST_MOVE_VAL && previous_move.queen_dst != FIRST_MOVE_VAL && previous_move.arrow_dst != FIRST_MOVE_VAL)
-	{
-		apply_move(global_player.board, &previous_move, abs((int)global_player.player_id - 1) % NUM_PLAYERS);
-	}
-	int depth = exp(exp_coeff * turns);
-	struct move_t move = alphabeta(global_player.board, global_player.player_id, depth).move;
-	if (move.queen_src != FIRST_MOVE_VAL && move.queen_dst != FIRST_MOVE_VAL && move.arrow_dst != FIRST_MOVE_VAL)
-		apply_move(global_player.board, &move, global_player.player_id);
-	turns += 2;
-	return move;
-}
-
-void finalize()
-{
-	board_free(global_player.board);
-	neighbors_cache_free();
-	turns = 0;
-}
