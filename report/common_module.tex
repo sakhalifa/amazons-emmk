@@ -1,28 +1,29 @@
-Le module Common contient un ensemble de fonctionnalités qui sont 
+Le module \verb|common| contient un ensemble de fonctionnalités qui sont 
 utilisées à la fois par le serveur et par les clients. 
 
 \subsection{Structures de données}
-Le module Common dispose de plusieurs structures de données et opérateurs utils :
+Le module \verb|common| dispose de plusieurs structures de données:
 \begin{itemize}
-    \item \textbf{ArrayList} : Une liste d'objet quelconque.
-    \item \textbf{PositionSet} : Un set de positions.
-    \item \textbf{Arbre} : Un arbre d'objet quelconque. Utilise ArrayList.
-    \item \textbf{Hash de Zobrist} : Permet de transformer un plateau de jeu en hash.
-    \item \textbf{Board} : Une représentation du plateu de jeu.
+    \item \textbf{array\_list} : Un tableau dynamique pouvant contenir n'importe quel objet.
+    \item \textbf{position\_set} : Un ensemble de positions.
+    \item \textbf{tree} : Un arbre d'objets quelconque.
+    \item \textbf{zobrist\_hash} : Permet de \textit{hasher}\footnote{Un hash consiste à calculer un nombre le plus unique possible d'une structure de données quelconque} un plateau de jeu.
+    \item \textbf{board} : Une représentation du plateu de jeu.
 \end{itemize}
 
 Ces structures offrent une diversité de complexités dont les clients 
 peuvent se servir pour minimiser leurs temps d'éxecutions.
 
 Les avoir à disposition de tous les clients simplifie le prototypage de nouvelles stratégies.
-Par exemple, la structure Arbre permet de modéliser un arbre des parties possibles pour les 
+Par exemple, la structure \verb|tree| permet de modéliser un arbre des parties possibles pour les 
 stratégies qui gardent en mémoire une prévision des prochains tours.
 
 \subsection{Plateau de jeu}
 Le plateau de jeu enveloppe le graphe fournit par GSL.
-Ce-dernier étant dans un format optimisé, on choisit de ne jamais 
+Ce-dernier étant dans un format optimisé, on a choisit de ne jamais 
 le modifier car c'est une opération couteuse et complexe. Pour 
-enregistrer les évolutions de la partie, on utilise des 
-tableaux représentant l'ensemble des cases du plateau.
-Ces tableaux contiennent les flêches ainsi que les reines 
-et permettent d'accéder au contenu d'une case en temps constant.
+enregistrer les évolutions de la partie, nous avons décidé de stocker les
+flèches posées sur la plateau comme un booléen indiquant si la case $c$ est bloquée par une flèche ou non.
+Pour les reines, nous avons décidé de d'abord stocker la position des reines pour chaque joueur,
+puis après quelques étapes de \emph{profilage} pour optimiser nos clients, nous avons rajouté
+un autre moyen d'accéder aux reines sur le plateau.
