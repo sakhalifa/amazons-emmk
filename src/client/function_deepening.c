@@ -29,6 +29,9 @@ struct move_t play(struct move_t previous_move)
 		apply_move(global_player.board, &previous_move, abs((int)global_player.player_id - 1) % NUM_PLAYERS);
 	}
 	int depth = exp(exp_coeff * turns);
+	if(depth == 1){
+		depth = 2;
+	}
 	struct move_t move = alphabeta(global_player.board, global_player.player_id, depth).move;
 	if (move.queen_src != FIRST_MOVE_VAL && move.queen_dst != FIRST_MOVE_VAL && move.arrow_dst != FIRST_MOVE_VAL)
 		apply_move(global_player.board, &move, global_player.player_id);
