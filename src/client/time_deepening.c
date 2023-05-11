@@ -44,7 +44,7 @@ struct move_t play(struct move_t previous_move)
 	if (time_taken > max_time_per_turn)
 		depth--;
 	size_t num_vertices = global_player.board->num_accessible_vertices - turns;
-	if (((double)1 / (sqrt(num_vertices))) * time_taken < (1./num_vertices)*max_time_per_turn)
+	if (((double)1 / (sqrt(num_vertices))) * time_taken < (1.5/num_vertices)*max_time_per_turn)
 	{
 		depth++;
 	}
