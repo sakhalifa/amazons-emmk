@@ -16,123 +16,145 @@ struct move_and_score alphabeta_recursive(board_t *board, struct move_t cur_move
 
 struct move_and_score max_alphabeta(board_t *board, int my_player_id, int alpha, int beta, int cur_player_id, int depth)
 {
-	struct move_t best_move = {-1, -1, -1};
-	int value = INT_MIN;
-	// For each child node
-	for (size_t i = 0; i < board->num_queens; i++)
+	struct move_and_score best_move = {.move = FIRST_MOVE, .score = INT_MIN};
+	for (unsigned int queen_id = 0; queen_id < board->num_queens; queen_id++)
 	{
-		bool break_for = false;
-		int queen_src = board->queens[cur_player_id][i];
-		position_set *queen_pos = get_reachable_positions_generic(board, queen_src);
-		for (size_t j = 0; j < queen_pos->count; j++)
+		unsigned int queen_src = board->queens[cur_player_id][queen_id];
+
+		position_set *queen_destinations = get_reachable_positions_generic(board, queen_src);
+		for (unsigned int queen_dst_id = 0; queen_dst_id < queen_destinations->count; queen_dst_id++)
 		{
-			int queen_dst = queen_pos->positions[j];
-			position_set *arrow_pos = get_reachable_arrows_generic(board, cur_player_id, queen_src, queen_dst);
-			for (size_t k = 0; k < arrow_pos->count; k++)
+			unsigned int queen_dst = queen_destinations->positions[queen_dst_id];
+
+			position_set *arrow_destinations = get_reachable_arrows_generic(board, cur_player_id, queen_src, queen_dst);
+			for (unsigned int arrow_dst_id = 0; arrow_dst_id < arrow_destinations->count; arrow_dst_id++)
 			{
-				int arrow_dst = arrow_pos->positions[k];
-				struct move_t move = {queen_src, queen_dst, arrow_dst};
-				// Transform current node to child node
-				apply_move(board, &move, cur_player_id);
-				int score = alphabeta_recursive(board, move, my_player_id, alpha, beta, (cur_player_id + 1) % 2, depth - 1).score;
-				if (score > value)
+				unsigned int arrow_dst = arrow_destinations->positions[arrow_dst_id];
+
+				struct move_t cur_move = {queen_src, queen_dst, arrow_dst};
+
+				apply_move(board, &cur_move, cur_player_id);
+				struct move_and_score node_best_move = alphabeta_recursive(board, cur_move, my_player_id, alpha, beta, (cur_player_id + 1) % NUM_PLAYERS, depth - 1);
+				cancel_move(board, &cur_move, cur_player_id);
+
+				if (node_best_move.score > best_move.score)
 				{
-					value = score;
-					best_move = move;
+					best_move.move = cur_move;
+					best_move.score = node_best_move.score;
 				}
-				if (value > beta)
+
+				if (best_move.score >= beta)
 				{
-					break_for = true;
-					cancel_move(board, &move, cur_player_id);
-					break;
+					free_position_set(arrow_destinations);
+					free_position_set(queen_destinations);
+					return best_move;
 				}
-				alpha = max(alpha, value);
-				// Transform child node to current node
-				cancel_move(board, &move, cur_player_id);
+
+				alpha = max(alpha, best_move.score);
 			}
-			free_position_set(arrow_pos);
-			if (break_for)
-				break;
+			free_position_set(arrow_destinations);
 		}
-		free_position_set(queen_pos);
-		if (break_for)
-			break;
+		free_position_set(queen_destinations);
 	}
-	struct move_and_score m = {best_move, value};
-	return m;
+
+	return best_move;
 }
+
 struct move_and_score min_alphabeta(board_t *board, int my_player_id, int alpha, int beta, int cur_player_id, int depth)
 {
-	struct move_t best_move = {-1, -1, -1};
-	int value = INT_MAX;
-	// For each child node
-	for (size_t i = 0; i < board->num_queens; i++)
+	struct move_and_score best_move = {.move = FIRST_MOVE, .score = INT_MAX};
+	for (unsigned int queen_id = 0; queen_id < board->num_queens; queen_id++)
 	{
-		bool break_for = false;
-		int queen_src = board->queens[cur_player_id][i];
-		position_set *queen_pos = get_reachable_positions_generic(board, queen_src);
-		for (size_t j = 0; j < queen_pos->count; j++)
+		unsigned int queen_src = board->queens[cur_player_id][queen_id];
+
+		position_set *queen_destinations = get_reachable_positions_generic(board, queen_src);
+		for (unsigned int queen_dst_id = 0; queen_dst_id < queen_destinations->count; queen_dst_id++)
 		{
-			int queen_dst = queen_pos->positions[j];
-			position_set *arrow_pos = get_reachable_arrows_generic(board, cur_player_id, queen_src, queen_dst);
-			for (size_t k = 0; k < arrow_pos->count; k++)
+			unsigned int queen_dst = queen_destinations->positions[queen_dst_id];
+
+			position_set *arrow_destinations = get_reachable_arrows_generic(board, cur_player_id, queen_src, queen_dst);
+			for (unsigned int arrow_dst_id = 0; arrow_dst_id < arrow_destinations->count; arrow_dst_id++)
 			{
-				int arrow_dst = arrow_pos->positions[k];
-				struct move_t move = {queen_src, queen_dst, arrow_dst};
-				// Transform current node to child node
-				apply_move(board, &move, cur_player_id);
-				int score = alphabeta_recursive(board, move, my_player_id, alpha, beta, (cur_player_id + 1) % 2, depth - 1).score;
-				if (score < value)
+				unsigned int arrow_dst = arrow_destinations->positions[arrow_dst_id];
+
+				struct move_t cur_move = {queen_src, queen_dst, arrow_dst};
+
+				apply_move(board, &cur_move, cur_player_id);
+				struct move_and_score node_best_move = alphabeta_recursive(board, cur_move, my_player_id, alpha, beta, (cur_player_id + 1) % NUM_PLAYERS, depth - 1);
+				cancel_move(board, &cur_move, cur_player_id);
+
+				if (node_best_move.score < best_move.score)
 				{
-					value = score;
-					best_move = move;
+					best_move.move = cur_move;
+					best_move.score = node_best_move.score;
 				}
-				if (value < alpha)
+
+				if (alpha >= best_move.score)
 				{
-					break_for = true;
-					cancel_move(board, &move, cur_player_id);
-					break;
+					free_position_set(arrow_destinations);
+					free_position_set(queen_destinations);
+					return best_move;
 				}
-				beta = min(beta, value);
-				// Transform child node to current node
-				cancel_move(board, &move, cur_player_id);
+				beta = min(beta, best_move.score);
 			}
-			free_position_set(arrow_pos);
-			if (break_for)
-				break;
+			free_position_set(arrow_destinations);
 		}
-		free_position_set(queen_pos);
-		if (break_for)
-			break;
+		free_position_set(queen_destinations);
 	}
-	struct move_and_score m = {best_move, value};
-	return m;
+	return best_move;
 }
 
 struct move_and_score alphabeta_recursive(board_t *board, struct move_t cur_move, int my_player_id, int alpha, int beta, int cur_player_id, int depth)
 {
-	if (depth == 0)
+	if (depth == 0 || get_winner(board) != -1)
 	{
 		struct move_and_score move_score = {.move = cur_move, .score = get_score(board, my_player_id)};
 		return move_score;
 	}
-#pragma region maximize
-	if (my_player_id == cur_player_id)
+	if (cur_player_id == my_player_id)
 	{
 		return max_alphabeta(board, my_player_id, alpha, beta, cur_player_id, depth);
 	}
-#pragma endregion
-#pragma region minimize
 	else
 	{
 		return min_alphabeta(board, my_player_id, alpha, beta, cur_player_id, depth);
 	}
-#pragma endregion
+}
+
+struct move_t get_random_move(board_t *board, int player_id)
+{
+	struct move_t random_move = FIRST_MOVE;
+	for (unsigned int queen_id = 0; queen_id < board->num_queens; queen_id++)
+	{
+		unsigned int queen_src = board->queens[player_id][queen_id];
+
+		position_set *queen_destinations = get_reachable_positions_generic(board, queen_src);
+		for (unsigned int queen_dst_id = 0; queen_dst_id < queen_destinations->count; queen_dst_id++)
+		{
+			unsigned int queen_dst = queen_destinations->positions[queen_dst_id];
+
+			position_set *arrow_destinations = get_reachable_arrows_generic(board, player_id, queen_src, queen_dst);
+			for (unsigned int arrow_dst_id = 0; arrow_dst_id < arrow_destinations->count; arrow_dst_id++)
+			{
+				unsigned int arrow_dst = arrow_destinations->positions[arrow_dst_id];
+
+				random_move.queen_src = queen_src;
+				random_move.queen_dst = queen_dst;
+				random_move.arrow_dst = arrow_dst;
+				free_position_set(arrow_destinations);
+				free_position_set(queen_destinations);
+
+				return random_move;
+			}
+			free_position_set(arrow_destinations);
+		}
+		free_position_set(queen_destinations);
+	}
+	return random_move;
 }
 
 struct move_and_score alphabeta(board_t *board, int my_player_id, int depth)
 {
-	struct move_t cur_move = {-1, -1, -1};
+	struct move_t cur_move = get_random_move(board, my_player_id);
 	return alphabeta_recursive(board, cur_move, my_player_id, INT_MIN, INT_MAX, my_player_id, depth);
 }
-
