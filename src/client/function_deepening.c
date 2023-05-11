@@ -14,7 +14,7 @@ void initialize(unsigned int player_id, struct graph_t *graph,
 	size_t width = (size_t)sqrt(graph->num_vertices);
 	exp_coeff = (1. / (exp(0.05 * width) * sqrt(width) * width));
 	// if (player_id == 0)
-		exp_coeff *= 1.15;
+	exp_coeff *= 1.15;
 }
 
 char const *get_player_name()
