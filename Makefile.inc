@@ -107,3 +107,4 @@ mock_player.o: test/mock_player.c src/server/player_handle.h \
 common.o: test/common.c test/common.h
 test_main.o: test/test_main.c test/test_game.h test/test_position_set.h \
  test/test_board.h
+test.o: test.c

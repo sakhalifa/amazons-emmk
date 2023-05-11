@@ -1,6 +1,11 @@
 #include "move_ext.h"
 #include "player_ext.h"
 #include "alphabeta.h"
+
+#ifndef PLAYER_NAME
+#define PLAYER_NAME NO_NAME
+#endif
+
 static player_t global_player;
 
 static unsigned int turns = 0;
@@ -10,7 +15,7 @@ static double exp_coeff;
 void initialize(unsigned int player_id, struct graph_t *graph,
 				unsigned int num_queens, unsigned int *queens[NUM_PLAYERS])
 {
-	generic_initialize(&global_player, player_id, graph, num_queens, queens, "alphabeta");
+	generic_initialize(&global_player, player_id, graph, num_queens, queens, PLAYER_NAME);
 	size_t width = (size_t)sqrt(graph->num_vertices);
 	exp_coeff = (1. / (exp(0.05 * width) * sqrt(width) * width));
 	// if (player_id == 0)

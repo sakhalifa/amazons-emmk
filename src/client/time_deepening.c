@@ -5,6 +5,10 @@
 
 #define TIMEOUT 10
 
+#ifndef PLAYER_NAME
+#define PLAYER_NAME NO_NAME
+#endif
+
 static player_t global_player;
 
 static double max_time_per_turn;
@@ -16,7 +20,7 @@ static int turns = 0;
 void initialize(unsigned int player_id, struct graph_t *graph,
 				unsigned int num_queens, unsigned int *queens[NUM_PLAYERS])
 {
-	generic_initialize(&global_player, player_id, graph, num_queens, queens, "alphachad");
+	generic_initialize(&global_player, player_id, graph, num_queens, queens, PLAYER_NAME);
 	compute_accessible_vertices(global_player.board);
 	if (player_id == 1)
 		turns++;
@@ -37,10 +41,10 @@ struct move_t play(struct move_t previous_move)
 	clock_t start_time = clock();
 	struct move_t move = alphabeta(global_player.board, global_player.player_id, depth).move;
 	double time_taken = (double)(clock() - start_time) / CLOCKS_PER_SEC;
-	if(time_taken > max_time_per_turn)
+	if (time_taken > max_time_per_turn)
 		depth--;
 	size_t num_vertices = global_player.board->num_accessible_vertices - turns;
-	if (((double)1/sqrt(num_vertices))*time_taken < num_vertices*max_time_per_turn)
+	if (((double)1 / (sqrt(num_vertices))) * time_taken < (1./num_vertices)*max_time_per_turn)
 	{
 		depth++;
 	}

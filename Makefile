@@ -36,17 +36,26 @@ HEURISTIC_TARGETS = $(shell make -f Makefile.inc -qp | grep variable_heuristic.o
 %_spec_heuristic.o: $(HEURISTIC_TARGETS)
 	gcc -c -DAGG=$(AGG) -DDEF=$(DEF) $(CFLAGS) -o $@ $<
 
+FUNCTION_DEEPENING_TARGETS = $(shell make -f Makefile.inc -qp | grep function_deepening.o: | cut -d':' -f2)
+player_alphabeta.o: $(FUNCTION_DEEPENING_TARGETS)
+
+TIME_DEEPENING_TARGETS = $(shell make -f Makefile.inc -qp | grep time_deepening.o: | cut -d':' -f2)
+player_alphasigma.o: $(TIME_DEEPENING_TARGETS)
+player_alphaalpha.o: $(TIME_DEEPENING_TARGETS)
+
 balanced_spec_heuristic.o: AGG=1
 balanced_spec_heuristic.o: DEF=1
 
-alphabeta.so: alphabeta.o function_deepening.o balanced_spec_heuristic.o position_set.o
-alphabeta1.so: alphabeta.o function_deepening.o balanced_spec_heuristic.o position_set.o
+alphabeta.so: CFLAGS+=-DPLAYER_NAME='"alphabeta"'
+alphabeta.so: alphabeta.o player_alphabeta.o balanced_spec_heuristic.o position_set.o
+alphabeta1.so: alphabeta.o player_alphabeta.o balanced_spec_heuristic.o position_set.o
 
-alphaalpha.so: alphabeta.o time_deepening.o balanced_spec_heuristic.o position_set.o 
-alphaalpha1.so: alphabeta.o time_deepening.o balanced_spec_heuristic.o position_set.o
+alphaalpha.so: CFLAGS+=-DPLAYER_NAME='"alphaAlpha"'
+alphaalpha.so: alphabeta.o player_alphaalpha.o balanced_spec_heuristic.o position_set.o 
+alphaalpha1.so: alphabeta.o player_alphaalpha.o balanced_spec_heuristic.o position_set.o
 
-alphasigma.so: alphabeta.o function_deepening.o territory_heuristic.o position_set.o linked_list.o
-alphasigma1.so: alphabeta.o function_deepening.o territory_heuristic.o position_set.o linked_list.o
+alphasigma.so: CFLAGS+=-DPLAYER_NAME='"alphasigma"'
+alphasigma.so: alphabeta.o player_alphasigma.o territory_heuristic.o position_set.o linked_list.o
 
 defensive_spec_heuristic.o: AGG=0
 defensive_spec_heuristic.o: DEF=1
