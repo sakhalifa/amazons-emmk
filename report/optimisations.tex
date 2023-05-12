@@ -73,7 +73,7 @@ Cette fois-ci, c'est \textit{is\_cell\_empty} qui occupe toutes les ressources C
 nous stockons actuellement les positions des reines par joueur. Pour savoir si une case est vide,
 il faut donc itérer sur toutes les reines de tous les joueurs pour savoir s'il y a une reine, et regarder s'il y a une flèche à cette position.
 Là encore, nous avons un vilain $O(n)$ couplé à un nombre d'appels colossal. Cependant, la solution à ce problème
-n'est pas si élégante que celle pour \textit{find\_neighbor\_in\_direction}. En effet,
+n'est pas aussi élégante que celle pour \textit{find\_neighbor\_in\_direction}. En effet,
 nous devons dupliquer de l'information, car stocker les reines par joueur est intéressant pour d'autres algorithmes.
 Nous avons donc décidé d'avoir une redondance de l'information, avec le champ \verb|queens| pour
 avoir les positions des reines par joueur, et le champ \verb|queens_on_board| qui indique quelle reine est
@@ -87,4 +87,5 @@ n'avons pas trouvé d'optimisations pertinentes à réaliser sur ces fonctions.
 	\includegraphics[width=\linewidth]{oprofile_opti}
 	\captionsetup{justification=centering}
 	\caption{Bilan oprofile d'une exécution d'une partie en utilisant la stratégie \emph{Function Deepening} de notre alphabeta}
+	\label{fig:oprof-opti}
 \end{figure}
