@@ -14,9 +14,37 @@ Il nous a été demandé de représenter le plateau de jeu comme un graphe.
 Cela permet quelques folies pour implémenter moultes plateaux intéressant.
 Dans les règles des échecs, une case aura au plus 8 voisins, cela veut dire que dans le graphe, un noeud aura au maximum 8 voisins, alors qu'un graphe fait au moins 25 noeuds.
 Pour représenter ce graphe, il nous a été demandé de le représenter par sa matrice d'adjacence.
+Plus exactement, on stocke la direction entre le sommet i et le sommet j dans la matrice d'adjacence comme montré dans la Figure \ref{fig:ex-matrice-adj}.
 Pour stocker cette matrice, nous étions contraints d'utiliser la GNU Scientific Library (GSL).
 Cette librairie permet le stockage et traitement de matrices optimisées autrement appelées \textit{matrices creuses}.
 Il aurait peut-être été plus judicieux de stocker une liste d'adjacence directement, mais les matrices creuses sous format Compressed Sparse Row (CSR) peuvent s'apparenter à cela.
+
+\begin{figure}[H]
+	\centering
+	\subfloat[][Un graphe 2x2]{
+		\begin{tikzpicture}
+			\begin{scope}[every node/.style={draw, circle}]
+				\node (0)[draw, circle] at (0,0) {0};
+				\node (1)[draw, circle] at (2,0) {1};
+				\node (2)[draw, circle] at (0,-2) {2};
+				\node (3)[draw, circle] at (2,-2) {3};
+			\end{scope}
+			\begin{scope}[every edge/.style={draw, very thick}]
+				\path [-] (0) edge node {} (1);
+				\path [-] (0) edge node {} (1);
+				
+			\end{scope}
+		\end{tikzpicture}
+	}
+	\hspace{2em}
+	\subfloat[][Sa matrice d'adjacence]{
+		$\begin{bmatrix}
+				NO\_DIR & EAST & SOUTH & NO_DIR \\
+			\end{bmatrix}$
+	}
+	\caption{Exemple de graphe et sa représentation en matrice d'adjacence}
+
+\end{figure}
 
 Enfin, le sujet demandait à implémenter les plateaux présenté en figure \ref{fig:all-boards}
 
@@ -40,7 +68,6 @@ Enfin, le sujet demandait à implémenter les plateaux présenté en figure \ref
 	\caption{Les différents plateaux à implémenter et leurs graphes}
 	\label{fig:all-boards}
 \end{figure}
-% Quatres plateaux de jeux doivent être implémentés, un carré, un donut, un huit et un trèfle.
 
 \subsubsection{Utilisation de libdl}
 
