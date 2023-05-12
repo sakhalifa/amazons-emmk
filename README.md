@@ -17,3 +17,9 @@ make run
 ## Lancer une partie paramétrée, une fois la compilation déjà effectuée:
 
 ./install/server -t 8 -m 16 ./install/alphabeta.so ./install/random.so
+
+pour plus d'information concernant les paramètres optionnels, voir la page du sujet
+
+# Gestion de projet, sur Trello
+
+https://trello.com/b/ggpUvjsn/projet-amazon
