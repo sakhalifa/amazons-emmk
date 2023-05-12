@@ -211,7 +211,7 @@ rajoute aussi une autre notion, celle d'espace. L'alphabeta muni de cette heuris
 \begin{figure}[H]
 	\centering
 	\includegraphics{exemple_territory}
-	\caption{Exemple de table des distances (\href{https://core.ac.uk/download/pdf/81108035.pdf}{source})}
+	\caption{Exemple de table des distances (Fig. 2 \href{https://core.ac.uk/download/pdf/81108035.pdf}{source})}
 	\label{fig:exemple-territoire}
 \end{figure}
 \subsubsection{Optimisations supplémentaires}
@@ -222,3 +222,7 @@ Cela permettrait d'implémenter de l'Iterative Deepening de façon optimisée. L
 Cependant, l'Iterative Deepening sans table de transposition revient à recalculer l'arbre à profondeur 1, ce qui est juste stupide. On pourrait
 commencer l'exploration à partir du meilleur chemin trouvé. Au départ, nous avions comme intention
 d'implémenter une table de transposition, mais par manque de temps nous avons dû abandonner.
+
+Cependant, l'alphabeta est un algorithme relativement peu efficace dans notre cas. En effet, le jeu des Amazones
+possède tellement de combinaisons, que l'algorithme ne peut pas explorer très profondément.
+Il y a un autre algorithme qui vise à palier ce problème, le Monte Carlo Tree Search (MCTS).
