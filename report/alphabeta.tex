@@ -223,6 +223,15 @@ Cependant, l'Iterative Deepening sans table de transposition revient à recalcul
 commencer l'exploration à partir du meilleur chemin trouvé. Au départ, nous avions comme intention
 d'implémenter une table de transposition, mais par manque de temps nous avons dû abandonner.
 
-Cependant, l'alphabeta est un algorithme relativement peu efficace dans notre cas. En effet, le jeu des Amazones
+De plus, nos heuristiques ne sont pas forcément les meilleures. Nous pourrions
+utiliser un Réseau de Neurones Convolutionnel (CNN) couplé à un algorithme
+d'apprentissage par renforcement pour évaluer un plateau. Cependant, cela poserait des problèmes
+dans nos cas où nous pouvons avoir des plateaux alambiqués. De plus, le CNN prends
+beaucoup de mémoire, et risque de tourner très mal sur un CPU.
+
+Enfin, nous pourrions aussi tenter une parallélisation de l'algorithme, même si nous perdrons
+l'avantage de l'algorithme alphabeta\dots
+
+Malgré toutes ces propositions, l'élagage alphabeta reste un algorithme relativement peu efficace dans notre cas. En effet, le jeu des Amazones
 possède tellement de combinaisons, que l'algorithme ne peut pas explorer très profondément.
 Il y a un autre algorithme qui vise à palier ce problème, le Monte Carlo Tree Search (MCTS).
