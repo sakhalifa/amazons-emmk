@@ -13,7 +13,7 @@ static player_t global_player;
 
 static double max_time_per_turn;
 
-static int depth = 1;
+static int depth = 2;
 
 static int turns = 0;
 
@@ -41,10 +41,10 @@ struct move_t play(struct move_t previous_move)
 	clock_t start_time = clock();
 	struct move_t move = alphabeta(global_player.board, global_player.player_id, depth).move;
 	double time_taken = (double)(clock() - start_time) / CLOCKS_PER_SEC;
-	if (time_taken > max_time_per_turn)
+	if (depth > 2 && time_taken > max_time_per_turn)
 		depth--;
 	size_t num_vertices = global_player.board->num_accessible_vertices - turns;
-	if (((double)1 / (sqrt(num_vertices))) * time_taken < (1.5/num_vertices)*max_time_per_turn)
+	if (((double)1 / (sqrt(num_vertices))) * time_taken < (1./num_vertices)*max_time_per_turn)
 	{
 		depth++;
 	}
