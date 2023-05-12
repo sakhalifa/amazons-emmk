@@ -1,0 +1,12 @@
+Pour conclure, nous dirions que le choix de simuler un serveur par un programme \textit{C} qui
+charge d'autres librairies dynamiques est relativement étrange. En effet, charger les clients comme des 
+librairies dynamiques ouvre la porte à beaucoup de failles, vu que les clients partagent le même espace mémoire que le serveur.
+Certaines stratégies malicieuses consisteraient à détecter si nous jouons contre un autre de nos clients, et si cela n'est pas le cas,
+on déclenche un crash chez l'autre client, le pénalisant de 10 points sur le ladder. Une faille imparable
+serait tout simplement de réserver toute la mémoire disponible, pour empêcher tout appel de \textit{malloc} par l'adversaire.
+Cela aurait de très grandes chances de résulter en un \verb|segmentation fault (core dumped)|.
+
+On aurait pu créer un processus par client et serveur, où le serveur et 
+les clients communiquent avec un système de \textit{pipes} ou de \textit{socket}.
+Cependant, cela explose la complexité du projet sur des points peu intéressants comme 
+la transmission de données entre clients et serveurs, ouvrant la porte à multiples bugs obscurs.
