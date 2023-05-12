@@ -21,29 +21,38 @@ Il aurait peut-être été plus judicieux de stocker une liste d'adjacence direc
 
 \begin{figure}[H]
 	\centering
-	\subfloat[][Un graphe 2x2]{
-		\begin{tikzpicture}
-			\begin{scope}[every node/.style={draw, circle}]
-				\node (0)[draw, circle] at (0,0) {0};
-				\node (1)[draw, circle] at (2,0) {1};
-				\node (2)[draw, circle] at (0,-2) {2};
-				\node (3)[draw, circle] at (2,-2) {3};
-			\end{scope}
-			\begin{scope}[every edge/.style={draw, very thick}]
-				\path [-] (0) edge node {} (1);
-				\path [-] (0) edge node {} (1);
-				
-			\end{scope}
-		\end{tikzpicture}
+	\raisebox{-0.5\height}{
+		\subfloat[][Un graphe 2x2]{
+			\begin{tikzpicture}
+				\begin{scope}[every node/.style={draw, circle}]
+					\node (0)[draw, circle] at (0,0) {0};
+					\node (1)[draw, circle] at (2,0) {1};
+					\node (2)[draw, circle] at (0,-2) {2};
+					\node (3)[draw, circle] at (2,-2) {3};
+				\end{scope}
+				\begin{scope}[every edge/.style={draw, very thick}]
+					\path [-] (0) edge node {} (1);
+					\path [-] (0) edge node {} (2);
+					\path [-] (1) edge node {} (3);
+					\path [-] (2) edge node {} (3);
+
+				\end{scope}
+			\end{tikzpicture}
+		}
 	}
 	\hspace{2em}
-	\subfloat[][Sa matrice d'adjacence]{
-		$\begin{bmatrix}
-				NO\_DIR & EAST & SOUTH & NO_DIR \\
-			\end{bmatrix}$
+	\raisebox{-0.25\height}{
+		\subfloat[][Sa matrice d'adjacence]{
+			$\begin{bmatrix}
+					NO\_DIR & EAST    & SOUTH   & NO\_DIR \\
+					WEST    & NO\_DIR & NO\_DIR & SOUTH   \\
+					NORTH   & NO\_DIR & NO\_DIR & EAST    \\
+					NO\_DIR & NORTH   & WEST    & NO\_DIR \\
+				\end{bmatrix}$
+		}
 	}
 	\caption{Exemple de graphe et sa représentation en matrice d'adjacence}
-
+	\label{fig:ex-matrice-adj}
 \end{figure}
 
 Enfin, le sujet demandait à implémenter les plateaux présenté en figure \ref{fig:all-boards}
