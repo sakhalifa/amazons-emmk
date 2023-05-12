@@ -34,13 +34,13 @@ de faire jouer les clients des différentes équipes dans un tournoi.
 Le serveur s'occupe de lancer la partie, de la dérouler, et de déterminer la terminaison de la partie.
 Pour avoir un bon déroulement de la partie et permettre aux clients de jouer,
 il doit informer le prochain client à jouer du coup joué par le client précédent.
-Les clients, eux, doivent jouer \emph{correctement} à la partie.
+Les clients, eux, doivent \emph{correctement} jouer à la partie.
 
-On remarque que le serveur et les clients ont besoin de pouvoir garder en mémoire l'évolution d'une partie.
+On remarque que le serveur et les clients ont besoin de garder en mémoire l'évolution d'une partie.
 Le serveur en a besoin pour savoir si un joueur fait un coup invalide.
 Les clients en ont besoin pour suivre une stratégie cohérente.
 
-On décide de créer un troisième module nommé \verb|common| qui implémentera toutes les fonctionnalités communes 
+On décide donc de créer un troisième module nommé \verb|common| qui implémentera toutes les fonctionnalités communes 
 aux clients et au serveur.
 
 \subsection{Interface entre client et serveur}

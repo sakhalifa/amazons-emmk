@@ -6,7 +6,7 @@ contraint à utiliser la librairie GSL.
 
 La structure client-serveur, autrement appelée "monolithe", permet de séparer
 la responsabilité des joueurs et du jeu en lui même. Le serveur représente le jeu. Il organise le
-déroulement du jeu, retransmet l'information d'un client $x$ aux autres clients et vérifie que tout coup joué est valide.
+déroulement du jeu, retransmet l'information d'un client $x$ aux autres clients et vérifie que chaque coup joué est valide.
 
 \subsubsection{Utilisation de GSL}
 
@@ -82,4 +82,4 @@ Enfin, le sujet demandait à implémenter les plateaux présenté en figure \ref
 
 Chaque client devait être compilé en tant que librairie dynamique.
 Le serveur devait lancer les clients en tant que librairies dynamiques ouvertes
-au \textit{runtime} en utilisant la fonction \verb|dlopen| de la librairie \verb|libdl|
+au \textit{runtime} en utilisant la fonction \verb|dlopen| de la librairie \verb|libdl|.

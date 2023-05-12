@@ -1,6 +1,6 @@
 L'objectif de ce projet était la création d'un serveur\footnote{Un serveur au sens figuré du terme. Nous n'avons pas eu a faire de réseau, heureusement.}
 sur lequel des joueurs (\textit{clients}) peuvent jouer au jeu des \textit{Amazones}. Il nous a aussi été demandé d'implémenter quelques clients même si cela était plutôt secondaire.
-Le tout en utilisant le langage de programmation \emph{C}
+Le tout en utilisant le langage de programmation \emph{C}.
 
 \subsection{Le jeu des Amazones}
 
@@ -22,10 +22,11 @@ Le jeu requiert que les reines soient symmétriques entre les joueurs et qu'il y
 
 Chaque joueur joue une reine puis tire une flêche depuis la position atteinte par la reine.
 Les flêches agissent comme une reine dans le jeu des échecs mais ne peuvent traverser de reines ou d'autres flêches.
+Les reines ne peuvent pas se déplacer sur des flèches ou d'autres reines.
 Le premier joueur qui ne peut pas jouer un coup valide perd.
 \medbreak
 Pour répondre à ce besoin, nous avons suivis les spécifications du sujet,
 mis en place une infrastructure client-serveur, et réalisé plusieurs clients 
-capable de jouer une partie, et souvent la gagner.
+capable de jouer une partie, et souvent de la gagner.
 
 \input{spec_sujet}

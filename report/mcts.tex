@@ -2,7 +2,7 @@ L'algorithme Monte Carlo Tree Search défini en \ref{alg:mcts} est un algorithme
 Il stocke en mémoire le \emph{modèle} du jeu sous forme d'arbre, et joue en fonction de ce modèle.
 Dans le modèle de jeu, chaque noeud représente un état. La racine est l'état courant, et les enfants de la racines
 sont les prochains états. L'algorithme stocke 2 informations essentielles par noeud: $N$ le nombre de visites du noeud, et $W$
-le nombre victoires du joueur (et non de l'ennemi) en partant de ce noeud.
+le nombre de victoires du joueur (et non de l'ennemi) en partant de ce noeud.
 
 Il y a deux cas d'utilisations de l'algorithme : entraînement et exploitation.
 Pour l'entraînement, on sélectionne une feuille de notre modèle de jeu en suivant une stratégie spécifique.
@@ -33,7 +33,7 @@ Peut-être cela est-ce dû à une complexité de nos algorithmes trop élevée. 
 simulons tous les enfants. 
 
 Une amélioration possible serait d'évaluer les enfants du noeud sélectionné de façon parallèle.
-En effet, les zones mémoires sont séparés, nous pouvons donc plutôt facilement paralléliser le problème.
+En effet, les zones mémoires sont séparées, nous pouvons donc plutôt facilement paralléliser le problème.
 Même après moultes profilages et optimisations, l'algorithme du MCTS n'a malheureuseent pas été concluant, malgré
 toutes les promesses à son propos\dots
 

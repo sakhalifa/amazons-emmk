@@ -1,4 +1,4 @@
-Lorsque deux joueurs jouent à un jeu comme celui des amazones ou même des echecs,
+Lorsque deux joueurs jouent à un jeu comme celui des amazones ou même des échecs,
 les joueurs ont un but distinct. Imaginons une fonction $f(p, j)$ qui donne le score
 d'un plateau $p$ pour le joueur $j$. Le joueur rouge tente de maximiser
 $f(p, rouge)$ tandis que le joueur bleu tente de minimiser $f(p, rouge)$ et vice-versa.
@@ -102,7 +102,7 @@ Cependant, il existe une amélioration de minmax qui évite d'explorer des noeud
 
 
 \subsubsection{Amélioration de minmax: élagage alpha-beta}
-L'élagage alpha-beta consiste à ne pas visiter de noeuds inutile. En effet, cet algorithme
+L'élagage alpha-beta consiste à ne pas visiter de noeuds inutiles. En effet, cet algorithme
 profite du fait que le joueur rouge cherche à maximiser tandis que le joueur bleu cherche à minimiser.
 Reprenons l'exemple en Figure~\ref{fig:ex-minmax-fin}.
 Lorsque l'algorithme évalue B3, on cherche à maximiser, et le maximum courant est égal à 6.
@@ -116,17 +116,17 @@ reste toujours exponentielle, mais elle reste meilleure que celle de minmax.
 Théoriquement la complexité ne causerait pas de problèmes si nous avions
 des ressources illimitées et du temps illimité. Or, nous n'avons pas ce luxe.
 Sur le ladder\footnote{La plateforme où les différents clients des différentes équipes s'affrontent},
-chaque joueur doit jouer tous ses coups en moins de 10s. Si on voulait passer largement
+chaque joueur doit jouer tous ses coups en moins de 10 secondes. Si on voulait passer largement
 en dessous, il faudrait utiliser l'algorithme à profondeur 1. Or, cela n'est pas intéressant.
 On peut tout de même prendre avantage du fait que l'arbre réduit massivement en taille plus la partie avance.
 En effet, à chaque tour, une case en plus devient inaccessible. C'est pour cela
-qu'on peut tout simplement choisir d'aller de plus en plus loin dans l'arbre des possibilités plus on
-est loin dans la partie.
+qu'on peut tout simplement choisir d'aller de plus en plus loin dans l'arbre des possibilités 
+au fur et à mesure de la partie.
 
 \subsubsection{Profondeur dynamique}
 Comme énoncé précédemment, on prend avantage du fait que le jeu
 se "simplifie" au cours du temps. On peut même en déduire que la partie
-devient exponentiellement plus simple. Suite à beaucoup d'expérimentation,
+devient exponentiellement plus simple. Suite à beaucoup d'expérimentations,
 nous avons déduit 2 méthodes principales pour déterminer la profondeur à jouer.
 Une basée sur le temps passé à calculer un arbre alphabeta, et une basée
 sur le nombre de tours.
@@ -141,7 +141,7 @@ $depth(t)$ retourne la profondeur voulue en fonction du nombre de tours écoulé
 Les paramètres ont été choisi relativement arbitrairement, mais nous avons tout de même
 utilisé l'application Desmos\footnote{Une calculatrice graphique} qui nous a permis de mesurer
 l'évolution de notre profondeur en fonction du nombre de tours. De plus, nous avons implémenté
-le système de timeout sur notre serveur pour être sûr que notre algorithme ne prenait pas trop de temps.
+le système de \textit{timeout} sur notre serveur pour être sûr que notre algorithme ne dépasse pas le temps imparti.
 
 \paragraph{Mesure du temps}
 Ensuite, pour la deuxième façon d'augmenter la profondeur, le programme calcule
@@ -157,8 +157,8 @@ De plus, si le temps pris par l'algorithme alphabeta est supérieur au temps max
 on réduit la profondeur de 1.
 
 La deuxième approche est relativement meilleure que la première approche, mais la deuxième approche a plus
-de chance de résulter en un timeout. L'idéal, ce serait de calculer exactement la complexité de notre alphabeta en fonction
-de l'avancement de la partie, et si cette complexité même à profondeur supérieure est en dessous d'un certain seuil, on peut
+de chance de résulter en un \textit{timeout}. L'idéal, ce serait de calculer exactement la complexité de notre alphabeta en fonction
+de l'avancement de la partie, et si cette complexité, même à profondeur supérieure, est en dessous d'un certain seuil, on peut
 aller plus profondément.
 
 Enfin, aller profondément, c'est efficace. Mais explorer plus profondément
@@ -217,9 +217,9 @@ rajoute aussi une autre notion, celle d'espace. L'alphabeta muni de cette heuris
 \subsubsection{Optimisations supplémentaires}
 On pourrait effectuer d'autres optimisations. Par exemple, on pourrait utiliser
 une table de transposition, celle-ci s'occuperait de stocker l'évaluation connue pour un plateau.
-Cela permettrait d'implémenter de l'Iterative Deepening de façon optimisée. L'Iterative Deepening consiste
+Cela permettrait d'implémenter de l'\textit{Iterative Deepening} de façon optimisée. L'\textit{Iterative Deepening} consiste
 à commencer à profondeur 1, et tant qu'il nous reste du temps, on passe à la profondeur suivante jusqu'à qu'on le temps soit écoulé.
-Cependant, l'Iterative Deepening sans table de transposition revient à recalculer l'arbre à profondeur 1, ce qui est juste stupide. On pourrait
+Cependant, l'\textit{Iterative Deepening} sans table de transposition revient à recalculer l'arbre à profondeur 1, ce qui est juste stupide. On pourrait
 commencer l'exploration à partir du meilleur chemin trouvé. Au départ, nous avions comme intention
 d'implémenter une table de transposition, mais par manque de temps nous avons dû abandonner.
 
