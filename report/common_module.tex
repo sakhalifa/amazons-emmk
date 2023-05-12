@@ -23,7 +23,7 @@ Le plateau de jeu enveloppe le graphe fournit par GSL.
 Ce-dernier étant dans un format optimisé, on a choisit de ne jamais 
 le modifier car c'est une opération couteuse et complexe. Pour 
 enregistrer les évolutions de la partie, nous avons décidé de stocker les
-flèches posées sur la plateau comme un booléen indiquant si la case $c$ est bloquée par une flèche ou non.
+flèches posées sur le plateau comme un tableau de booléens indiquant si la case $c$ est bloquée par une flèche ou non.
 Pour les reines, nous avons décidé de d'abord stocker la position des reines pour chaque joueur,
 puis après quelques étapes de \emph{profilage} pour optimiser nos clients, nous avons rajouté
 un autre moyen d'accéder aux reines sur le plateau.
