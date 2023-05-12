@@ -150,7 +150,7 @@ mesure le temps pris pour une exécution de l'algorithme alphabeta, et
 si l'inégalité définie dans l'équation~\ref{eq:inegalite-time-deepening} est vraie,
 on peut augmenter la profondeur de 1.
 \begin{equation}
-	\frac{1}{\sqrt{nombre\_cases}}*temps\_pris < nombre\_sommets*max\_temps\_par\_tour
+	\frac{1}{\sqrt{nombre\_cases}}*temps\_pris < \frac{max\_temps\_par\_tour}{nombre\_sommets}
 	\label{eq:inegalite-time-deepening}
 \end{equation}
 De plus, si le temps pris par l'algorithme alphabeta est supérieur au temps maximal par tour,
