@@ -10,10 +10,22 @@ https://thor.enseirb-matmeca.fr/ruby/projects/projetss6-amaz/overview
 
 # Consignes d'exécution du programme
 
+## Compiler
+
+make
+make install
+make && make install
+
+## Lancer une partie paramétrée, une fois la compilation effectuée:
+
+./install/server -t 8 -m 16 ./install/alphabeta.so ./install/random.so
+
+pour plus d'information concernant les paramètres optionnels, voir la page du sujet.
+
 ## Compiler et lancer une partie par défaut: 
 
 make run
 
-## Lancer une partie paramétrée, une fois la compilation déjà effectuée:
+# Gestion de projet, sur Trello
 
-./install/server -t 8 -m 16 ./install/alphabeta.so ./install/random.so
+https://trello.com/b/ggpUvjsn/projet-amazon
