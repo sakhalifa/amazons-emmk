@@ -127,4 +127,9 @@ bool is_reachable(gsl_spmatrix_uint *spmatrix, size_t position);
 /// @param board The board
 void compute_accessible_vertices(board_t *board);
 
+/// @brief Creates a deep copy of a board
+/// @param board a board
+/// @return The deep copy of the board
+board_t *copy_board(board_t *board);
+
 #endif

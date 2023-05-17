@@ -5,6 +5,7 @@
 #include <dlfcn.h>
 #include <time.h>
 #include <string.h>
+#include <sys/time.h>
 #include "graph_ext.h"
 #include "dir.h"
 #include "move_ext.h"
@@ -113,17 +114,18 @@ int main(int argc, char *const *argv)
 	struct move_t current_move = {FIRST_MOVE_VAL, FIRST_MOVE_VAL, FIRST_MOVE_VAL};
 	bool game_not_over = true;
 	size_t turns = 0;
-	double *player_times = malloc(sizeof(double) * NUM_PLAYERS);
-	memset(player_times, 0, sizeof(double)*NUM_PLAYERS);
-
+	time_t *player_times_us = malloc(sizeof(double) * NUM_PLAYERS);
+	memset(player_times_us, 0, sizeof(time_t)*NUM_PLAYERS);
+	
 	while (game_not_over)
 	{
-
+		struct timeval stop, start;
 		print_board(game->board);
-		clock_t start_time = clock();
+		gettimeofday(&start, NULL);
 		current_move = args.player_handles[game->current_player].play(current_move);
-		player_times[game->current_player] += (double)(clock() - start_time) / CLOCKS_PER_SEC;
-		if (player_times[game->current_player] >= TIMEOUT_PER_PLAYER)
+		gettimeofday(&stop, NULL);
+		player_times_us[game->current_player] += (stop.tv_sec - start.tv_sec) * 1000000 + stop.tv_usec - start.tv_usec;
+		if ((double)(player_times_us[game->current_player])/1000000. >= TIMEOUT_PER_PLAYER)
 		{
 			printf("Player %u ('%s') (from '%s') timeout!\n", game->current_player,
 				   args.player_handles[game->current_player].get_player_name(), args.player_handles[game->current_player].path);
@@ -149,11 +151,11 @@ int main(int argc, char *const *argv)
 	for (int i = 0; i < NUM_PLAYERS; i++)
 	{
 		printf("Time taken for Player %u ('%s') (from '%s') : %fs\n", i,
-			   args.player_handles[i].get_player_name(), args.player_handles[i].path, player_times[i]);
+			   args.player_handles[i].get_player_name(), args.player_handles[i].path, (double)player_times_us[i]/1000000);
 		args.player_handles[i].finalize();
 		dlclose(args.player_handles[i].dl_handle);
 	}
 	neighbors_cache_free();
-	free(player_times);
+	free(player_times_us);
 	return 0;
 }

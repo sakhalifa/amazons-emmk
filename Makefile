@@ -5,7 +5,7 @@ COMMONDIR = ${SOURCEDIR}/common
 LIBDIR = ${SOURCEDIR}/lib
 GSL_PATH ?= /net/ens/renault/save/gsl-2.6/install
 CFLAGS = -std=c99 -Wall -Wextra -Wno-unknown-pragmas -fPIC $(shell [ -z $(TURBO) ] && echo '-g3') -O3 -I$(GSL_PATH)/include --coverage -I${CLIENTDIR} -I${SERVERDIR} -I ${COMMONDIR} -I${LIBDIR}
-LDFLAGS = -lm -lgsl -lgslcblas -ldl -lrt \
+LDFLAGS = -lm -lgsl -lgslcblas -ldl -lrt -lpthread \
 	-L$(GSL_PATH)/lib -L$(GSL_PATH)/lib64 \
 	-Wl,--rpath=${GSL_PATH}/lib
 TESTDIR = test
@@ -75,7 +75,7 @@ human.so: player_ext.o human.o
 
 allclients: alphachad.so alphabeta.so mcts.so random.so bouclier.so epee.so random1.so mcts1.so alphabeta1.so
 
-client: alphaalpha.so alphabeta.so alphasigma.so
+client: alphaalpha.so alphabeta.so alphasigma.so mcts.so
 
 alltests: game.o player_handle.o graph.o board.o position_set.o linked_list.o
 alltests: common.o mock_player.o test_main.o test_game.o test_position_set.o test_board.o

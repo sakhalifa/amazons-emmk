@@ -1,5 +1,6 @@
 #include "player_ext.h"
 #include "tree.h"
+#include <pthread.h>
 #include <math.h>
 #include <float.h>
 #define SQRT_2 (1.41421356237)
@@ -150,6 +151,35 @@ unsigned int rollout(struct node_and_player to_simulate)
 	return (unsigned int)winner;
 }
 
+unsigned int rollout_thread(struct node_and_player to_simulate, board_t *board)
+{
+	int winner;
+	int player_id = to_simulate.player_id;
+	while ((winner = get_winner(board)) == -1)
+	{
+		int queen_src_id = rand() % board->num_queens;
+		unsigned int queen_src = board->queens[player_id][queen_src_id];
+		position_set *set = get_reachable_positions_generic(board, queen_src);
+		while (set->count == 0)
+		{
+			free_position_set(set);
+			queen_src_id = (queen_src_id + 1) % board->num_queens;
+			queen_src = board->queens[player_id][queen_src_id];
+			set = get_reachable_positions_generic(board, queen_src);
+		}
+		int queen_dst = set->positions[rand() % set->count];
+		free_position_set(set);
+		set = get_reachable_arrows_generic(board, player_id, queen_src, queen_dst);
+		int arrow_dst = set->positions[rand() % set->count];
+		free_position_set(set);
+		struct move_t *move = malloc(sizeof(struct move_t));
+		*move = (struct move_t){queen_src, queen_dst, arrow_dst};
+		apply_move(board, move, player_id);
+		player_id = (player_id + 1) % NUM_PLAYERS;
+	}
+	return (unsigned int)winner;
+}
+
 void backtrack(struct node_and_player simulated, unsigned int winner_id)
 {
 	node_t *cur = simulated.node;
@@ -167,6 +197,7 @@ void initialize(unsigned int player_id, struct graph_t *graph,
 				unsigned int num_queens, unsigned int *queens[NUM_PLAYERS])
 {
 	generic_initialize(&global_player, player_id, graph, num_queens, queens, "MCTS");
+	compute_accessible_vertices(global_player.board);
 
 	monte_carlo_tree = tree_create(create_node_data((struct move_t){-1, -1, -1}, -1), free);
 }
@@ -188,20 +219,43 @@ void rollback_selection(node_t *selected_node){
 	}
 }
 
+struct rollout_data{
+	struct node_and_player to_simulate;
+	board_t *board;
+};
+
+void *rollout_in_thread(void *vparg){
+	struct rollout_data* data = (struct rollout_data*)vparg;
+	unsigned int result = rollout_thread(data->to_simulate, data->board);
+	board_free(data->board);
+	return (void*)result;
+}
+
 void do_one_mcts_iteration()
 {
 	struct node_and_player selected_node = selection(monte_carlo_tree);
 	expansion(selected_node);
 	array_list_t *children = node_get_children(selected_node.node);
+
+	pthread_t *threads = malloc(sizeof(pthread_t)*array_list_length(children));
 	for (size_t i = 0; i < array_list_length(children); i++)
 	{
+		// Launch thread that does rollout then free instead of cancelling the moves and everything
 		node_t *child = array_list_get(children, i);
-		struct node_data *data = (struct node_data*)node_get_value(child);
-		apply_move(global_player.board, &data->transition.move, data->transition.player_id);
 		struct node_and_player to_simulate = {.node = child, .player_id = (selected_node.player_id + 1) % NUM_PLAYERS};
-		unsigned int winner = rollout(to_simulate);
-		cancel_move(global_player.board, &data->transition.move, data->transition.player_id);
-		backtrack(to_simulate, winner);
+		struct rollout_data *data = malloc(sizeof(struct rollout_data));
+		data->board = copy_board(global_player.board);
+		data->to_simulate = to_simulate;
+		pthread_create(threads+i, NULL, rollout_in_thread, data);
+	}
+
+	for(size_t i = 0; i<array_list_length(children); i++){
+		void *winner;
+		pthread_join(threads[i], &winner);
+		unsigned int winner_uint = (unsigned int)winner;
+		node_t *child = array_list_get(children, i);
+		struct node_and_player to_simulate = {.node = child, .player_id = (selected_node.player_id + 1) % NUM_PLAYERS};
+		backtrack(to_simulate, winner_uint);
 	}
 
 	rollback_selection(selected_node.node);
@@ -224,7 +278,7 @@ struct move_t play(struct move_t previous_move)
 		tree_free(monte_carlo_tree);
 		monte_carlo_tree = corresponding_node;
 	}
-	for(int i = 0; i<10; i++)
+	for(int i = 0; i<50; i++)
 		do_one_mcts_iteration();
 	node_t *selected = get_max_child(monte_carlo_tree);
 	if (selected == NULL)
