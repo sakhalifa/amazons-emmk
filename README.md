@@ -25,7 +25,3 @@ pour plus d'information concernant les paramètres optionnels, voir la page du s
 ## Compiler et lancer une partie par défaut: 
 
 make run
-
-# Gestion de projet, sur Trello
-
-https://trello.com/b/ggpUvjsn/projet-amazon
